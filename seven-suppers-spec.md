@@ -1,0 +1,171 @@
+# Seven Suppers - Specification
+
+Version: 0.10.1 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.10.1 (review pass): couscous is hard to find at the household's stores, so the kebab plates and chickpea patty bowls now serve white rice instead (which also merges their grocery lines with the six other rice meals). A new ingredient-versus-steps cross-check (`dev/xcheck.mjs`) caught and fixed two step gaps: the sweet potato bar never told the cook where the salsa goes, and the black bean burgers never mentioned the buns.
+
+0.10.0 doubled the catalog from 20 meals to 42 and replaced every poultry doneness cue with an instant-read thermometer check. Sources for the new recipes were the same reputable analogs used in 0.8.1 (Budget Bytes, The Kitchn, Skinnytaste, Cookie and Kate, Love and Lemons, Smitten Kitchen), consulted for proportions, oven temperatures, and simmer times. Also in 0.10.0:
+
+- Doneness: no recipe uses "cut it open, no pink" any more. Chicken pieces, ground turkey, and turkey meatballs all end on "poke an instant-read thermometer into the thickest part: 165 F", per USDA guidance that 165 F is the safe minimum for all poultry including thighs and ground poultry, and that color is not a reliable indicator. Thigh recipes note that 175 F is fine and more tender.
+- Unit hygiene: dry spices and brown sugar are canonically measured in teaspoons and cornstarch in tablespoons, so a spice used by two meals merges into one grocery line instead of splitting into a tsp line and a tbsp line.
+- `veggie-fried-rice` now lists dry white rice rather than "cooked rice", so the line is shoppable and merges with the other rice meals.
+- `bunch` joined `DISCRETE_UNITS`, so a scaled-down week rounds half a bunch of green onions up to a whole one.
+- Display names pluralize for countable ingredients via `ITEM_PLURALS` ("3 bell peppers", not "3 bell pepper"), and garlic reads "2 heads of garlic".
+- `dev/validate.mjs` checks the catalog invariants below on every change.
+
+In 0.8.1 the original 20 recipes were verified against reputable published analogs (Budget Bytes, Serious Eats, The Kitchn, Once Upon a Chef, USDA doneness guidance); 15 of 20 recipes needed no change, and 5 fixes were applied: taco simmer water (2/3 cup per seasoning packet), oiled panko for the tenders, honest times for omelet night (20 min) and the sweet potato bar (50 min, longer microwave fallback), and a thermometer-first 165 F doneness check for turkey burgers (color alone is unreliable for ground poultry).
+
+0.9.0 folded in the verifiers' seasoning layer: every recipe gained a kid-mild dried-spice or citrus accent (oregano, Italian seasoning, smoked paprika, cumin, ginger, thyme, bay leaf, garam masala, onion powder, plus lime or lemon finishes). The new dried spices joined the `STAPLES` set, so they appear in the pantry-check section rather than the shopping aisles; the citrus lands in Produce.
+Status: Implemented
+Platform: Single-file React artifact (Claude Artifacts)
+
+## Purpose
+
+A weekly dinner planner for a household managing gout, cooking with and for kids, at a beginner skill level. The app's single job: fill 7 dinner slots quickly and produce a combined grocery list.
+
+## Constraints and Dietary Rules
+
+All catalog meals must satisfy every rule below:
+
+1. Gout-friendly (low purine)
+   - No organ meats
+   - No shellfish, anchovies, sardines, or other high-purine seafood
+   - No red meat (fish excluded entirely in v0.1.0 as the simplest safe default; moderate-purine fish may be added later as an opt-in)
+   - Allowed protein bases: chicken, turkey, eggs, low-fat dairy, beans, tofu
+   - Chicken dishes use boneless thighs rather than breasts (household preference; the tenders keep tenderloins for the format)
+2. Kid-friendly: familiar formats (tacos, pizza, pasta, nuggets, quesadillas), build-your-own options where possible
+3. Beginner-friendly, written for a clueless but instruction-oriented cook (as of 0.5.0): 5 to 7 numbered steps per recipe that assume no technique knowledge. Every step names the pan and heat level, gives times and plain-language cut sizes ("coin-size", "as thick as your finger"), and cooking ends with a doneness check. Wash-hands reminders follow raw-meat handling, and every recipe lists all the fat it needs (no assumed pantry oil). Common techniques only, most meals 40 minutes or less
+   - Poultry doneness is always an instant-read thermometer reading of 165 F (0.10.0), never a color or cut-open check. This covers chicken pieces, ground turkey cooked in crumbles (push into a mound, then probe), and turkey meatballs and patties. Thigh recipes add that 175 F is fine and more tender. Non-poultry doneness still uses plain visual and texture cues (a fork slides in with no resistance, whites no longer see-through)
+4. Health-leaning: vegetables in most meals, Greek yogurt substituted for sour cream, low-sodium broth and soy sauce specified, no straight comfort-food mains (removed in 0.2.0)
+5. Dairy-light: no milk as an ingredient, no cheese-centric mains. Cheese appears only as a skippable topping or mix-in. Reason: one household member is mildly lactose intolerant and a kid does not eat cheese
+
+## Data Model
+
+### Meal
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | Kebab-case, unique |
+| `title` | string | Display name |
+| `time` | number | Total minutes |
+| `tags` | string[] | Subset of: `chicken`, `turkey`, `veggie`, `vegan`, `pasta`, `soup`, `fast` (fast = 25 min or less; vegan = no meat, eggs, dairy, or honey, and always paired with `veggie`) |
+| `ing` | Ingredient[] | See below |
+| `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues |
+
+All recipes are written for `BASE_SERVINGS` (4) servings; there is no per-meal serves field.
+
+### Ingredient
+
+| Field | Type | Notes |
+|---|---|---|
+| `n` | string | Name, lowercase, used as merge key |
+| `q` | number | Quantity |
+| `u` | string | Unit in singular canonical form, e.g. `cup` not `cups` ("" for countable items). Display pluralizes via `UNIT_PLURALS` when quantity is not 1; unitless countables pluralize the name itself via `ITEM_PLURALS`. Countable pantry items use the unit you would buy (`jar` for marinara, `loaf` for bread) so lines merge into shoppable quantities. Dry spices and sugar are always `tsp`, cornstarch always `tbsp` |
+| `c` | string | Category: `produce`, `protein`, `dairy`, `grains`, `pantry` |
+
+### Week
+
+Array of 7 slots (Monday through Sunday), each holding a meal `id` or `null`.
+
+## Catalog
+
+42 meals as of 0.10.0: 16 chicken, 8 turkey, 18 veggie (12 of them vegan), 8 pasta, 8 soup, 15 fast. Enough that a week avoiding last week's seven still draws from 35 candidates.
+
+Invariants enforced by `dev/validate.mjs`:
+
+- Unique meal ids; 5 to 7 steps each; known tags and categories only
+- One canonical unit and one canonical category per ingredient name, so grocery lines always merge
+- `fast` tag if and only if the meal is 25 minutes or less; `vegan` implies `veggie` and no animal products
+- No banned ingredients (red meat, shellfish, organ meats, anchovies, Worcestershire sauce, which contains anchovies)
+- Every meal with a poultry protein contains an instant-read thermometer 165 F check, and no meal contains a pinkness check
+- Every non-staple ingredient is shoppable: sold by count or weight, in a discrete unit, or covered by a `PACKS` rule
+
+## Features
+
+### 1. Week planning (three entry modes)
+
+- Randomize: "Shuffle the whole week" fills all 7 days with unique random meals (no repeats within a week).
+- Pick: Tap an empty day ("Pick a dinner") to enter select mode, then tap any catalog meal to assign it to that day.
+- Randomize then modify: After a shuffle, each day supports:
+  - Reroll: replaces that day with a random meal not already in the week
+  - Swap: enters select mode for that day, assignment via catalog tap
+  - Clear (X): empties the slot
+- "Add to week" on a catalog card fills the first empty day when no day is selected. Disabled when the week is full.
+- "Clear" resets the entire week and grocery checkboxes.
+- Tapping a planned meal's title on its day ticket toggles the full recipe (ingredients and steps) inline, with a "Show recipe" / "Hide recipe" hint.
+- Lock a day: a "Lock" button on each planned ticket. Locked days keep their meal through Shuffle; their Reroll, Swap, and X controls are hidden until unlocked. Locks persist and reset on Clear.
+- Variety memory: when Shuffle or Clear replaces a non-empty plan, that plan is stored as "last week" (`seven-suppers-last-week`). Shuffle fills unlocked days avoiding last week's meals; Reroll prefers meals not on last week's plan, falling back if the pool empties.
+
+### 2. Catalog browsing
+
+- Filter chips: All, Chicken, Turkey, Veggie, Vegan, Pasta, Soup, 25 min or less. Single-select.
+- Tapping a card (outside select mode) expands it inline to show the full ingredient list and 3 steps.
+- Cards indicate when a meal is already on the current week's menu.
+
+### 3. Servings scaling
+
+- "Cooking for N" stepper shown under the view toggle, range 1 to 12, default `DEFAULT_SERVINGS` (3, since the household usually cooks for 2 or 3). Recipes remain written for `BASE_SERVINGS` (4) and scale down automatically.
+- Ingredient quantities in the recipe view and grocery list are multiplied by N / `BASE_SERVINGS`.
+- Rounding at display time only: countable items (empty unit) round up to whole numbers; measured items round to the nearest quarter.
+- N persists to artifact storage (key `seven-suppers-servings`).
+
+### 4. Grocery list
+
+- Toggle view: "Grocery list (N meals)" button, disabled at 0 planned meals.
+- Aggregation: ingredients merged across all planned meals by `name + unit` key, quantities summed and scaled by the servings setting.
+- Grouped by aisle in fixed order: Produce, Meat and Protein, Dairy and Eggs, Bread Grains and Pasta, Pantry. Alphabetical within groups.
+- Pantry staples (the `STAPLES` set: oils including toasted sesame, butter, soy sauce, rice vinegar, Dijon, ketchup, honey, maple syrup, brown sugar, cornstarch, flour, baking powder, and the dried spices) are pulled out of the aisles into a final "From your pantry" group with a note that the amounts are what the week uses, so the shopping aisles list only what actually needs buying. The copied text includes the same group.
+- Discrete-unit rounding (0.8.0): even without a `PACKS` entry, fractional quantities of whole purchasable things (`DISCRETE_UNITS`: jars, cans, heads, loaves, packets, blocks, bags, bottles, pints) round up on the buy line with the true need shown: "1 jar basil pesto (need 0.5 jars)". Staples never get buy lines; their section shows plain usage amounts.
+- Store links (0.8.0): a "Shop at" picker on the grocery view (None default, Pick 'n Save, Metro Market, Meijer, Walmart; the `STORES` list) persists to `seven-suppers-store`. With a store selected, each aisle line gains a "Find it" link opening that item's search on the store site (leading "canned " stripped from queries) for building a pickup cart. Staples get no links; copy and print output stay store-free.
+- Purchase conversion (0.7.0): the `PACKS` map records how each ingredient is sold at a typical US store (`per` = recipe units per package, plus singular/plural package labels). Aisle lines lead with the shoppable quantity and always append the true recipe total: "3 trays (1 lb) ground turkey (need 2.25 lb)", "2 dozen eggs (need 19)". Package counts round up, minimum 1. The needed amount is never omitted, so a shopper facing different package sizes (a 2 lb turkey tray) can buy correctly. Ingredients not in `PACKS` are already in purchase form (counts, cans, jars, by-weight meat) and print as before; staples never convert. Same format in the on-screen list, copied text, and printout.
+- Each line has a checkbox (strikethrough when checked). Checkbox state is session-only; checks for items that leave the list after a plan change are pruned automatically.
+- "Copy list" copies a plain-text version grouped by aisle headers with `- qty item` lines. Button confirms with "Copied" for 2 seconds only when the clipboard write succeeds.
+
+### 5. Print view
+
+- Third view-toggle button "Print week", disabled at 0 planned meals.
+- Shows all planned recipes in day order (day, title, time, scaled ingredients, steps) followed by the grocery list, in print-friendly cards.
+- "One recipe per page, like a card deck" checkbox (default on): each recipe prints on its own page, meal-kit style, and the grocery list follows on its own page. Unchecked, recipes pack together and the grocery list forces a fresh page. Session-only setting.
+- "Print or save as PDF" button: at top level it calls `window.print()`; inside an embedded frame (like the hosted artifact page, where `window.print` is silently blocked) it opens a top-level copy of the page in a new tab and prints that. If pop-ups are also blocked, it falls back to `window.print()` and the helper text points at Ctrl+P. The intended workflow is plan the week, then print or save the combined recipes-plus-groceries sheet.
+- Print CSS: `.no-print` hides app chrome (view toggle, servings stepper, buttons, footer); `.print-card` and list items avoid page breaks (modern and legacy `page-break-*` properties both set); the grocery list starts on a fresh page.
+
+### 6. Persistence
+
+- The week plan auto-saves to artifact storage (`window.storage`, key `seven-suppers-week`) on every change, after initial load completes. The servings setting (`seven-suppers-servings`), day locks (`seven-suppers-locks`), last week's plan (`seven-suppers-last-week`), and store choice (`seven-suppers-store`) save the same way.
+- On mount, the saved week is restored if present and valid (array of length 7); saved ids no longer in the catalog become empty slots.
+- All storage calls wrapped in try/catch; the app degrades to in-memory state if storage is unavailable.
+- Not persisted: grocery checkboxes, active filter, expanded card, expanded day ticket, selected day.
+
+## Removed in 0.2.0
+
+Six meals were replaced to serve the dairy-light and healthy-eating rules: baked mac and cheese, grilled cheese and tomato soup, baked potato bar, breakfast-for-dinner pancakes, black bean quesadillas, and margherita flatbreads. Their replacements: turkey and white bean chili, veggie primavera pasta, mild chickpea coconut curry, egg and black bean breakfast burritos, loaded sweet potato bar, and turkey burgers with cucumber salad.
+
+## Design
+
+- Palette: celery paper `#F5F7EF`, spinach ink `#24331D`, cherry accent `#B8324F` (cherries chosen deliberately as the signature gout-friendly food), soft celery `#E4ECD8`, soft cherry `#F3DCE2`, line `#D8E0CC`.
+- Type: Baloo 2 (display, rounded and warm) and Nunito Sans (body), loaded from Google Fonts with system fallbacks.
+- Signature element: week days styled as kitchen order tickets with a perforated top edge, presented as a vertical rail.
+- Layout: mobile-first single column; catalog uses an auto-fill grid (min 250px columns) on wider screens.
+- Accessibility: visible focus outlines, `aria-label`s on icon-like buttons, reduced motion respected.
+- Copy style: sentence case, active verbs, no emojis, no em dashes. The header is just the app name and version; no tagline (removed in 0.4.1).
+
+## Technical Notes
+
+- Single default-exported React component, no required props.
+- Tailwind core classes avoided for theming; colors and fonts applied via inline styles from a palette constant (no Tailwind JIT available in the artifact runtime).
+- No localStorage or sessionStorage (unsupported in artifacts); artifact storage API only.
+- `APP_VERSION` const displayed in the header; semver incremented on changes (patch and minor at will, major requires approval).
+- `dev/build.sh` bundles the component into `seven-suppers.html` (standalone) and `dev/artifact.html`, then runs four gates in order: `dev/validate.mjs` (catalog invariants), `dev/xcheck.mjs` (every listed ingredient is mentioned in its recipe's steps; keep its alias map current when adding ingredients), `dev/smoke.js` (jsdom render, catches the blank-page class of bug), and `dev/func-test.js` (shuffle variety, day locks, grocery rounding, store links, thermometer text in the print view). Any failure fails the build. Note when writing tests that `document.body.textContent` includes the inlined bundle source, so assertions must be scoped to `#root`.
+
+## Out of Scope
+
+- Fish meals (still pending user opt-in as of 0.10.0). Low-purine options like tilapia, cod, and sole would be the safe additions; salmon and tuna are moderate-purine and would need a clear label
+- Pantry-exclusion ("I already have this") on the grocery list
+- Multi-week history, favorites, or ratings
+- Nutrition data per meal
+
+## Ideas for Later
+
+- Optional moderate-purine fish category with a clear label
+- Export grocery list to a share sheet or reminders app
+- Leftovers night as a plannable slot type
