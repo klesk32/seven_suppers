@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.1.0";
+const VERSION = "0.3.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -20,6 +20,7 @@ const MEALS = eval("[" + slice("const MEALS = [", "\n];") + "]");
 const STAPLES = new Set(eval("[" + slice("const STAPLES = new Set([", "\n]);") + "]"));
 const PACKS = eval("({" + slice("const PACKS = {", "\n};") + "})");
 const DISCRETE = new Set(eval("[" + slice("const DISCRETE_UNITS = new Set([", "]);") + "]"));
+const SIZES = eval("({" + slice("const SIZES = {", "\n};") + "})");
 
 let fails = 0;
 const fail = (m) => { console.log("FAIL " + m); fails++; };
@@ -91,6 +92,14 @@ MEALS.forEach((m) => {
   if (hasPoultry && !/instant-read thermometer/.test(text)) fail(`${m.id} has poultry but no thermometer`);
 });
 
+// 7b. steps must scale: ingredient references may not bake in base-batch
+// package counts or piece counts, since the ingredient list scales and the
+// steps do not ("the whole can" is wrong at 2 servings)
+const UNSCALED = /whole (can|jar|bag|block)\b|both cans|\b\d+ shallow wells|into \d+ (patties|balls)/i;
+MEALS.forEach((m) => m.steps.forEach((s) => {
+  if (UNSCALED.test(s)) fail(`${m.id} has non-scaling step wording: "${s.match(UNSCALED)[0]}"`);
+}));
+
 // 8. non-staple, non-discrete measured items should have a PACKS entry or be sold that way
 const SELF_SHOPPABLE = new Set(["lb", "oz", "", "bunch"]);
 MEALS.forEach((m) => m.ing.forEach((i) => {
@@ -99,10 +108,20 @@ MEALS.forEach((m) => m.ing.forEach((i) => {
   fail(`${m.id}: ${i.n} (${i.u}) has no PACKS entry and is not directly shoppable`);
 }));
 
-// 9. PACKS / STAPLES entries that no recipe uses
+// 9. packaged goods must declare an expected size, so two shelf sizes are
+// never ambiguous; natural units (head, loaf, bunch, bottle) are exempt
+const SIZED_UNITS = new Set(["jar", "can", "packet", "block", "bag"]);
+MEALS.forEach((m) => m.ing.forEach((i) => {
+  if (SIZED_UNITS.has(i.u) && !SIZES[i.n] && !PACKS[i.n]) {
+    fail(`${m.id}: ${i.n} (${i.u}) has no SIZES entry`);
+  }
+}));
+
+// 10. PACKS / STAPLES / SIZES entries that no recipe uses
 const allNames = new Set([...units.keys()]);
 Object.keys(PACKS).forEach((n) => { if (!allNames.has(n)) console.log(`note: PACKS has unused "${n}"`); });
 [...STAPLES].forEach((n) => { if (!allNames.has(n)) console.log(`note: STAPLES has unused "${n}"`); });
+Object.keys(SIZES).forEach((n) => { if (!allNames.has(n)) console.log(`note: SIZES has unused "${n}"`); });
 
 // summary
 const count = (t) => MEALS.filter((m) => m.tags.includes(t)).length;

@@ -28,7 +28,8 @@
       "Bash(awk '{print $5, $9}')",
       "WebFetch(domain:claude.ai)",
       "Bash(awk -F'time: ' '{split\\($2,a,\",\"\\); print a[1]}')",
-      "Bash(npx --yes semver -i patch 0.10.0)"
+      "Bash(npx --yes semver -i patch 0.10.0)",
+      "Bash(grep *)"
     ]
   }
 }

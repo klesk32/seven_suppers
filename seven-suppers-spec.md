@@ -1,6 +1,22 @@
 # Seven Suppers - Specification
 
-Version: 0.10.1 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.14.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.14.0 (scaling honesty, prompted by a real cooked week):
+
+- Chickpea coconut curry rebuilt after real-world feedback: it was the only meal in the catalog with zero salt from any source (rinsed chickpeas, unsalted coconut milk, salt-free spices), and 2 cans of chickpeas against 1 can of lite coconut milk simmered uncovered left it nearly dry. Now: half a teaspoon of salt plus a taste-and-adjust finish, garlic powder and ground ginger join the spices, a can of diced tomatoes gives the sauce body, and the simmer is covered.
+- Recipe cards now scale countables honestly to the nearest half: "half an onion", "1 and a half sweet potatoes". Previously each card rounded its own 0.5 up to "1 onion", so three half-onion recipes printed a combined demand of 3 onions while the list correctly bought 2. Indivisible countables (`INDIVISIBLE`: eggs, tortillas, buns, pitas) still round up to whole ones. Names singularize at one or less ("1 avocado", not "1 avocados") via `ITEM_SINGULARS`.
+- Grocery countable lines admit the true need behind the whole-item buy: "2 onions (need 1 and a half)".
+- Steps were swept for wording that does not scale: "the whole can/jar/bag of X" became "the X" (17 rewrites across 15 recipes), shaped counts became per-unit ("one patty per bun", "a well for each egg", "about three balls per person", "two-thirds of a cup of water per seasoning packet used"). The validator now fails the build on "whole can/jar/bag/block", "both cans", "N shallow wells", or "into N patties/balls" in any step.
+- Scaled recipe cards (any serving count other than 4) carry a note that fixed spelled-out step amounts (salt, water) mean the full four-serving batch.
+
+0.13.0: every packaged ingredient (jars, cans, packets, blocks, bags) now shows the package size the recipes assume, in the grocery list and in recipe ingredient lists: "1 bag (14 oz) coleslaw mix", "1 can (28 oz) canned crushed tomatoes". The `SIZES` map holds the expected size per ingredient; the "(need X)" suffix stays size-free. A shopper facing a 14 oz and a 45 oz bag of the same thing now knows which one the plan means. The validator requires a `SIZES` (or `PACKS`) entry for every jar/can/packet/block/bag ingredient; heads, bunches, and loaves are natural units and stay size-free.
+
+0.12.1: cherry tomatoes are stored in ounces with a "container (10 oz)" pack rule instead of "1 pint" — stores label the clamshells by ounces (10 oz and 24 oz are common), not pints. The now-unused `pint` unit left `DISCRETE_UNITS` and `UNIT_PLURALS`.
+
+0.12.0: a "No soups" toggle joined the shuffle filters. It stacks with the time and diet filters, and since stacking can now shrink the pool below 7 (vegan, 35 min or less, no soups leaves 5), the filter row shows a cherry-colored note whenever a shuffle would leave days empty.
+
+0.11.0 (five usability requests): the week now starts on Sunday; planned dinners can be dragged between days (drop on a planned day swaps the two meals, drop on an empty day moves it, locks travel with their meals); catalog cards for meals already on the menu gray out and cannot be added twice; vegan meals carry a small "vegan" pill on both the week rail and catalog cards; and shuffle filters ("35 min or less" toggle plus Anything / Veggie and vegan / Vegan only) constrain what Shuffle and Reroll draw from, persisted as `seven-suppers-shuffle`. When a narrow filter leaves fewer fresh meals than empty days, the shuffle tops up with last week's meals rather than leaving days blank.
 
 0.10.1 (review pass): couscous is hard to find at the household's stores, so the kebab plates and chickpea patty bowls now serve white rice instead (which also merges their grocery lines with the six other rice meals). A new ingredient-versus-steps cross-check (`dev/xcheck.mjs`) caught and fixed two step gaps: the sweet potato bar never told the cook where the salsa goes, and the black bean burgers never mentioned the buns.
 
@@ -65,7 +81,7 @@ All recipes are written for `BASE_SERVINGS` (4) servings; there is no per-meal s
 
 ### Week
 
-Array of 7 slots (Monday through Sunday), each holding a meal `id` or `null`.
+Array of 7 slots (Sunday through Saturday as of 0.11.0), each holding a meal `id` or `null`. The array is positional, so a week saved before 0.11.0 keeps its meals but they relabel to the new day order.
 
 ## Catalog
 
@@ -95,12 +111,15 @@ Invariants enforced by `dev/validate.mjs`:
 - Tapping a planned meal's title on its day ticket toggles the full recipe (ingredients and steps) inline, with a "Show recipe" / "Hide recipe" hint.
 - Lock a day: a "Lock" button on each planned ticket. Locked days keep their meal through Shuffle; their Reroll, Swap, and X controls are hidden until unlocked. Locks persist and reset on Clear.
 - Variety memory: when Shuffle or Clear replaces a non-empty plan, that plan is stored as "last week" (`seven-suppers-last-week`). Shuffle fills unlocked days avoiding last week's meals; Reroll prefers meals not on last week's plan, falling back if the pool empties.
+- Shuffle filters (0.11.0): a "Shuffle from" chip row under the week actions. "35 min or less" and "No soups" (0.12.0) are on/off toggles; diet is single-select Anything / Veggie and vegan / Vegan only ("veggie" includes vegan meals since every vegan meal also carries the veggie tag). All apply to Shuffle and Reroll but never touch locked days or the catalog browse filters. Persisted together as `seven-suppers-shuffle` (JSON `{ time, diet, noSoups }`). If variety memory would leave days unfillable, the shuffle tops up with last week's meals; if the pool itself holds fewer than 7 meals (vegan, 35 min or less, no soups leaves 5), a note in the filter row warns that some days will stay empty.
+- Drag to reorder (0.11.0): each planned ticket is draggable (a grip glyph hints at it). Dropping on another planned day swaps the two meals; dropping on an empty day moves the meal there. Lock state travels with the meal. The drop target shows a dashed cherry border while hovering. Uses HTML5 drag and drop, so it is mouse-only; touch rearranging still works via Swap.
+- Vegan marker (0.11.0): meals tagged vegan show a small celery-green "vegan" pill after the title on week tickets and catalog cards.
 
 ### 2. Catalog browsing
 
 - Filter chips: All, Chicken, Turkey, Veggie, Vegan, Pasta, Soup, 25 min or less. Single-select.
 - Tapping a card (outside select mode) expands it inline to show the full ingredient list and 3 steps.
-- Cards indicate when a meal is already on the current week's menu.
+- Meals already on the week's menu gray out (opacity 0.45), label themselves "On the menu", and cannot be added again, from the card button or in select mode; `assignMeal` also refuses duplicates outright (0.11.0). Their recipes stay viewable.
 
 ### 3. Servings scaling
 
@@ -115,7 +134,8 @@ Invariants enforced by `dev/validate.mjs`:
 - Aggregation: ingredients merged across all planned meals by `name + unit` key, quantities summed and scaled by the servings setting.
 - Grouped by aisle in fixed order: Produce, Meat and Protein, Dairy and Eggs, Bread Grains and Pasta, Pantry. Alphabetical within groups.
 - Pantry staples (the `STAPLES` set: oils including toasted sesame, butter, soy sauce, rice vinegar, Dijon, ketchup, honey, maple syrup, brown sugar, cornstarch, flour, baking powder, and the dried spices) are pulled out of the aisles into a final "From your pantry" group with a note that the amounts are what the week uses, so the shopping aisles list only what actually needs buying. The copied text includes the same group.
-- Discrete-unit rounding (0.8.0): even without a `PACKS` entry, fractional quantities of whole purchasable things (`DISCRETE_UNITS`: jars, cans, heads, loaves, packets, blocks, bags, bottles, pints) round up on the buy line with the true need shown: "1 jar basil pesto (need 0.5 jars)". Staples never get buy lines; their section shows plain usage amounts.
+- Discrete-unit rounding (0.8.0): even without a `PACKS` entry, fractional quantities of whole purchasable things (`DISCRETE_UNITS`: jars, cans, heads, loaves, packets, blocks, bags, bottles, bunches) round up on the buy line with the true need shown: "1 jar (8 oz) basil pesto (need 0.5 jars)". Staples never get buy lines; their section shows plain usage amounts.
+- Expected package sizes (0.13.0): the `SIZES` map annotates every jar/can/packet/block/bag line with the size the recipes assume, on screen, in the copied text, in the printout, and in recipe ingredient lists. The need amount is never size-annotated, so "need 0.5 bags" always refers to the stated bag.
 - Store links (0.8.0): a "Shop at" picker on the grocery view (None default, Pick 'n Save, Metro Market, Meijer, Walmart; the `STORES` list) persists to `seven-suppers-store`. With a store selected, each aisle line gains a "Find it" link opening that item's search on the store site (leading "canned " stripped from queries) for building a pickup cart. Staples get no links; copy and print output stay store-free.
 - Purchase conversion (0.7.0): the `PACKS` map records how each ingredient is sold at a typical US store (`per` = recipe units per package, plus singular/plural package labels). Aisle lines lead with the shoppable quantity and always append the true recipe total: "3 trays (1 lb) ground turkey (need 2.25 lb)", "2 dozen eggs (need 19)". Package counts round up, minimum 1. The needed amount is never omitted, so a shopper facing different package sizes (a 2 lb turkey tray) can buy correctly. Ingredients not in `PACKS` are already in purchase form (counts, cans, jars, by-weight meat) and print as before; staples never convert. Same format in the on-screen list, copied text, and printout.
 - Each line has a checkbox (strikethrough when checked). Checkbox state is session-only; checks for items that leave the list after a plan change are pruned automatically.
@@ -134,7 +154,8 @@ Invariants enforced by `dev/validate.mjs`:
 - The week plan auto-saves to artifact storage (`window.storage`, key `seven-suppers-week`) on every change, after initial load completes. The servings setting (`seven-suppers-servings`), day locks (`seven-suppers-locks`), last week's plan (`seven-suppers-last-week`), and store choice (`seven-suppers-store`) save the same way.
 - On mount, the saved week is restored if present and valid (array of length 7); saved ids no longer in the catalog become empty slots.
 - All storage calls wrapped in try/catch; the app degrades to in-memory state if storage is unavailable.
-- Not persisted: grocery checkboxes, active filter, expanded card, expanded day ticket, selected day.
+- The shuffle filter persists as `seven-suppers-shuffle` (JSON `{ time, diet, noSoups }`).
+- Not persisted: grocery checkboxes, active filter, expanded card, expanded day ticket, selected day, drag state.
 
 ## Removed in 0.2.0
 

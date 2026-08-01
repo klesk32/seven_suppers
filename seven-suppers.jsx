@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a gout-friendly, kid-friendly weekly dinner planner
-const APP_VERSION = "0.10.1";
+const APP_VERSION = "0.14.0";
 
 // Every recipe in the catalog is written for this many servings
 const BASE_SERVINGS = 4;
@@ -25,7 +25,15 @@ const P = {
 const FONT_DISPLAY = "'Baloo 2', 'Comic Sans MS', sans-serif";
 const FONT_BODY = "'Nunito Sans', system-ui, sans-serif";
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+// Pools the shuffle can draw from; "veggie" includes vegan meals since every
+// vegan meal also carries the veggie tag
+const SHUFFLE_DIETS = [
+  { id: "all", label: "Anything" },
+  { id: "veggie", label: "Veggie and vegan" },
+  { id: "vegan", label: "Vegan only" },
+];
 
 // Categories: produce, protein, dairy, grains, pantry
 const MEALS = [
@@ -66,7 +74,7 @@ const MEALS = [
       "Cut the lettuce into thin ribbons and the tomatoes into small cubes. Put them in bowls on the table with the cheese and yogurt.",
       "Put a large skillet on the stove over medium heat and let it warm up for 2 minutes.",
       "Add the turkey and cook 7 to 8 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle of it: ground turkey is done at 165 F.",
-      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
+      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water per seasoning packet used, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
       "Warm the tortillas: 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
       "Let everyone build their own. The yogurt stands in for sour cream.",
     ],
@@ -137,8 +145,11 @@ const MEALS = [
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
+      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
       { n: "mild curry powder", q: 3, u: "tsp", c: "pantry" },
       { n: "garam masala", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "ground ginger", q: 0.25, u: "tsp", c: "pantry" },
       { n: "lime", q: 1, u: "", c: "produce" },
       { n: "spinach", q: 3, u: "cup", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
@@ -149,9 +160,9 @@ const MEALS = [
       "Start the rice following the package directions. It takes about 20 minutes, so get it going first.",
       "Peel the onion and chop it into small pieces, roughly pea-size. Uneven is fine.",
       "Warm the olive oil in a medium pot over medium heat for 30 seconds. Add the onion and cook 4 minutes, stirring every minute, until it looks glassy instead of white.",
-      "Add the curry powder and garam masala and stir for 30 seconds until they smell toasty.",
-      "Open the chickpeas, pour them into a colander, and rinse under the tap. Add them and the whole can of coconut milk to the pot. Let it bubble gently, uncovered, for 10 minutes.",
-      "Turn off the heat and stir in the spinach a handful at a time until the leaves go dark and soft. Squeeze half the lime in, then spoon over the rice.",
+      "Add the curry powder, garam masala, garlic powder, and ground ginger and stir for 30 seconds until they smell toasty.",
+      "Open the chickpeas, pour them into a colander, and rinse under the tap. Add them to the pot with the diced tomatoes (juice included), the coconut milk, and half a teaspoon of salt. Cover and let it bubble gently for 10 minutes.",
+      "Turn off the heat and stir in the spinach a handful at a time until the leaves go dark and soft. Squeeze half the lime in, then taste a cooled spoonful and add salt a pinch at a time until it tastes bright instead of flat. Spoon over the rice.",
     ],
   },
   {
@@ -225,7 +236,7 @@ const MEALS = [
     ing: [
       { n: "whole wheat penne", q: 12, u: "oz", c: "grains" },
       { n: "zucchini", q: 1, u: "", c: "produce" },
-      { n: "cherry tomatoes", q: 1, u: "pint", c: "produce" },
+      { n: "cherry tomatoes", q: 10, u: "oz", c: "produce" },
       { n: "dried oregano", q: 0.5, u: "tsp", c: "pantry" },
       { n: "frozen peas", q: 1.5, u: "cup", c: "produce" },
       { n: "garlic", q: 3, u: "clove", c: "produce" },
@@ -321,7 +332,7 @@ const MEALS = [
     steps: [
       "Peel the carrots. Cut the carrots and zucchini into coin-size pieces.",
       "Warm the olive oil in your largest pot over medium heat for 30 seconds. Add the carrots and zucchini and cook 5 minutes, stirring every minute or two.",
-      "Open the beans, rinse them in a colander, and add them with the broth, the oregano, and the whole can of tomatoes, juice included. Bring to a gentle bubble and cook 10 minutes.",
+      "Open the beans, rinse them in a colander, and add them with the broth, the oregano, and the tomatoes, juice included. Bring to a gentle bubble and cook 10 minutes.",
       "Add the pasta shells and cook 9 minutes, until one you fish out and blow on is soft.",
       "Squeeze half the lemon in. Taste a cooled spoonful, add salt a pinch at a time until it tastes good, and ladle into bowls.",
     ],
@@ -429,7 +440,7 @@ const MEALS = [
       "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
       "Add the rotini to the boiling water and cook for the time on the box, dropping the frozen peas in for the last 2 minutes. Scoop out a coffee mug of the cooking water before draining.",
       "While the pasta cooks, warm the olive oil in a large skillet over medium-high heat. Add the chicken in one layer, leave it 4 minutes, then stir and cook 4 more. Poke an instant-read thermometer into a big piece: 165 F means done.",
-      "Turn off the heat. Add the drained pasta and peas, the whole jar of pesto, and a squeeze of half the lemon to the skillet, stirring in splashes of the saved water until everything is coated and glossy.",
+      "Turn off the heat. Add the drained pasta and peas, the pesto, and a squeeze of half the lemon to the skillet, stirring in splashes of the saved water until everything is coated and glossy.",
       "Top with parmesan and serve.",
     ],
   },
@@ -447,7 +458,7 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Put the turkey in a bowl with the garlic powder, onion powder, a teaspoon of salt, and some pepper. Mix briefly and shape into 4 patties a little wider than the buns (they shrink), pressing a small dimple into the center of each. Wash your hands after.",
+      "Put the turkey in a bowl with the garlic powder, onion powder, a teaspoon of salt, and some pepper. Mix briefly and shape into patties a little wider than the buns (they shrink), one per bun, pressing a small dimple into the center of each. Wash your hands after.",
       "Slice the cucumbers and tomatoes, and toss them with 1 tablespoon of the olive oil, the juice of the lemon, and a pinch of salt.",
       "Heat the rest of the oil in a large skillet over medium heat. Lay in the patties and cook 5 minutes per side without pressing on them.",
       "Poke an instant-read thermometer through the side of a patty into its middle: ground turkey is done at 165 F. Color alone cannot tell you this, so cook another minute per side and check again if it reads low.",
@@ -500,7 +511,7 @@ const MEALS = [
       "Warm the olive oil in your largest pot over medium heat. Add the onion and cook 4 minutes, stirring now and then, until it looks glassy instead of white.",
       "Stir in the chili powder and cumin for 30 seconds, then pour in all the broth and add the chicken thighs whole. Bring to a gentle bubble and cook 15 minutes.",
       "Poke an instant-read thermometer into the thickest thigh: at 165 F it is done. Lift it onto a plate, shred it with two forks, and return the shreds to the pot.",
-      "Open the beans, rinse them in a colander, and add them with the whole can of tomatoes, juice included, and the corn. Cook 5 more minutes.",
+      "Open the beans, rinse them in a colander, and add them with the tomatoes, juice included, and the corn. Cook 5 more minutes.",
       "Squeeze half the lime in. Taste a cooled spoonful and add salt a pinch at a time until it tastes good to you.",
       "Slice the avocado. Ladle the soup into bowls and let everyone crush tortilla chips over the top.",
     ],
@@ -636,7 +647,7 @@ const MEALS = [
       "Cut the chicken into bite-size pieces and chop the onion small. Wash the board, knife, and your hands with soap right after the chicken.",
       "Warm the olive oil in your largest skillet over medium-high heat. Add the chicken and onion and cook 7 minutes, stirring twice.",
       "Sprinkle in the cumin and stir 30 seconds. Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done.",
-      "Open the beans, rinse them in a colander, and stir them in with the corn and the whole can of enchilada sauce. Let it bubble gently 3 minutes.",
+      "Open the beans, rinse them in a colander, and stir them in with the corn and the enchilada sauce. Let it bubble gently 3 minutes.",
       "Stack the tortillas, cut them into strips about an inch wide, and fold them into the skillet so they soften in the sauce, about 3 minutes.",
       "Turn off the heat and squeeze in half the lime. Sprinkle cheese over the side of the pan belonging to whoever wants it, and serve straight from the skillet.",
     ],
@@ -660,7 +671,7 @@ const MEALS = [
       "Start the rice following the package directions.",
       "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after. Peel and chop the onion small and chop the garlic into tiny bits.",
       "Melt the butter in your largest skillet over medium heat. Add the onion and cook 5 minutes until glassy, then add the garlic, garam masala, curry powder, and ground ginger and stir 30 seconds until they smell toasty.",
-      "Add the chicken and stir to coat, then pour in the whole can of tomato sauce and the whole can of coconut milk. Stir and bring to a gentle bubble.",
+      "Add the chicken and stir to coat, then pour in the tomato sauce and the coconut milk. Stir and bring to a gentle bubble.",
       "Cook uncovered 15 minutes, stirring every few minutes, until the sauce darkens and thickens enough to coat the back of a spoon.",
       "Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done. Squeeze in half the lemon, add salt to taste, and spoon over the rice.",
     ],
@@ -708,7 +719,7 @@ const MEALS = [
       "Cut the peppers in half through the stem and pull out the seeds and white ribs. Stand them cut-side up in a baking dish.",
       "Peel and chop the onion small. Warm the olive oil in a large skillet over medium heat, add the onion, and cook 4 minutes.",
       "Add the turkey, the Italian seasoning, the garlic powder, and a teaspoon of salt, and cook 7 minutes, breaking the meat into crumbles. Push it into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
-      "Stir in the cooked rice and the whole can of tomatoes with their juice, then spoon the mix into the pepper halves, mounding it up.",
+      "Stir in the cooked rice and the tomatoes with their juice, then spoon the mix into the pepper halves, mounding it up.",
       "Pour the broth into the bottom of the dish, cover it tightly with foil, and bake 35 minutes, until a knife slides through a pepper wall easily.",
       "Uncover, sprinkle cheese on the halves that want it, and bake 5 more minutes.",
     ],
@@ -757,7 +768,7 @@ const MEALS = [
       "Peel the garlic and chop it into tiny bits. Slice the green onions into thin rings. Stir the soy sauce, sesame oil, rice vinegar, and ground ginger together in a small bowl.",
       "Heat the vegetable oil in your largest skillet over medium-high. Add the turkey and cook 8 minutes, breaking it into crumbles with a wooden spoon. Push the meat into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
       "Add the garlic and stir for 30 seconds.",
-      "Dump in the whole bag of coleslaw mix and cook 5 minutes, stirring often, until the cabbage wilts down but still has a little crunch.",
+      "Dump in the coleslaw mix and cook 5 minutes, stirring often, until the cabbage wilts down but still has a little crunch.",
       "Pour in the sauce, stir 1 minute, and turn off the heat. Serve over the rice with the green onions scattered on top.",
     ],
   },
@@ -780,7 +791,7 @@ const MEALS = [
       "Peel the carrots and onion. Chop the onion small and cut the carrots into coin-size pieces. Peel the garlic and chop it into tiny bits.",
       "Warm the olive oil in your largest pot over medium heat. Add the onion and carrots and cook 5 minutes, stirring now and then.",
       "Add the garlic, curry powder, and cumin and stir 30 seconds until they smell toasty.",
-      "Pour the lentils into a colander and rinse them under the tap. Add them to the pot with all the broth and the whole can of coconut milk.",
+      "Pour the lentils into a colander and rinse them under the tap. Add them to the pot with all the broth and the coconut milk.",
       "Bring to a gentle bubble and cook 20 minutes, stirring every few minutes so nothing sticks to the bottom, until the lentils have fallen apart and the soup is thick.",
       "Turn off the heat, stir in the spinach until the leaves go dark, and squeeze in half the lime. Taste a cooled spoonful and add salt a pinch at a time.",
     ],
@@ -805,7 +816,7 @@ const MEALS = [
     steps: [
       "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring it to a rolling boil over high heat.",
       "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
-      "In a bowl, stir the peanut butter, soy sauce, rice vinegar, sesame oil, maple syrup, ground ginger, and 6 tablespoons of warm water until smooth and pourable. Add water a spoonful at a time if it stays stiff.",
+      "In a bowl, stir the peanut butter, soy sauce, rice vinegar, sesame oil, maple syrup, and ground ginger together, then stir in warm water a spoonful at a time until the sauce is smooth and pourable, about 6 tablespoons for the full recipe.",
       "Cook the spaghetti for the time on the box, dropping the frozen edamame in for the last 3 minutes. Scoop out a coffee mug of the cooking water before draining.",
       "While the pasta cooks, heat the vegetable oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
       "Toss the drained noodles and edamame with the peanut sauce back in the big pot, loosening with splashes of the saved water until everything is evenly coated.",
@@ -833,7 +844,7 @@ const MEALS = [
       "Scrub the potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with 2 tablespoons of the olive oil and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway.",
       "Open the beans, rinse them in a colander, and shake them very dry. Spread them on the second pan and bake 10 minutes to dry them out. This step is what keeps the burgers from turning to mush.",
       "Tip the beans into a big bowl and mash them with a fork or potato masher until most are broken but some whole ones remain. Peel and finely chop the onion and stir it in with the oats, cumin, smoked paprika, garlic powder, and a teaspoon of salt.",
-      "Squeeze the mix into 4 patties, packing them tight so they hold. Wipe the bean pan, brush it with the last tablespoon of olive oil, and set the patties on it.",
+      "Squeeze the mix into palm-size patties, one per bun, packing them tight so they hold. Wipe the bean pan, brush it with the last tablespoon of olive oil, and set the patties on it.",
       "Bake 12 minutes, flip carefully with a thin spatula, and bake 12 more, until the outsides are firm and dry to the touch.",
       "Build the burgers on the buns with lettuce, sliced tomato, and ketchup, and serve the fries alongside.",
     ],
@@ -855,8 +866,8 @@ const MEALS = [
       "Cut the peppers in half, pull out the stems, seeds, and white ribs, and slice them into thin strips. Peel and chop the onion small and chop the garlic into tiny bits.",
       "Warm the olive oil in a large skillet over medium heat. Add the peppers and onion and cook 8 minutes, stirring now and then, until they are soft and floppy.",
       "Add the garlic, cumin, and smoked paprika and stir 30 seconds until they smell toasty.",
-      "Pour in the whole can of crushed tomatoes with a teaspoon of salt. Let it bubble gently for 10 minutes, stirring often, until it thickens enough that dragging a spoon through leaves a trench for a second.",
-      "Make 8 shallow wells in the sauce with the back of a spoon and crack one egg into each.",
+      "Pour in the crushed tomatoes with a teaspoon of salt. Let it bubble gently for 10 minutes, stirring often, until it thickens enough that dragging a spoon through leaves a trench for a second.",
+      "Make a shallow well in the sauce with the back of a spoon for each egg, and crack one into each.",
       "Cover the pan, turn the heat to medium-low, and cook 7 to 10 minutes. The whites should be firm and no longer see-through; the yolks can be as runny or set as you like.",
       "Toast the bread and serve it alongside for scooping.",
     ],
@@ -903,7 +914,7 @@ const MEALS = [
       "Peel the garlic and chop it into tiny bits.",
       "Warm 2 tablespoons of the olive oil in your largest pot over medium heat. Add the garlic, rosemary, and oregano and stir for 1 minute, until fragrant but not browned. Browned garlic turns bitter, so keep it moving.",
       "Open the chickpeas, rinse them in a colander, and add them to the pot. Mash about a third of them against the side with a wooden spoon; that is what makes the broth creamy without any cream.",
-      "Add the whole can of crushed tomatoes and all the broth, bring to a gentle bubble, and cook 10 minutes.",
+      "Add the crushed tomatoes and all the broth, bring to a gentle bubble, and cook 10 minutes.",
       "Add the pasta shells and cook 10 more minutes, stirring often so they do not stick, until one you fish out and blow on is soft. It should look like a loose stew, so add a splash of water if it tightens too much.",
       "Turn off the heat, squeeze in half the lemon, drizzle the last tablespoon of olive oil over the top, and salt to taste.",
     ],
@@ -951,7 +962,7 @@ const MEALS = [
       "Start the rice following the package directions.",
       "Rinse the potatoes and cut them into quarters so every piece is roughly bite-size. Peel and chop the onion small and chop the garlic into tiny bits.",
       "Warm the olive oil in a large pot over medium heat. Add the onion and cook 4 minutes until glassy, then add the garlic, curry powder, garam masala, and cumin and stir 30 seconds until they smell toasty.",
-      "Add the potatoes, the whole can of tomatoes with their juice, and the whole can of coconut milk. Stir and bring to a gentle bubble.",
+      "Add the potatoes, the tomatoes with their juice, and the coconut milk. Stir and bring to a gentle bubble.",
       "Cover and cook 18 to 20 minutes, stirring now and then, until a fork slides into a potato piece with no resistance.",
       "Stir in the frozen peas and cook 3 more minutes. Squeeze in half the lime, add salt to taste, and spoon over the rice.",
     ],
@@ -977,7 +988,7 @@ const MEALS = [
       "Start the rice following the package directions. Heat the oven to 400 F. Line a baking sheet with foil and brush it with 1 tablespoon of the olive oil.",
       "Open the chickpeas, rinse them in a colander, and shake them as dry as you can. Peel the onion and cut it into chunks, and peel the garlic.",
       "Put the chickpeas, onion, garlic, the parsley (leaves and thin stems both), the cumin, a teaspoon of salt, the flour, and the baking powder in a food processor. Pulse until it looks like coarse crumbs that hold together when you squeeze a handful. No food processor? Mash the chickpeas with a fork, chop the onion, garlic, and parsley very fine, and mix it all by hand.",
-      "Scoop the mix into 12 balls and press each into a patty about half an inch thick on the pan. Brush the tops with another tablespoon of olive oil.",
+      "Scoop the mix into golf-ball-size balls, about three per person, and press each into a patty about half an inch thick on the pan. Brush the tops with another tablespoon of olive oil.",
       "Bake 25 minutes, flipping halfway with a thin spatula, until both sides are golden and firm to the touch.",
       "Meanwhile, chop the cucumbers and tomatoes and toss them with the last tablespoon of olive oil, the juice of half the lemon, and a pinch of salt.",
       "Stir the yogurt with the rest of the lemon juice and a pinch of salt. Build bowls: rice, patties, salad, and a spoon of sauce.",
@@ -1049,11 +1060,36 @@ const PACKS = {
   "garlic": { per: 10, one: "head of", many: "heads of" },
   "celery": { per: 8, one: "bunch", many: "bunches" },
   "baby potatoes": { per: 1.5, one: "bag (1.5 lb)", many: "bags (1.5 lb)" },
+  "cherry tomatoes": { per: 10, one: "container (10 oz)", many: "containers (10 oz)" },
 };
 
 // Units that are whole purchasable things: a scaled-down week can need half a
 // jar, but the store only sells whole ones, so the buy line rounds up
-const DISCRETE_UNITS = new Set(["jar", "can", "head", "loaf", "packet", "block", "bag", "bottle", "pint", "bunch"]);
+const DISCRETE_UNITS = new Set(["jar", "can", "head", "loaf", "packet", "block", "bag", "bottle", "bunch"]);
+
+// The package size each recipe assumes, shown after the unit ("1 jar (24 oz)
+// marinara sauce") so two different shelf sizes are never ambiguous. Heads,
+// bunches, and loaves are natural units and stay size-free.
+const SIZES = {
+  "marinara sauce": "24 oz",
+  "basil pesto": "8 oz",
+  "salsa": "16 oz",
+  "canned chickpeas": "15 oz",
+  "canned black beans": "15 oz",
+  "canned cannellini beans": "15 oz",
+  "canned diced tomatoes": "14.5 oz",
+  "canned crushed tomatoes": "28 oz",
+  "canned tomato sauce": "15 oz",
+  "light coconut milk": "13.5 oz",
+  "enchilada sauce": "15 oz",
+  "taco seasoning": "1 oz",
+  "fajita seasoning": "1 oz",
+  "extra-firm tofu": "14 oz",
+  "frozen stir-fry vegetables": "16 oz",
+  "coleslaw mix": "14 oz",
+  "frozen broccoli florets": "12 oz",
+  "tortilla chips": "10 oz",
+};
 
 // Stores the grocery list can link into. "None" keeps the list store-free;
 // picking one adds a "Find it" search link per line for building a pickup cart.
@@ -1076,8 +1112,8 @@ const TAG_FILTERS = [
   { id: "fast", label: "25 min or less" },
 ];
 
-function shuffleMeals() {
-  const shuffled = [...MEALS];
+function shuffleMeals(pool = MEALS) {
+  const shuffled = [...pool];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -1085,11 +1121,11 @@ function shuffleMeals() {
   return shuffled;
 }
 
-function rerollDay(week, dayIndex, avoid = new Set()) {
+function rerollDay(week, dayIndex, avoid = new Set(), pool = MEALS) {
   const used = new Set(week.filter((id, i) => id && i !== dayIndex));
   // Prefer meals that were not on last week's plan; fall back if that empties the pool
-  let options = MEALS.filter((m) => !used.has(m.id) && m.id !== week[dayIndex] && !avoid.has(m.id));
-  if (options.length === 0) options = MEALS.filter((m) => !used.has(m.id) && m.id !== week[dayIndex]);
+  let options = pool.filter((m) => !used.has(m.id) && m.id !== week[dayIndex] && !avoid.has(m.id));
+  if (options.length === 0) options = pool.filter((m) => !used.has(m.id) && m.id !== week[dayIndex]);
   const pick = options[Math.floor(Math.random() * options.length)];
   const next = [...week];
   next[dayIndex] = pick ? pick.id : week[dayIndex];
@@ -1100,7 +1136,7 @@ function rerollDay(week, dayIndex, avoid = new Set()) {
 const UNIT_PLURALS = {
   cup: "cups", can: "cans", jar: "jars", head: "heads", loaf: "loaves",
   bunch: "bunches", stalk: "stalks", slice: "slices", clove: "cloves",
-  packet: "packets", block: "blocks", bag: "bags", bottle: "bottles", pint: "pints",
+  packet: "packets", block: "blocks", bag: "bags", bottle: "bottles",
 };
 
 // Countable ingredients carry no unit, so the name itself has to pluralize.
@@ -1110,19 +1146,57 @@ const ITEM_PLURALS = {
   "bell pepper": "bell peppers", "bay leaf": "bay leaves",
 };
 
-function formatQty(q, u) {
-  // Countable items round up to whole; measured items to the nearest quarter
+// The reverse: names stored in the plural need a singular form when a scaled
+// quantity lands on one or less ("1 avocado", "half an onion")
+const ITEM_SINGULARS = {
+  eggs: "egg", avocados: "avocado", tomatoes: "tomato", carrots: "carrot",
+  cucumbers: "cucumber", "sweet potatoes": "sweet potato", "russet potatoes": "russet potato",
+};
+
+// Countables you cannot cook a fraction of: recipe cards round these up to
+// whole ones instead of asking for half an egg
+const INDIVISIBLE = new Set([
+  "eggs", "small flour tortillas", "small corn tortillas",
+  "whole wheat burger buns", "pita bread",
+]);
+
+// Scaled countable quantities round up to the nearest half so recipe cards can
+// say "half an onion" and the grocery list can show the true need behind a
+// whole-onion buy line. Only halves, never quarters; nobody cuts a quarter lime.
+function countLabel(q) {
+  const half = Math.ceil(q * 2 - 1e-9) / 2;
+  const whole = Math.floor(half);
+  if (half - whole === 0.5) return whole === 0 ? "half" : `${whole} and a half`;
+  return String(whole);
+}
+
+function countName(n, effectiveQ) {
+  if (effectiveQ > 1) return ITEM_PLURALS[n] || n;
+  return ITEM_SINGULARS[n] || n;
+}
+
+// The scaled amount of a unitless countable as it should read on a recipe
+// card: "half an onion", "1 and a half sweet potatoes", "4 eggs"
+function recipeCount(ing) {
+  if (INDIVISIBLE.has(ing.n)) {
+    const c = Math.ceil(ing.q - 1e-9);
+    return `${c} ${countName(ing.n, c)}`;
+  }
+  const half = Math.ceil(ing.q * 2 - 1e-9) / 2;
+  const label = countLabel(ing.q);
+  if (half === 0.5) return `half ${/^[aeiou]/i.test(countName(ing.n, half)) ? "an" : "a"} ${countName(ing.n, half)}`;
+  return `${label} ${countName(ing.n, half)}`;
+}
+
+function formatQty(q, u, name) {
+  // Countable items round up to whole; measured items to the nearest quarter.
+  // Passing a name appends the expected package size ("1 jar (24 oz)").
   const rounded = u === "" ? Math.ceil(q - 1e-9) : Math.round(q * 4) / 4;
-  const unit = rounded !== 1 && UNIT_PLURALS[u] ? UNIT_PLURALS[u] : u;
+  let unit = rounded !== 1 && UNIT_PLURALS[u] ? UNIT_PLURALS[u] : u;
+  if (unit && name && SIZES[name]) unit += ` (${SIZES[name]})`;
   return unit ? `${rounded} ${unit}` : String(rounded);
 }
 
-// "3 bell peppers", not "3 bell pepper". Units carry their own plural, so this
-// only applies to unitless countables.
-function itemLabel(ing) {
-  if (ing.u !== "" || Math.ceil(ing.q - 1e-9) === 1) return ing.n;
-  return ITEM_PLURALS[ing.n] || ing.n;
-}
 
 function buildGroceries(week, servings) {
   const scale = servings / BASE_SERVINGS;
@@ -1156,7 +1230,8 @@ function buyPlan(ing) {
   // No pack info, but you still cannot buy half a jar or half a head
   if (DISCRETE_UNITS.has(ing.u) && ing.q % 1 !== 0) {
     const count = Math.ceil(ing.q);
-    const unit = count !== 1 && UNIT_PLURALS[ing.u] ? UNIT_PLURALS[ing.u] : ing.u;
+    let unit = count !== 1 && UNIT_PLURALS[ing.u] ? UNIT_PLURALS[ing.u] : ing.u;
+    if (SIZES[ing.n]) unit += ` (${SIZES[ing.n]})`;
     return `${count} ${unit}`;
   }
   return null;
@@ -1166,10 +1241,38 @@ function storeSearchUrl(ing, storeObj) {
   return storeObj.searchUrl + encodeURIComponent(ing.n.replace(/^canned /, ""));
 }
 
+// One grocery line, split for display: qty (bold in the UI), name, and an
+// optional true-need suffix. Countable buys round up to whole items but admit
+// the fractional need ("2 onions (need 1 and a half)") so the recipe cards
+// and the list always agree.
+function groceryLine(ing, isStaple) {
+  if (!isStaple) {
+    const buy = buyPlan(ing);
+    if (buy) return { qty: buy, name: ing.n, need: formatQty(ing.q, ing.u) };
+    if (ing.u === "") {
+      const c = Math.ceil(ing.q - 1e-9);
+      const half = Math.ceil(ing.q * 2 - 1e-9) / 2;
+      const need = !INDIVISIBLE.has(ing.n) && half !== c ? countLabel(ing.q) : null;
+      return { qty: String(c), name: countName(ing.n, c), need };
+    }
+  }
+  return { qty: formatQty(ing.q, ing.u, isStaple ? undefined : ing.n), name: ing.n, need: null };
+}
+
 function groceryText(ing, isStaple) {
-  const buy = isStaple ? null : buyPlan(ing);
-  const need = formatQty(ing.q, ing.u);
-  return buy ? `${buy} ${ing.n} (need ${need})` : `${need} ${itemLabel(ing)}`.trim();
+  const p = groceryLine(ing, isStaple);
+  return p.need ? `${p.qty} ${p.name} (need ${p.need})` : `${p.qty} ${p.name}`.trim();
+}
+
+// At-a-glance marker so vegan nights stand out on the week and in the catalog
+function VeganChip() {
+  return (
+    <span aria-label="vegan meal" style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 800,
+      letterSpacing: "0.5px", textTransform: "uppercase", color: "#fff", background: P.celery,
+      borderRadius: 999, padding: "2px 8px", marginLeft: 8, verticalAlign: "middle", whiteSpace: "nowrap" }}>
+      vegan
+    </span>
+  );
 }
 
 function RecipeDetails({ meal, scale }) {
@@ -1181,9 +1284,17 @@ function RecipeDetails({ meal, scale }) {
       <div style={{ color: P.inkSoft, marginBottom: 8 }}>
         {meal.ing.map((ing) => {
           const scaled = { ...ing, q: ing.q * scale };
-          return `${formatQty(scaled.q, scaled.u)} ${itemLabel(scaled)}`.trim();
+          if (scaled.u === "") return recipeCount(scaled);
+          return `${formatQty(scaled.q, scaled.u, scaled.n)} ${scaled.n}`;
         }).join(", ")}
       </div>
+      {scale !== 1 && (
+        <div style={{ fontSize: 12, color: P.inkSoft, marginBottom: 8 }}>
+          Amounts above are scaled to your serving count. Where a step spells out a fixed
+          amount (a teaspoon of salt, a cup of water), that means the full four-serving
+          batch, so trim it to match.
+        </div>
+      )}
       <div style={{ fontWeight: 800, fontSize: 11, letterSpacing: "1px", textTransform: "uppercase", color: P.celery, marginBottom: 4 }}>
         Steps
       </div>
@@ -1209,6 +1320,11 @@ export default function SevenSuppers() {
   const [checked, setChecked] = useState({});
   const [copied, setCopied] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [shuffleTime, setShuffleTime] = useState(null); // null = any, 35 = 35 min or less
+  const [shuffleDiet, setShuffleDiet] = useState("all");
+  const [shuffleNoSoups, setShuffleNoSoups] = useState(false);
+  const [dragDay, setDragDay] = useState(null);
+  const [dragOverDay, setDragOverDay] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -1258,6 +1374,17 @@ export default function SevenSuppers() {
         }
       } catch (e) {
         // No saved store, stay store-free
+      }
+      try {
+        const result = await window.storage.get("seven-suppers-shuffle");
+        if (result && result.value) {
+          const saved = JSON.parse(result.value);
+          if (saved.time === 35) setShuffleTime(35);
+          if (SHUFFLE_DIETS.some((d) => d.id === saved.diet)) setShuffleDiet(saved.diet);
+          if (saved.noSoups === true) setShuffleNoSoups(true);
+        }
+      } catch (e) {
+        // No saved shuffle filter, draw from everything
       }
       setLoaded(true);
     })();
@@ -1318,6 +1445,17 @@ export default function SevenSuppers() {
     })();
   }, [store, loaded]);
 
+  useEffect(() => {
+    if (!loaded) return;
+    (async () => {
+      try {
+        await window.storage.set("seven-suppers-shuffle", JSON.stringify({ time: shuffleTime, diet: shuffleDiet, noSoups: shuffleNoSoups }));
+      } catch (e) {
+        // Storage unavailable
+      }
+    })();
+  }, [shuffleTime, shuffleDiet, shuffleNoSoups, loaded]);
+
   const activeStore = STORES.find((s) => s.id === store && s.searchUrl) || null;
 
   const groceries = useMemo(() => buildGroceries(week, servings), [week, servings]);
@@ -1342,7 +1480,15 @@ export default function SevenSuppers() {
     return MEALS.filter((m) => m.tags.includes(filter));
   }, [filter]);
 
+  // What Shuffle and Reroll draw from, per the shuffle filters
+  const shufflePool = useMemo(() => MEALS.filter((m) =>
+    (shuffleTime === null || m.time <= shuffleTime) &&
+    (shuffleDiet === "all" || m.tags.includes(shuffleDiet)) &&
+    (!shuffleNoSoups || !m.tags.includes("soup"))
+  ), [shuffleTime, shuffleDiet, shuffleNoSoups]);
+
   function assignMeal(mealId) {
+    if (week.includes(mealId)) return; // each meal at most once per week
     const next = [...week];
     if (selectedDay !== null) {
       next[selectedDay] = mealId;
@@ -1353,6 +1499,19 @@ export default function SevenSuppers() {
       next[empty] = mealId;
     }
     setWeek(next);
+  }
+
+  // Dragging a planned dinner onto another day swaps the two days' meals
+  // (dropping on an empty day just moves it). Locks travel with their meals.
+  function swapDays(from, to) {
+    if (from === null || from === to) return;
+    const nextWeek = [...week];
+    [nextWeek[from], nextWeek[to]] = [nextWeek[to], nextWeek[from]];
+    const nextLocks = [...locks];
+    [nextLocks[from], nextLocks[to]] = [nextLocks[to], nextLocks[from]];
+    setWeek(nextWeek);
+    setLocks(nextLocks);
+    setExpandedDay(null);
   }
 
   function clearDay(i) {
@@ -1374,11 +1533,16 @@ export default function SevenSuppers() {
     if (current.length > 0) setLastWeek(current);
     const kept = week.map((id, i) => (locks[i] && id ? id : null));
     const used = new Set(kept.filter(Boolean));
-    const pool = shuffleMeals().filter((m) => !used.has(m.id) && !avoid.has(m.id));
+    const candidates = shufflePool.filter((m) => !used.has(m.id));
+    // Variety memory first; when a narrow filter leaves too few fresh meals,
+    // top the pool up with last week's rather than leaving days empty
+    const fresh = shuffleMeals(candidates.filter((m) => !avoid.has(m.id)));
+    const repeats = shuffleMeals(candidates.filter((m) => avoid.has(m.id)));
+    const pool = [...fresh, ...repeats];
     const next = [...kept];
     let k = 0;
     for (let i = 0; i < 7; i++) {
-      if (!next[i]) next[i] = pool[k++].id;
+      if (!next[i] && k < pool.length) next[i] = pool[k++].id;
     }
     setWeek(next);
     setSelectedDay(null);
@@ -1528,7 +1692,7 @@ export default function SevenSuppers() {
       {view === "plan" && (
         <main style={{ maxWidth: 860, margin: "0 auto", padding: "16px" }}>
           {/* Week actions */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
             <button onClick={shuffleWeek}
               style={{ ...btnBase, background: P.cherry, color: "#fff", padding: "10px 16px", fontSize: 14 }}>
               Shuffle the whole week
@@ -1540,18 +1704,74 @@ export default function SevenSuppers() {
             </button>
           </div>
 
+          {/* Shuffle filters: what the shuffle (and Reroll) may draw from */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: P.inkSoft, marginRight: 2 }}>Shuffle from</span>
+            <button onClick={() => setShuffleTime(shuffleTime === 35 ? null : 35)}
+              aria-pressed={shuffleTime === 35}
+              style={{ ...btnBase, padding: "5px 11px", fontSize: 12,
+                background: shuffleTime === 35 ? P.ink : P.card,
+                color: shuffleTime === 35 ? "#fff" : P.inkSoft,
+                border: `1.5px solid ${shuffleTime === 35 ? P.ink : P.line}` }}>
+              35 min or less
+            </button>
+            <button onClick={() => setShuffleNoSoups(!shuffleNoSoups)}
+              aria-pressed={shuffleNoSoups}
+              style={{ ...btnBase, padding: "5px 11px", fontSize: 12,
+                background: shuffleNoSoups ? P.ink : P.card,
+                color: shuffleNoSoups ? "#fff" : P.inkSoft,
+                border: `1.5px solid ${shuffleNoSoups ? P.ink : P.line}` }}>
+              No soups
+            </button>
+            <span aria-hidden="true" style={{ color: P.line }}>|</span>
+            {SHUFFLE_DIETS.map((d) => (
+              <button key={d.id} onClick={() => setShuffleDiet(d.id)}
+                aria-pressed={shuffleDiet === d.id}
+                style={{ ...btnBase, padding: "5px 11px", fontSize: 12,
+                  background: shuffleDiet === d.id ? P.ink : P.card,
+                  color: shuffleDiet === d.id ? "#fff" : P.inkSoft,
+                  border: `1.5px solid ${shuffleDiet === d.id ? P.ink : P.line}` }}>
+                {d.label}
+              </button>
+            ))}
+            {shufflePool.length < 7 && (
+              <span style={{ fontSize: 12, color: P.cherry, fontWeight: 700 }}>
+                Only {shufflePool.length} dinners match, so a shuffle leaves some days empty.
+              </span>
+            )}
+          </div>
+
           {/* Week rail: order tickets */}
           <section aria-label="Your week" style={{ display: "grid", gap: 12, marginBottom: 24 }}>
             {DAYS.map((day, i) => {
               const meal = week[i] ? MEALS.find((m) => m.id === week[i]) : null;
               const isSelected = selectedDay === i;
               const isLocked = !!meal && locks[i];
+              const isDropTarget = dragDay !== null && dragOverDay === i && dragDay !== i;
               return (
                 <div key={day} className="ticket"
+                  draggable={!!meal}
+                  onDragStart={(e) => {
+                    setDragDay(i);
+                    try { e.dataTransfer.setData("text/plain", String(i)); e.dataTransfer.effectAllowed = "move"; } catch (err) { /* jsdom and older browsers */ }
+                  }}
+                  onDragEnd={() => { setDragDay(null); setDragOverDay(null); }}
+                  onDragOver={(e) => { if (dragDay !== null && dragDay !== i) { e.preventDefault(); setDragOverDay(i); } }}
+                  onDragLeave={() => { if (dragOverDay === i) setDragOverDay(null); }}
+                  onDrop={(e) => { e.preventDefault(); swapDays(dragDay, i); setDragDay(null); setDragOverDay(null); }}
                   style={{ background: P.card, borderRadius: 12, padding: "12px 14px",
-                    border: isSelected ? `2px solid ${P.cherry}` : `1.5px solid ${P.line}`,
-                    boxShadow: "0 1px 3px rgba(36,51,29,0.08)" }}>
+                    border: isDropTarget ? `2px dashed ${P.cherry}` : isSelected ? `2px solid ${P.cherry}` : `1.5px solid ${P.line}`,
+                    boxShadow: "0 1px 3px rgba(36,51,29,0.08)",
+                    opacity: dragDay === i ? 0.5 : 1,
+                    cursor: meal ? "grab" : "default" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                      {meal && (
+                        <span aria-hidden="true" title="Drag onto another day to swap the two dinners"
+                          style={{ color: P.line, fontSize: 18, lineHeight: 1, userSelect: "none", flexShrink: 0 }}>
+                          ⠿
+                        </span>
+                      )}
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: P.celery }}>
                         {day}
@@ -1563,6 +1783,7 @@ export default function SevenSuppers() {
                           <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 17, lineHeight: 1.25, display: "block" }}>
                             {meal.title}
                             <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: P.inkSoft, fontWeight: 700 }}> {" "}{meal.time} min</span>
+                            {meal.tags.includes("vegan") && <VeganChip />}
                           </span>
                           <span style={{ fontSize: 11, color: P.inkSoft, textDecoration: "underline" }}>
                             {expandedDay === i ? "Hide recipe" : "Show recipe"}
@@ -1576,6 +1797,7 @@ export default function SevenSuppers() {
                         </button>
                       )}
                     </div>
+                    </div>
                     <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                       {meal ? (
                         <button onClick={() => toggleLock(i)}
@@ -1587,7 +1809,7 @@ export default function SevenSuppers() {
                         </button>
                       ) : null}
                       {!isLocked && (
-                        <button onClick={() => setWeek(rerollDay(week, i, new Set(lastWeek)))} aria-label={`Randomize ${day}`}
+                        <button onClick={() => setWeek(rerollDay(week, i, new Set(lastWeek), shufflePool))} aria-label={`Randomize ${day}`}
                           style={{ ...btnBase, background: P.celerySoft, color: P.ink, padding: "8px 10px", fontSize: 13 }}>
                           Reroll
                         </button>
@@ -1640,14 +1862,17 @@ export default function SevenSuppers() {
             {filteredMeals.map((meal) => {
               const isOpen = expanded === meal.id;
               const inWeek = week.includes(meal.id);
+              const addable = !inWeek && week.includes(null);
               return (
                 <div key={meal.id}
                   style={{ background: P.card, borderRadius: 12, border: `1.5px solid ${P.line}`,
-                    padding: "12px 14px", boxShadow: "0 1px 2px rgba(36,51,29,0.06)" }}>
-                  <button onClick={() => (selectedDay !== null ? assignMeal(meal.id) : setExpanded(isOpen ? null : meal.id))}
+                    padding: "12px 14px", boxShadow: "0 1px 2px rgba(36,51,29,0.06)",
+                    opacity: inWeek ? 0.45 : 1 }}>
+                  <button onClick={() => (selectedDay !== null && !inWeek ? assignMeal(meal.id) : setExpanded(isOpen ? null : meal.id))}
                     style={{ ...btnBase, background: "transparent", padding: 0, textAlign: "left", width: "100%", color: P.ink }}>
                     <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, lineHeight: 1.3, display: "block" }}>
                       {meal.title}
+                      {meal.tags.includes("vegan") && <VeganChip />}
                     </span>
                     <span style={{ fontSize: 12, color: P.inkSoft, fontWeight: 700 }}>
                       {meal.time} min {inWeek ? " | On the menu this week" : ""}
@@ -1655,11 +1880,11 @@ export default function SevenSuppers() {
                   </button>
                   {isOpen && <RecipeDetails meal={meal} scale={scale} />}
                   {selectedDay === null && (
-                    <button onClick={() => assignMeal(meal.id)} disabled={!week.includes(null)}
+                    <button onClick={() => assignMeal(meal.id)} disabled={!addable}
                       style={{ ...btnBase, marginTop: 10, background: P.celerySoft, color: P.ink,
                         padding: "8px 12px", fontSize: 13, width: "100%",
-                        opacity: week.includes(null) ? 1 : 0.5, cursor: week.includes(null) ? "pointer" : "default" }}>
-                      {week.includes(null) ? "Add to week" : "Week is full"}
+                        opacity: addable ? 1 : 0.5, cursor: addable ? "pointer" : "default" }}>
+                      {inWeek ? "On the menu" : week.includes(null) ? "Add to week" : "Week is full"}
                     </button>
                   )}
                 </div>
@@ -1711,7 +1936,7 @@ export default function SevenSuppers() {
                 {groceries[c].map((ing) => {
                   const key = `${ing.n}|${ing.u}`;
                   const done = !!checked[key];
-                  const buy = c === "staples" ? null : buyPlan(ing);
+                  const line = groceryLine(ing, c === "staples");
                   return (
                     <div key={key} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", cursor: "pointer", flex: 1, minWidth: 0 }}>
@@ -1720,14 +1945,10 @@ export default function SevenSuppers() {
                           style={{ width: 18, height: 18, accentColor: P.cherry, flexShrink: 0 }} />
                         <span style={{ fontSize: 15, color: done ? P.inkSoft : P.ink,
                           textDecoration: done ? "line-through" : "none" }}>
-                          {buy ? (
+                          <strong>{line.qty}</strong> {line.name}
+                          {line.need && (
                             <>
-                              <strong>{buy}</strong> {ing.n}{" "}
-                              <span style={{ fontSize: 13, color: P.inkSoft }}>(need {formatQty(ing.q, ing.u)})</span>
-                            </>
-                          ) : (
-                            <>
-                              <strong>{formatQty(ing.q, ing.u)}</strong> {itemLabel(ing)}
+                              {" "}<span style={{ fontSize: 13, color: P.inkSoft }}>(need {line.need})</span>
                             </>
                           )}
                         </span>
