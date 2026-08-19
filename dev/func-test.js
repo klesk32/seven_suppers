@@ -1,8 +1,9 @@
 // Functional tests: shuffle variety, locks, staples, store links, discrete-unit
 // rounding, spice merging, thermometer doneness text in the printed recipe,
-// Sunday-first week, shuffle filters, vegan chips, catalog gray-out, and
-// drag-to-swap day reordering
-const VERSION = "0.5.0";
+// Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
+// drag-to-swap day reordering, share-link slugs, diet profiles, and
+// heart-healthy weekly quotas
+const VERSION = "0.7.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -17,10 +18,10 @@ const check = (label, ok, extra = "") => {
   if (!ok) fails++;
 };
 
-function boot(seed) {
+function boot(seed, url = "http://localhost/") {
   return new JSDOM(html, {
     runScripts: "dangerously",
-    url: "http://localhost/",
+    url,
     pretendToBeVisual: true,
     beforeParse(window) {
       if (seed) Object.entries(seed).forEach(([k, v]) => window.localStorage.setItem(k, v));
@@ -158,6 +159,92 @@ function boot(seed) {
   await wait(200);
   const dweek2 = JSON.parse(d.window.localStorage.getItem("seven-suppers-week"));
   check("drag onto an empty day moves the meal", dweek2[1] === null && dweek2[4] === "chickpea-curry");
+
+  // Instance E: share links. The address bar of instance A holds the slug for
+  // its current plan; booting a fresh instance from that URL must adopt the
+  // same week and persist it, even with different state already saved.
+  const ahash = a.window.location.hash;
+  check("address bar carries a compact slug", /^#[A-Za-z0-9_-]{16}$/.test(ahash), `(${ahash})`);
+  const e = boot({
+    "seven-suppers-week": JSON.stringify(["omelet-night", null, null, null, null, null, null]),
+    "seven-suppers-servings": "5",
+  }, "http://localhost/" + ahash);
+  await wait(600);
+  const eweek = JSON.parse(e.window.localStorage.getItem("seven-suppers-week"));
+  check("opening a link adopts its week over saved state", JSON.stringify(eweek) === JSON.stringify(aweek()));
+  check("opening a link adopts its servings", e.window.localStorage.getItem("seven-suppers-servings") === "3");
+  const ebtn = [...e.window.document.querySelectorAll("button")].find((x) => x.textContent.trim() === "Copy week link");
+  check("copy week link button present and enabled", !!ebtn && !ebtn.disabled);
+
+  // Instance F: a hand-built slug (format 1, catalog 0.15.0, 2 servings,
+  // meals 0 and 1, an out-of-range index, then empty days) degrades gracefully
+  const slug = Buffer.from([1, 0, 15, 0, 2, 0, 1, 200, 255, 255, 255, 255]).toString("base64url");
+  const f = boot(null, "http://localhost/#" + slug);
+  await wait(600);
+  const fweek = JSON.parse(f.window.localStorage.getItem("seven-suppers-week"));
+  check("slug indexes resolve in catalog order",
+    fweek[0] === "sheetpan-lemon-chicken" && fweek[1] === "turkey-tacos");
+  check("out-of-range and empty slots decode to empty days", fweek.slice(2).every((id) => id === null));
+  check("slug servings apply", f.window.localStorage.getItem("seven-suppers-servings") === "2");
+
+  // Profiles: a fresh device defaults to heart healthy; a device with a saved
+  // week from before profiles existed is inferred as gout friendly
+  check("fresh device defaults to heart healthy", a.window.localStorage.getItem("seven-suppers-profile") === "heart");
+  check("pre-profile device with a saved week infers gout", b.window.localStorage.getItem("seven-suppers-profile") === "gout");
+
+  // Instance G: heart-healthy quotas shape the shuffle: aim for 2 fish, never
+  // more than 1 red-meat dinner
+  const FISH_MEALS = new Set([
+    "sheetpan-lemon-salmon", "honey-garlic-salmon", "fish-tacos", "tuna-patties",
+    "baked-fish-sticks", "tilapia-foil-packets", "tomato-braised-cod", "teriyaki-salmon-bowls",
+  ]);
+  const RED_MEAT_MEALS = new Set([
+    "beef-tacos", "steak-fajitas", "spaghetti-beef-marinara", "beef-bean-chili",
+    "sheetpan-pork-tenderloin", "ginger-pork-rice-bowls", "skillet-pork-chops",
+  ]);
+  const g = boot();
+  const gdoc = g.window.document;
+  const gbtn = (label) => [...gdoc.querySelectorAll("button")].find((x) => x.textContent.trim() === label);
+  const gweek = () => JSON.parse(g.window.localStorage.getItem("seven-suppers-week") || "[]");
+  await wait(600);
+  let quotaOk = true;
+  for (let round = 0; round < 5; round++) {
+    gbtn("Shuffle the whole week").click();
+    await wait(250);
+    const w = gweek();
+    const fishN = w.filter((id) => FISH_MEALS.has(id)).length;
+    const redN = w.filter((id) => RED_MEAT_MEALS.has(id)).length;
+    if (fishN < 2 || redN > 1) { quotaOk = false; break; }
+  }
+  check("heart shuffle hits 2 fish and caps red meat at 1, five rounds running", quotaOk);
+
+  // Switching to gout friendly keeps beef, pork, and fish out of the shuffle
+  gbtn("Gout friendly").click();
+  await wait(100);
+  gbtn("Shuffle the whole week").click();
+  await wait(250);
+  const gw = gweek();
+  check("gout shuffle draws no beef, pork, or fish",
+    gw.filter(Boolean).length === 7 && gw.every((id) => !FISH_MEALS.has(id) && !RED_MEAT_MEALS.has(id)));
+  check("profile choice persists", g.window.localStorage.getItem("seven-suppers-profile") === "gout");
+
+  // Instance H: a week that breaks the rules is shown honestly: an off-profile
+  // meal gets a marker, a second red-meat dinner gets a quota note
+  const h = boot({
+    "seven-suppers-week": JSON.stringify([
+      "beef-tacos", "skillet-pork-chops", null, null, null, null, null,
+    ]),
+    "seven-suppers-profile": "heart",
+  });
+  const hdoc = h.window.document;
+  await wait(600);
+  const htext = hdoc.getElementById("root").textContent;
+  check("hand-picking past a ceiling warns", htext.includes("Heart healthy aims for at most 1 red-meat dinner a week; this week has 2."));
+  check("in-profile meals carry no outside marker", !hdoc.querySelector('[aria-label="outside your eating style"]'));
+  [...hdoc.querySelectorAll("button")].find((x) => x.textContent.trim() === "Vegan").click();
+  await wait(200);
+  check("off-profile meals are marked after a profile switch",
+    hdoc.querySelectorAll('[aria-label="outside your eating style"]').length === 2);
 
   console.log(fails === 0 ? "\nAll functional checks passed." : `\n${fails} failures.`);
   process.exit(fails === 0 ? 0 : 1);

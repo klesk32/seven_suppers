@@ -1,6 +1,23 @@
 # Seven Suppers - Specification
 
-Version: 0.14.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.16.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.16.0 (diet profiles, weekly quotas, and 15 beef, pork, and fish recipes):
+
+- The app outgrew its single household: an "Eating style" profile row now scopes the catalog, Shuffle, and Reroll. Six profiles: Heart healthy (default for fresh devices), All in, Gout friendly, Pescatarian, Vegetarian, Vegan. Profiles are device-local and never part of a share link; a link opened under a different profile still shows its week faithfully, with an "outside your style" marker on meals the local profile would not have drawn.
+- Migration: a device holding a saved week from before profiles existed is inferred as Gout friendly (that is what the whole app enforced when the week was saved); only genuinely fresh devices get the Heart healthy default.
+- Weekly quotas (`PROFILE_QUOTAS`): Heart healthy shapes the week to AHA-style ratios: a best-effort target of 2 fish dinners and a hard ceiling of 1 red-meat (beef or pork) dinner. Ceilings are never exceeded by a random draw: locked and hand-picked meals count against them first, and Reroll refuses replacements that would breach one. Targets yield when the shuffle chip filters make them impossible. Hand-picking past a ceiling warns in the filter row but never blocks, and locks are always honored.
+- 15 new recipes (catalog 42 to 57): 8 fish (sheet-pan lemon salmon, honey-garlic salmon, baked fish tacos, tuna patties, fish sticks with sweet potato fries, tilapia foil packets, tomato-braised cod with white beans, teriyaki salmon bowls), 4 beef (classic beef tacos, sheet-pan steak fajitas, spaghetti with beefy hidden-veggie marinara, beef and bean chili), 3 pork (sheet-pan pork tenderloin with apples, ginger pork rice bowls, skillet pork chops). All lean cuts, written to the house step style, with USDA doneness: 145 F for fish and for whole beef and pork cuts (plus a rest), 160 F for ground beef and pork, thermometer always; canned tuna is precooked and exempt.
+- New tags `beef`, `pork`, `fish`. The validator now scopes the dietary rules: organ meats, high-purine seafood (shellfish, anchovies, sardines), processed meats (bacon, sausage, ham, deli, hot dogs), lamb, veal, and Worcestershire stay banned everywhere; beef, pork, and fish are legal only in meals carrying the matching tag (and the tag must be earned by a matching protein ingredient, so profile filters and quotas can trust it); meals without those tags still satisfy the original gout rules. Pool checks guarantee the vegetarian, vegan, and gout profiles can each fill a 7-day week and that the fish target is reachable.
+- Catalog chips gained Beef, Pork, and Fish, shown only when the active profile contains such meals; a profile switch that empties the selected chip drops it back to All.
+- All 15 new recipes were verified against reputable published analogs (Budget Bytes, The Kitchn, Skinnytaste, Once Upon a Chef, America's Test Kitchen, RecipeTin Eats, Gimme Some Oven, Spend with Pennies, USDA temperature charts), the same pass 0.8.1 and 0.10.0 got. 9 of 15 needed no change; 6 fixes were applied: oil for browning lean ground beef in the tacos (packet directions assume nonstick and fattier beef), a full tablespoon of chili powder and half the broth so the chili actually thickens in its 15-minute simmer, a silverskin-trimming step and salt in the rub plus an honest 50 minutes for the pork tenderloin, an honest 30 minutes for the ginger pork bowls since they cook rice from raw (dropping their `fast` tag), thick-cut chops named in the ingredient with a thin-chop time warning and longer covered pea steaming, and the honey-garlic salmon's broccoli moved from "tuck into the skillet gaps" (it does not fit and comes out raw) to a parallel covered microwave steam.
+
+0.15.0 (share links):
+
+- The current plan now lives in the URL hash as a compact 16-character base64url slug packing 12 bytes: a format byte, the three `APP_VERSION` numbers, the servings count, and 7 slot bytes indexing into the catalog (255 = empty day). The address bar updates as the plan changes (`history.replaceState`), so sharing the week is copying the URL; a "Copy week link" button next to Shuffle and Clear does exactly that.
+- Opening a link adopts its week and servings as the device's current plan, overwriting saved state; locks reset since saved locks belong to the replaced plan. Grocery checkboxes, locks, shuffle filters, and variety memory stay device-local.
+- Forward compatibility: every meal gained a `v` field recording the version it was added in (the original 20 are `0.1.0`, the 0.10.0 expansion `0.10.0`). A decoder on a newer catalog rebuilds an old link's index space by filtering to meals with `v` at or below the link's version, so old links keep resolving as the catalog grows. New meals may land anywhere in the array with a higher `v`. The invariant that keeps this true, enforced by convention and documented in the validator: once a version ships, the meals it could see are never removed or reordered relative to each other. The validator checks that every meal has a well-formed `v` no newer than `APP_VERSION`, that version components fit one byte, and that the catalog stays under 255 meals. Links pin the week's composition, not recipe text: a link made before a recipe rebuild shows the current recipe.
+- Unknown or out-of-range slot bytes decode to empty days, and an unparseable hash falls back to saved state.
 
 0.14.0 (scaling honesty, prompted by a real cooked week):
 
@@ -37,18 +54,19 @@ Platform: Single-file React artifact (Claude Artifacts)
 
 ## Purpose
 
-A weekly dinner planner for a household managing gout, cooking with and for kids, at a beginner skill level. The app's single job: fill 7 dinner slots quickly and produce a combined grocery list.
+A weekly dinner planner born in a household managing gout, cooking with and for kids, at a beginner skill level. The app's single job: fill 7 dinner slots quickly and produce a combined grocery list. Since 0.16.0 an "Eating style" profile scopes the catalog per device (Heart healthy, All in, Gout friendly, Pescatarian, Vegetarian, Vegan), so other households can use the same catalog without inheriting the original one's medical constraint.
 
 ## Constraints and Dietary Rules
 
-All catalog meals must satisfy every rule below:
+Rules 2 through 5 apply to every catalog meal. Rule 1 defines the Gout friendly profile and applies to every meal not tagged `beef`, `pork`, or `fish`; those three tags exist only for meals that earn them with a matching protein ingredient, and are banned from the gout pool wholesale. Banned everywhere, in any profile: organ meats, shellfish, anchovies, sardines, processed meats (bacon, sausage, ham, deli meat, hot dogs), lamb, veal, and Worcestershire sauce (contains anchovies).
 
-1. Gout-friendly (low purine)
+1. Gout-friendly (low purine), the rule set the whole catalog satisfied before 0.16.0
    - No organ meats
    - No shellfish, anchovies, sardines, or other high-purine seafood
-   - No red meat (fish excluded entirely in v0.1.0 as the simplest safe default; moderate-purine fish may be added later as an opt-in)
+   - No red meat, no fish (moderate-purine fish as a gout-profile opt-in remains a possible future addition)
    - Allowed protein bases: chicken, turkey, eggs, low-fat dairy, beans, tofu
    - Chicken dishes use boneless thighs rather than breasts (household preference; the tenders keep tenderloins for the format)
+   - Beef, pork, and fish meals (0.16.0) stay lean and heart-leaning: lean ground beef, flank steak, tenderloin, chops, salmon, cod, tilapia, canned tuna
 2. Kid-friendly: familiar formats (tacos, pizza, pasta, nuggets, quesadillas), build-your-own options where possible
 3. Beginner-friendly, written for a clueless but instruction-oriented cook (as of 0.5.0): 5 to 7 numbered steps per recipe that assume no technique knowledge. Every step names the pan and heat level, gives times and plain-language cut sizes ("coin-size", "as thick as your finger"), and cooking ends with a doneness check. Wash-hands reminders follow raw-meat handling, and every recipe lists all the fat it needs (no assumed pantry oil). Common techniques only, most meals 40 minutes or less
    - Poultry doneness is always an instant-read thermometer reading of 165 F (0.10.0), never a color or cut-open check. This covers chicken pieces, ground turkey cooked in crumbles (push into a mound, then probe), and turkey meatballs and patties. Thigh recipes add that 175 F is fine and more tender. Non-poultry doneness still uses plain visual and texture cues (a fork slides in with no resistance, whites no longer see-through)
@@ -63,8 +81,9 @@ All catalog meals must satisfy every rule below:
 |---|---|---|
 | `id` | string | Kebab-case, unique |
 | `title` | string | Display name |
+| `v` | string | Version the meal was added in (0.15.0), e.g. `"0.10.0"`; anchors share-link index reconstruction |
 | `time` | number | Total minutes |
-| `tags` | string[] | Subset of: `chicken`, `turkey`, `veggie`, `vegan`, `pasta`, `soup`, `fast` (fast = 25 min or less; vegan = no meat, eggs, dairy, or honey, and always paired with `veggie`) |
+| `tags` | string[] | Subset of: `chicken`, `turkey`, `beef`, `pork`, `fish`, `veggie`, `vegan`, `pasta`, `soup`, `fast` (fast = 25 min or less; vegan = no meat, eggs, dairy, or honey, and always paired with `veggie`; beef/pork/fish must be earned by a matching protein ingredient) |
 | `ing` | Ingredient[] | See below |
 | `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues |
 
@@ -85,16 +104,18 @@ Array of 7 slots (Sunday through Saturday as of 0.11.0), each holding a meal `id
 
 ## Catalog
 
-42 meals as of 0.10.0: 16 chicken, 8 turkey, 18 veggie (12 of them vegan), 8 pasta, 8 soup, 15 fast. Enough that a week avoiding last week's seven still draws from 35 candidates.
+57 meals as of 0.16.0: 16 chicken, 8 turkey, 4 beef, 3 pork, 8 fish, 18 veggie (12 of them vegan), 9 pasta, 9 soup, 18 fast. Every profile pool can fill a week avoiding last week's seven.
 
 Invariants enforced by `dev/validate.mjs`:
 
 - Unique meal ids; 5 to 7 steps each; known tags and categories only
 - One canonical unit and one canonical category per ingredient name, so grocery lines always merge
 - `fast` tag if and only if the meal is 25 minutes or less; `vegan` implies `veggie` and no animal products
-- No banned ingredients (red meat, shellfish, organ meats, anchovies, Worcestershire sauce, which contains anchovies)
-- Every meal with a poultry protein contains an instant-read thermometer 165 F check, and no meal contains a pinkness check
+- Globally banned ingredients in no meal (organ meats, shellfish, anchovies, sardines, processed meats, lamb, veal, Worcestershire); beef, pork, and fish only in meals carrying the matching tag, and each such tag earned by a matching protein ingredient; meals without those tags contain no red meat or fish
+- Doneness by instant-read thermometer, never a pinkness check: 165 F for all poultry, 160 F for ground beef and pork, 145 F for whole beef and pork cuts (with a rest step) and for fish; canned fish is precooked and exempt
+- The vegetarian, vegan, and gout profile pools each hold at least 7 meals, and the fish pool covers the heart-healthy weekly target of 2
 - Every non-staple ingredient is shoppable: sold by count or weight, in a discrete unit, or covered by a `PACKS` rule
+- Share-link fields: every meal has a well-formed added-in version no newer than `APP_VERSION`, and the catalog stays under 255 meals
 
 ## Features
 

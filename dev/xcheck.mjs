@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -84,6 +84,17 @@ const ALIASES = {
   "Dijon mustard": ["dijon", "mustard"],
   "bell pepper": ["pepper"],
   "rolled oats": ["oats"],
+  "salmon fillets": ["salmon"],
+  "cod fillets": ["cod"],
+  "tilapia fillets": ["tilapia"],
+  "canned tuna": ["tuna"],
+  "lean ground beef": ["beef"],
+  "flank steak": ["steak"],
+  "pork tenderloin": ["pork"],
+  "thick-cut boneless pork chops": ["chops"],
+  "ground pork": ["pork"],
+  "apples": ["apple"],
+  "smoked paprika": ["smoked paprika"],
 };
 
 let notes = 0;

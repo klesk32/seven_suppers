@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a gout-friendly, kid-friendly weekly dinner planner
-const APP_VERSION = "0.14.0";
+const APP_VERSION = "0.16.0";
 
 // Every recipe in the catalog is written for this many servings
 const BASE_SERVINGS = 4;
@@ -35,10 +35,53 @@ const SHUFFLE_DIETS = [
   { id: "vegan", label: "Vegan only" },
 ];
 
+// House diet profiles: which meals the catalog, Shuffle, and Reroll may draw
+// from. Device-local and never part of a share link (links pin composition,
+// not diet). "heart" is the default for fresh devices; a device with a saved
+// week from before profiles existed is inferred as "gout", since that is what
+// the whole app enforced when that week was saved.
+const PROFILES = [
+  { id: "heart", label: "Heart healthy", hint: "The whole catalog, aiming for fish twice a week and red meat at most once" },
+  { id: "all", label: "All in", hint: "The whole catalog, no weekly ratios" },
+  { id: "gout", label: "Gout friendly", hint: "No red meat or seafood: poultry, eggs, beans, and tofu" },
+  { id: "pesc", label: "Pescatarian", hint: "Fish plus every meat-free meal" },
+  { id: "veggie", label: "Vegetarian", hint: "Meat-free meals only" },
+  { id: "vegan", label: "Vegan", hint: "No animal products at all" },
+];
+const DEFAULT_PROFILE = "heart";
+
+const RED_MEAT_TAGS = new Set(["beef", "pork"]);
+const GOUT_EXCLUDED_TAGS = new Set(["beef", "pork", "fish"]);
+
+const PROFILE_ALLOWS = {
+  heart: () => true,
+  all: () => true,
+  gout: (m) => !m.tags.some((t) => GOUT_EXCLUDED_TAGS.has(t)),
+  pesc: (m) => m.tags.includes("veggie") || m.tags.includes("fish"),
+  veggie: (m) => m.tags.includes("veggie"),
+  vegan: (m) => m.tags.includes("vegan"),
+};
+
+function profileAllows(profileId, meal) {
+  return (PROFILE_ALLOWS[profileId] || PROFILE_ALLOWS[DEFAULT_PROFILE])(meal);
+}
+
+// Weekly composition quotas, per profile. Ceilings are hard: Shuffle and
+// Reroll never draw past them (locked and hand-picked meals count against
+// them first, and hand-picking past one warns rather than blocks). Targets
+// are best effort: Shuffle tries to hit them but yields when the filtered
+// pool cannot, and Reroll ignores them.
+const PROFILE_QUOTAS = {
+  heart: {
+    ceilings: [{ label: "red-meat dinner", test: (m) => m.tags.some((t) => RED_MEAT_TAGS.has(t)), max: 1 }],
+    targets: [{ label: "fish dinner", test: (m) => m.tags.includes("fish"), want: 2 }],
+  },
+};
+
 // Categories: produce, protein, dairy, grains, pantry
 const MEALS = [
   {
-    id: "sheetpan-lemon-chicken", title: "Sheet-Pan Lemon Chicken and Potatoes", time: 40, tags: ["chicken"],
+    id: "sheetpan-lemon-chicken", v: "0.1.0", title: "Sheet-Pan Lemon Chicken and Potatoes", time: 40, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -59,7 +102,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-tacos", title: "Turkey Taco Night", time: 25, tags: ["turkey", "fast"],
+    id: "turkey-tacos", v: "0.1.0", title: "Turkey Taco Night", time: 25, tags: ["turkey", "fast"],
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "taco seasoning", q: 1, u: "packet", c: "pantry" },
@@ -80,7 +123,7 @@ const MEALS = [
     ],
   },
   {
-    id: "veggie-fried-rice", title: "Veggie Fried Rice with Eggs", time: 20, tags: ["veggie", "fast"],
+    id: "veggie-fried-rice", v: "0.1.0", title: "Veggie Fried Rice with Eggs", time: 20, tags: ["veggie", "fast"],
     ing: [
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
       { n: "eggs", q: 4, u: "", c: "dairy" },
@@ -100,7 +143,7 @@ const MEALS = [
     ],
   },
   {
-    id: "creamy-tomato-pasta", title: "Creamy Tomato Pasta with Hidden Veggies", time: 30, tags: ["veggie", "pasta"],
+    id: "creamy-tomato-pasta", v: "0.1.0", title: "Creamy Tomato Pasta with Hidden Veggies", time: 30, tags: ["veggie", "pasta"],
     ing: [
       { n: "penne pasta", q: 12, u: "oz", c: "grains" },
       { n: "marinara sauce", q: 1, u: "jar", c: "pantry" },
@@ -120,7 +163,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-tenders", title: "Baked Chicken Tenders and Sweet Potato Fries", time: 35, tags: ["chicken"],
+    id: "chicken-tenders", v: "0.1.0", title: "Baked Chicken Tenders and Sweet Potato Fries", time: 35, tags: ["chicken"],
     ing: [
       { n: "chicken tenderloins", q: 1.25, u: "lb", c: "protein" },
       { n: "sweet potatoes", q: 2, u: "", c: "produce" },
@@ -141,7 +184,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chickpea-curry", title: "Mild Chickpea Coconut Curry", time: 25, tags: ["veggie", "vegan", "fast"],
+    id: "chickpea-curry", v: "0.1.0", title: "Mild Chickpea Coconut Curry", time: 25, tags: ["veggie", "vegan", "fast"],
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
@@ -166,7 +209,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-noodle-soup", title: "Easy Chicken Noodle Soup", time: 35, tags: ["chicken", "soup"],
+    id: "chicken-noodle-soup", v: "0.1.0", title: "Easy Chicken Noodle Soup", time: 35, tags: ["chicken", "soup"],
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "carrots", q: 3, u: "", c: "produce" },
@@ -188,7 +231,7 @@ const MEALS = [
     ],
   },
   {
-    id: "breakfast-burritos", title: "Egg and Black Bean Breakfast Burritos", time: 20, tags: ["veggie", "fast"],
+    id: "breakfast-burritos", v: "0.1.0", title: "Egg and Black Bean Breakfast Burritos", time: 20, tags: ["veggie", "fast"],
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -211,7 +254,7 @@ const MEALS = [
     ],
   },
   {
-    id: "honey-garlic-stirfry", title: "Honey-Garlic Chicken Stir-Fry", time: 25, tags: ["chicken", "fast"],
+    id: "honey-garlic-stirfry", v: "0.1.0", title: "Honey-Garlic Chicken Stir-Fry", time: 25, tags: ["chicken", "fast"],
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "frozen stir-fry vegetables", q: 1, u: "bag", c: "produce" },
@@ -232,7 +275,7 @@ const MEALS = [
     ],
   },
   {
-    id: "veggie-primavera", title: "Veggie Primavera Pasta", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
+    id: "veggie-primavera", v: "0.1.0", title: "Veggie Primavera Pasta", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
     ing: [
       { n: "whole wheat penne", q: 12, u: "oz", c: "grains" },
       { n: "zucchini", q: 1, u: "", c: "produce" },
@@ -253,7 +296,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-meatballs", title: "Turkey Meatballs with Spaghetti", time: 35, tags: ["turkey", "pasta"],
+    id: "turkey-meatballs", v: "0.1.0", title: "Turkey Meatballs with Spaghetti", time: 35, tags: ["turkey", "pasta"],
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
@@ -275,7 +318,7 @@ const MEALS = [
     ],
   },
   {
-    id: "omelet-night", title: "Veggie Omelet Night with Toast", time: 20, tags: ["veggie", "fast"],
+    id: "omelet-night", v: "0.1.0", title: "Veggie Omelet Night with Toast", time: 20, tags: ["veggie", "fast"],
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
       { n: "bell pepper", q: 1, u: "", c: "produce" },
@@ -295,7 +338,7 @@ const MEALS = [
     ],
   },
   {
-    id: "fajita-bowls", title: "Chicken Fajita Bowls", time: 30, tags: ["chicken"],
+    id: "fajita-bowls", v: "0.1.0", title: "Chicken Fajita Bowls", time: 30, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "bell pepper", q: 2, u: "", c: "produce" },
@@ -317,7 +360,7 @@ const MEALS = [
     ],
   },
   {
-    id: "veggie-minestrone", title: "Weeknight Vegetable Minestrone", time: 35, tags: ["veggie", "vegan", "soup"],
+    id: "veggie-minestrone", v: "0.1.0", title: "Weeknight Vegetable Minestrone", time: 35, tags: ["veggie", "vegan", "soup"],
     ing: [
       { n: "canned cannellini beans", q: 1, u: "can", c: "pantry" },
       { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
@@ -338,7 +381,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-bean-chili", title: "Turkey and White Bean Chili", time: 35, tags: ["turkey", "soup"],
+    id: "turkey-bean-chili", v: "0.1.0", title: "Turkey and White Bean Chili", time: 35, tags: ["turkey", "soup"],
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "canned cannellini beans", q: 2, u: "can", c: "pantry" },
@@ -361,7 +404,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-kebab-plates", title: "Oven Chicken and Veggie Kebab Plates", time: 35, tags: ["chicken"],
+    id: "chicken-kebab-plates", v: "0.1.0", title: "Oven Chicken and Veggie Kebab Plates", time: 35, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "bell pepper", q: 2, u: "", c: "produce" },
@@ -383,7 +426,7 @@ const MEALS = [
     ],
   },
   {
-    id: "tofu-nuggets", title: "Crispy Tofu Nuggets with Rice and Cucumbers", time: 30, tags: ["veggie", "vegan"],
+    id: "tofu-nuggets", v: "0.1.0", title: "Crispy Tofu Nuggets with Rice and Cucumbers", time: 30, tags: ["veggie", "vegan"],
     ing: [
       { n: "extra-firm tofu", q: 1, u: "block", c: "protein" },
       { n: "cornstarch", q: 3, u: "tbsp", c: "pantry" },
@@ -405,7 +448,7 @@ const MEALS = [
     ],
   },
   {
-    id: "sweet-potato-bar", title: "Loaded Sweet Potato Bar", time: 50, tags: ["veggie", "vegan"],
+    id: "sweet-potato-bar", v: "0.1.0", title: "Loaded Sweet Potato Bar", time: 50, tags: ["veggie", "vegan"],
     ing: [
       { n: "sweet potatoes", q: 4, u: "", c: "produce" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -425,7 +468,7 @@ const MEALS = [
     ],
   },
   {
-    id: "pesto-pasta-peas", title: "Pesto Pasta with Peas and Chicken", time: 25, tags: ["chicken", "pasta", "fast"],
+    id: "pesto-pasta-peas", v: "0.1.0", title: "Pesto Pasta with Peas and Chicken", time: 25, tags: ["chicken", "pasta", "fast"],
     ing: [
       { n: "rotini pasta", q: 12, u: "oz", c: "grains" },
       { n: "basil pesto", q: 1, u: "jar", c: "pantry" },
@@ -445,7 +488,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-burgers", title: "Turkey Burgers with Cucumber Salad", time: 25, tags: ["turkey", "fast"],
+    id: "turkey-burgers", v: "0.1.0", title: "Turkey Burgers with Cucumber Salad", time: 25, tags: ["turkey", "fast"],
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
       { n: "whole wheat burger buns", q: 4, u: "", c: "grains" },
@@ -467,7 +510,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-shawarma-bowls", title: "Sheet-Pan Chicken Shawarma Bowls", time: 40, tags: ["chicken"],
+    id: "chicken-shawarma-bowls", v: "0.10.0", title: "Sheet-Pan Chicken Shawarma Bowls", time: 40, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "canned chickpeas", q: 1, u: "can", c: "pantry" },
@@ -491,7 +534,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-tortilla-soup", title: "Chicken Tortilla Soup", time: 35, tags: ["chicken", "soup"],
+    id: "chicken-tortilla-soup", v: "0.10.0", title: "Chicken Tortilla Soup", time: 35, tags: ["chicken", "soup"],
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "low-sodium chicken broth", q: 6, u: "cup", c: "pantry" },
@@ -517,7 +560,7 @@ const MEALS = [
     ],
   },
   {
-    id: "teriyaki-chicken-bowls", title: "Teriyaki Chicken Rice Bowls", time: 25, tags: ["chicken", "fast"],
+    id: "teriyaki-chicken-bowls", v: "0.10.0", title: "Teriyaki Chicken Rice Bowls", time: 25, tags: ["chicken", "fast"],
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
@@ -541,7 +584,7 @@ const MEALS = [
     ],
   },
   {
-    id: "bbq-chicken-sheetpan", title: "Sheet-Pan BBQ Chicken and Potatoes", time: 45, tags: ["chicken"],
+    id: "bbq-chicken-sheetpan", v: "0.10.0", title: "Sheet-Pan BBQ Chicken and Potatoes", time: 45, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -562,7 +605,7 @@ const MEALS = [
     ],
   },
   {
-    id: "sesame-noodles-chicken", title: "Sesame Noodles with Chicken and Cucumber", time: 25, tags: ["chicken", "pasta", "fast"],
+    id: "sesame-noodles-chicken", v: "0.10.0", title: "Sesame Noodles with Chicken and Cucumber", time: 25, tags: ["chicken", "pasta", "fast"],
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
@@ -586,7 +629,7 @@ const MEALS = [
     ],
   },
   {
-    id: "lemon-orzo-chicken-soup", title: "Lemon Orzo Chicken Soup", time: 35, tags: ["chicken", "soup"],
+    id: "lemon-orzo-chicken-soup", v: "0.10.0", title: "Lemon Orzo Chicken Soup", time: 35, tags: ["chicken", "soup"],
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "orzo", q: 1, u: "cup", c: "grains" },
@@ -609,7 +652,7 @@ const MEALS = [
     ],
   },
   {
-    id: "honey-mustard-chicken", title: "Honey-Mustard Chicken with Green Beans", time: 40, tags: ["chicken"],
+    id: "honey-mustard-chicken", v: "0.10.0", title: "Honey-Mustard Chicken with Green Beans", time: 40, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -630,7 +673,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-enchilada-skillet", title: "Chicken Enchilada Skillet", time: 30, tags: ["chicken"],
+    id: "chicken-enchilada-skillet", v: "0.10.0", title: "Chicken Enchilada Skillet", time: 30, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "small corn tortillas", q: 8, u: "", c: "grains" },
@@ -653,7 +696,7 @@ const MEALS = [
     ],
   },
   {
-    id: "coconut-butter-chicken", title: "Mild Coconut Butter Chicken", time: 35, tags: ["chicken"],
+    id: "coconut-butter-chicken", v: "0.10.0", title: "Mild Coconut Butter Chicken", time: 35, tags: ["chicken"],
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
@@ -677,7 +720,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-sloppy-joes", title: "Turkey Sloppy Joes", time: 25, tags: ["turkey", "fast"],
+    id: "turkey-sloppy-joes", v: "0.10.0", title: "Turkey Sloppy Joes", time: 25, tags: ["turkey", "fast"],
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
       { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
@@ -701,7 +744,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-stuffed-peppers", title: "Turkey and Rice Stuffed Peppers", time: 50, tags: ["turkey"],
+    id: "turkey-stuffed-peppers", v: "0.10.0", title: "Turkey and Rice Stuffed Peppers", time: 50, tags: ["turkey"],
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "bell pepper", q: 4, u: "", c: "produce" },
@@ -725,7 +768,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-meatball-soup", title: "Turkey Meatball and Orzo Soup", time: 40, tags: ["turkey", "soup"],
+    id: "turkey-meatball-soup", v: "0.10.0", title: "Turkey Meatball and Orzo Soup", time: 40, tags: ["turkey", "soup"],
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "breadcrumbs", q: 0.5, u: "cup", c: "pantry" },
@@ -750,7 +793,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-egg-roll-bowls", title: "Turkey Egg Roll Bowls", time: 25, tags: ["turkey", "fast"],
+    id: "turkey-egg-roll-bowls", v: "0.10.0", title: "Turkey Egg Roll Bowls", time: 25, tags: ["turkey", "fast"],
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
       { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
@@ -773,7 +816,7 @@ const MEALS = [
     ],
   },
   {
-    id: "red-lentil-soup", title: "Red Lentil and Coconut Soup", time: 35, tags: ["veggie", "vegan", "soup"],
+    id: "red-lentil-soup", v: "0.10.0", title: "Red Lentil and Coconut Soup", time: 35, tags: ["veggie", "vegan", "soup"],
     ing: [
       { n: "red lentils", q: 1.5, u: "cup", c: "pantry" },
       { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
@@ -797,7 +840,7 @@ const MEALS = [
     ],
   },
   {
-    id: "peanut-noodles-tofu", title: "Peanut Noodles with Tofu and Edamame", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
+    id: "peanut-noodles-tofu", v: "0.10.0", title: "Peanut Noodles with Tofu and Edamame", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
       { n: "extra-firm tofu", q: 1, u: "block", c: "protein" },
@@ -824,7 +867,7 @@ const MEALS = [
     ],
   },
   {
-    id: "black-bean-burgers", title: "Black Bean Burgers with Oven Fries", time: 50, tags: ["veggie", "vegan"],
+    id: "black-bean-burgers", v: "0.10.0", title: "Black Bean Burgers with Oven Fries", time: 50, tags: ["veggie", "vegan"],
     ing: [
       { n: "canned black beans", q: 2, u: "can", c: "pantry" },
       { n: "rolled oats", q: 1, u: "cup", c: "grains" },
@@ -850,7 +893,7 @@ const MEALS = [
     ],
   },
   {
-    id: "shakshuka", title: "Skillet Eggs in Spiced Tomato Sauce", time: 30, tags: ["veggie"],
+    id: "shakshuka", v: "0.10.0", title: "Skillet Eggs in Spiced Tomato Sauce", time: 30, tags: ["veggie"],
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
       { n: "canned crushed tomatoes", q: 1, u: "can", c: "pantry" },
@@ -873,7 +916,7 @@ const MEALS = [
     ],
   },
   {
-    id: "sweet-potato-tacos", title: "Sweet Potato and Black Bean Tacos", time: 40, tags: ["veggie", "vegan"],
+    id: "sweet-potato-tacos", v: "0.10.0", title: "Sweet Potato and Black Bean Tacos", time: 40, tags: ["veggie", "vegan"],
     ing: [
       { n: "sweet potatoes", q: 3, u: "", c: "produce" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -898,7 +941,7 @@ const MEALS = [
     ],
   },
   {
-    id: "pasta-e-ceci", title: "Chickpea and Tomato Pasta Stew", time: 30, tags: ["veggie", "vegan", "pasta", "soup"],
+    id: "pasta-e-ceci", v: "0.10.0", title: "Chickpea and Tomato Pasta Stew", time: 30, tags: ["veggie", "vegan", "pasta", "soup"],
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "small pasta shells", q: 1.5, u: "cup", c: "grains" },
@@ -920,7 +963,7 @@ const MEALS = [
     ],
   },
   {
-    id: "veggie-lo-mein", title: "Veggie Lo Mein", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
+    id: "veggie-lo-mein", v: "0.10.0", title: "Veggie Lo Mein", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
       { n: "frozen stir-fry vegetables", q: 1, u: "bag", c: "produce" },
@@ -943,7 +986,7 @@ const MEALS = [
     ],
   },
   {
-    id: "potato-pea-curry", title: "Potato and Pea Curry", time: 40, tags: ["veggie", "vegan"],
+    id: "potato-pea-curry", v: "0.10.0", title: "Potato and Pea Curry", time: 40, tags: ["veggie", "vegan"],
     ing: [
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
       { n: "frozen peas", q: 1.5, u: "cup", c: "produce" },
@@ -968,7 +1011,7 @@ const MEALS = [
     ],
   },
   {
-    id: "falafel-bowls", title: "Baked Chickpea Patty Bowls", time: 40, tags: ["veggie"],
+    id: "falafel-bowls", v: "0.10.0", title: "Baked Chickpea Patty Bowls", time: 40, tags: ["veggie"],
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "fresh parsley", q: 1, u: "bunch", c: "produce" },
@@ -992,6 +1035,341 @@ const MEALS = [
       "Bake 25 minutes, flipping halfway with a thin spatula, until both sides are golden and firm to the touch.",
       "Meanwhile, chop the cucumbers and tomatoes and toss them with the last tablespoon of olive oil, the juice of half the lemon, and a pinch of salt.",
       "Stir the yogurt with the rest of the lemon juice and a pinch of salt. Build bowls: rice, patties, salad, and a spoon of sauce.",
+    ],
+  },
+  {
+    id: "sheetpan-lemon-salmon", v: "0.16.0", title: "Sheet-Pan Lemon Salmon with Potatoes and Green Beans", time: 35, tags: ["fish"],
+    ing: [
+      { n: "salmon fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
+      { n: "green beans", q: 1, u: "lb", c: "produce" },
+      { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
+      { n: "lemon", q: 2, u: "", c: "produce" },
+      { n: "garlic powder", q: 1, u: "tsp", c: "pantry" },
+      { n: "dried thyme", q: 1, u: "tsp", c: "pantry" },
+    ],
+    steps: [
+      "Heat the oven to 425 F. Halve the baby potatoes (quarter any bigger than a golf ball) and toss them on a sheet pan with 2 tablespoons of the olive oil, the thyme, and half a teaspoon of salt. Roast 15 minutes.",
+      "While the potatoes roast, snap the stem ends off the green beans and pat the salmon dry with a paper towel. Wash your hands after handling the raw fish.",
+      "Pull the pan out, push the potatoes to one side, and lay the green beans and the salmon (skin-side down) in the cleared space. Drizzle the rest of the oil over them and sprinkle the garlic powder and a pinch of salt over everything.",
+      "Slice half of the lemons into thin rounds and lay them on the salmon; save the rest for serving. Roast 12 to 15 minutes more.",
+      "Poke an instant-read thermometer into the thickest part of the salmon: fish is done at 145 F, and it should flake when you drag a fork across it. Roast 3 more minutes and check again if it reads low.",
+      "Cut the saved lemons into wedges, squeeze them over everything, and serve straight from the pan.",
+    ],
+  },
+  {
+    id: "honey-garlic-salmon", v: "0.16.0", title: "Honey-Garlic Salmon with Broccoli and Rice", time: 25, tags: ["fish", "fast"],
+    ing: [
+      { n: "salmon fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "white rice", q: 1.5, u: "cup", c: "grains" },
+      { n: "broccoli", q: 1, u: "head", c: "produce" },
+      { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
+      { n: "honey", q: 2, u: "tbsp", c: "pantry" },
+      { n: "garlic", q: 3, u: "clove", c: "produce" },
+      { n: "ground ginger", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
+      { n: "lemon", q: 1, u: "", c: "produce" },
+    ],
+    steps: [
+      "Start the rice: rinse it in a strainer, then put it in a small pot with double its volume of water and a pinch of salt. Bring to a boil, cover, and turn the heat to low for 15 minutes. No peeking.",
+      "Cut the broccoli into bite-size florets. Cut the salmon into pieces about the size of a deck of cards, pat them dry, and sprinkle with a pinch of salt. Wash your hands after handling the raw fish.",
+      "Peel and mince the garlic, then stir it in a cup with the soy sauce, honey, and ground ginger.",
+      "Heat the oil in a large skillet over medium-high heat. Lay the salmon in skin-side up and cook 3 minutes without moving it, then flip and cook 3 minutes more. Meanwhile, microwave the broccoli in a covered bowl with a splash of water for 3 to 4 minutes until bright green and just tender.",
+      "Add the broccoli to the skillet, pour the sauce over everything, turn the heat to medium-low, and let it bubble 2 minutes, spooning sauce over the salmon as it thickens.",
+      "Poke an instant-read thermometer into the thickest piece: fish is done at 145 F and flakes with a fork. Serve over the rice, with the lemon cut into wedges for squeezing.",
+    ],
+  },
+  {
+    id: "fish-tacos", v: "0.16.0", title: "Crispy Baked Fish Tacos with Slaw", time: 35, tags: ["fish"],
+    ing: [
+      { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "small corn tortillas", q: 8, u: "", c: "grains" },
+      { n: "panko breadcrumbs", q: 1.5, u: "cup", c: "pantry" },
+      { n: "all-purpose flour", q: 4, u: "tbsp", c: "pantry" },
+      { n: "eggs", q: 2, u: "", c: "dairy" },
+      { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
+      { n: "plain Greek yogurt", q: 0.75, u: "cup", c: "dairy" },
+      { n: "lime", q: 2, u: "", c: "produce" },
+      { n: "chili powder", q: 1, u: "tsp", c: "pantry" },
+      { n: "ground cumin", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
+      { n: "avocados", q: 1, u: "", c: "produce" },
+    ],
+    steps: [
+      "Heat the oven to 425 F. Stir the panko with the olive oil and a pinch of salt on a sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl. Stir the chili powder and cumin into it.",
+      "Cut the cod into strips about as wide as two fingers. Set up two more shallow bowls: the flour in one, the eggs beaten in the other.",
+      "Coat each strip: roll it in flour, dip it in egg, then press it into the panko on all sides. Line the strips up on the sheet pan with space between them. Wash your hands after handling the raw fish.",
+      "Bake 12 to 15 minutes until golden. Poke an instant-read thermometer into the thickest strip: fish is done at 145 F and flakes with a fork.",
+      "While the fish bakes, stir the yogurt with the juice of half the limes and a pinch of salt. Toss half of that dressing with the coleslaw mix; the rest is drizzle.",
+      "Wrap the tortillas in a damp paper towel and microwave 30 seconds. Slice the avocados.",
+      "Build the tacos: slaw, fish, a couple of avocado slices each, a drizzle of dressing, and the rest of the limes in wedges.",
+    ],
+  },
+  {
+    id: "tuna-patties", v: "0.16.0", title: "Crispy Tuna Patties with Lemon Yogurt Sauce", time: 25, tags: ["fish", "fast"],
+    ing: [
+      { n: "canned tuna", q: 3, u: "can", c: "protein" },
+      { n: "eggs", q: 2, u: "", c: "dairy" },
+      { n: "panko breadcrumbs", q: 1, u: "cup", c: "pantry" },
+      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "Dijon mustard", q: 1, u: "tbsp", c: "pantry" },
+      { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
+      { n: "lemon", q: 1, u: "", c: "produce" },
+      { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
+      { n: "frozen peas", q: 2, u: "cup", c: "produce" },
+    ],
+    steps: [
+      "Drain the tuna well, pressing out the liquid, and flake it into a bowl.",
+      "Slice the green onions thin and add them to the bowl with the eggs, the panko, the mustard, the zest of the lemon (grate just the yellow skin), and a pinch of salt and pepper. Mix, then shape into patties about the size of your palm, about two per person. Wash your hands after.",
+      "Heat the olive oil in a large skillet over medium heat. Lay the patties in and cook 3 to 4 minutes per side until deeply golden. Canned tuna is already cooked, so golden and hot through is the goal here.",
+      "Microwave the peas with a splash of water for 2 to 3 minutes and season with a pinch of salt.",
+      "Stir the yogurt with the juice of the lemon and a spoonful of water until it drizzles off the spoon.",
+      "Serve the patties over the peas with the sauce spooned on top.",
+    ],
+  },
+  {
+    id: "baked-fish-sticks", v: "0.16.0", title: "Baked Fish Sticks with Sweet Potato Fries", time: 40, tags: ["fish"],
+    ing: [
+      { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "sweet potatoes", q: 2, u: "", c: "produce" },
+      { n: "panko breadcrumbs", q: 1.5, u: "cup", c: "pantry" },
+      { n: "all-purpose flour", q: 4, u: "tbsp", c: "pantry" },
+      { n: "eggs", q: 2, u: "", c: "dairy" },
+      { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
+      { n: "smoked paprika", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "ketchup", q: 0.5, u: "cup", c: "pantry" },
+      { n: "lemon", q: 1, u: "", c: "produce" },
+    ],
+    steps: [
+      "Heat the oven to 425 F. Scrub the sweet potatoes and cut them into fries about as thick as your finger. Toss them on a sheet pan with 1 tablespoon of the olive oil and a pinch of salt, and get them in the oven; they take about 30 minutes total, flipped halfway.",
+      "Stir the panko with the rest of the olive oil, the smoked paprika, and a pinch of salt on a second sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl.",
+      "Cut the cod into sticks about as thick as your finger. Set up two more shallow bowls: the flour in one, the eggs beaten in the other.",
+      "Coat each stick: flour, then egg, then press it into the panko all over. Line the sticks up on the second pan with space between them. Wash your hands after handling the raw fish.",
+      "Bake the fish 12 to 15 minutes until golden. Poke an instant-read thermometer into the thickest stick: fish is done at 145 F and flakes with a fork.",
+      "Serve with the fries, the ketchup for dunking, and the lemon in wedges for the grown-ups.",
+    ],
+  },
+  {
+    id: "tilapia-foil-packets", v: "0.16.0", title: "Tilapia and Veggie Foil Packets", time: 30, tags: ["fish"],
+    ing: [
+      { n: "tilapia fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "zucchini", q: 2, u: "", c: "produce" },
+      { n: "bell pepper", q: 2, u: "", c: "produce" },
+      { n: "cherry tomatoes", q: 10, u: "oz", c: "produce" },
+      { n: "garlic", q: 2, u: "clove", c: "produce" },
+      { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
+      { n: "dried oregano", q: 1, u: "tsp", c: "pantry" },
+      { n: "lemon", q: 2, u: "", c: "produce" },
+      { n: "white rice", q: 1.5, u: "cup", c: "grains" },
+    ],
+    steps: [
+      "Heat the oven to 425 F. Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
+      "Slice the zucchini into coins, the bell peppers into strips, and halve the cherry tomatoes. Peel and mince the garlic.",
+      "Tear one big square of foil per fillet. Lay a tilapia fillet in the middle of each, pile the vegetables on and around it, drizzle the olive oil over, and sprinkle on the oregano, garlic, and a pinch of salt. Wash your hands after handling the raw fish.",
+      "Fold each packet closed and crimp the edges, leaving some puff for steam. Set the packets on a sheet pan and bake 15 minutes.",
+      "Open one packet carefully (the steam is hot) and poke an instant-read thermometer into the fish: it is done at 145 F and flakes with a fork. Re-crimp and bake 4 more minutes if it reads low.",
+      "Serve the packets over the rice, with the lemons cut into wedges for squeezing.",
+    ],
+  },
+  {
+    id: "tomato-braised-cod", v: "0.16.0", title: "Tomato-Braised Cod with White Beans", time: 30, tags: ["fish"],
+    ing: [
+      { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned cannellini beans", q: 1, u: "can", c: "pantry" },
+      { n: "onion", q: 1, u: "", c: "produce" },
+      { n: "garlic", q: 3, u: "clove", c: "produce" },
+      { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
+      { n: "dried oregano", q: 1, u: "tsp", c: "pantry" },
+      { n: "spinach", q: 3, u: "cup", c: "produce" },
+      { n: "whole grain bread", q: 0.5, u: "loaf", c: "grains" },
+    ],
+    steps: [
+      "Chop the onion small and mince the garlic. Heat the olive oil in a large skillet over medium heat and cook the onion 4 minutes until soft, then add the garlic and oregano for 30 seconds.",
+      "Pour in the tomatoes with their juice and the beans (rinsed in a strainer first). Add a splash of water and a pinch of salt and let it simmer 5 minutes.",
+      "Cut the cod into chunks about the size of a deck of cards and season with a pinch of salt. Wash your hands after handling the raw fish.",
+      "Nestle the cod down into the sauce, cover the pan, and cook 6 to 8 minutes on medium-low.",
+      "Poke an instant-read thermometer into the thickest piece: fish is done at 145 F and flakes with a fork. Stir the spinach in around the fish until it wilts, about 1 minute.",
+      "Toast thick slices of the bread and serve them alongside for mopping up the sauce.",
+    ],
+  },
+  {
+    id: "teriyaki-salmon-bowls", v: "0.16.0", title: "Teriyaki Salmon Rice Bowls", time: 30, tags: ["fish"],
+    ing: [
+      { n: "salmon fillets", q: 1.5, u: "lb", c: "protein" },
+      { n: "white rice", q: 1.5, u: "cup", c: "grains" },
+      { n: "frozen shelled edamame", q: 1.5, u: "cup", c: "produce" },
+      { n: "carrots", q: 2, u: "", c: "produce" },
+      { n: "cucumbers", q: 1, u: "", c: "produce" },
+      { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
+      { n: "honey", q: 2, u: "tbsp", c: "pantry" },
+      { n: "rice vinegar", q: 1, u: "tbsp", c: "pantry" },
+      { n: "ground ginger", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
+    ],
+    steps: [
+      "Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
+      "Stir the soy sauce, honey, rice vinegar, and ground ginger together in a cup. Cut the salmon into big bite-size cubes and pat them dry. Wash your hands after handling the raw fish.",
+      "Heat the oil in a large skillet over medium-high heat. Add the salmon cubes and cook about 2 minutes per side until browned.",
+      "Pour the sauce in, turn the heat to medium-low, and let it bubble 2 minutes, turning the cubes gently so they glaze all over.",
+      "Poke an instant-read thermometer into a thick cube: fish is done at 145 F and flakes with a fork. Microwave the edamame with a splash of water for 2 minutes.",
+      "Peel the carrots into ribbons with the peeler and slice the cucumber thin. Build bowls: rice, salmon, edamame, and the crunchy vegetables.",
+    ],
+  },
+  {
+    id: "beef-tacos", v: "0.16.0", title: "Classic Beef Taco Night", time: 25, tags: ["beef", "fast"],
+    ing: [
+      { n: "lean ground beef", q: 1.25, u: "lb", c: "protein" },
+      { n: "olive oil", q: 0.5, u: "tbsp", c: "pantry" },
+      { n: "taco seasoning", q: 1, u: "packet", c: "pantry" },
+      { n: "small flour tortillas", q: 8, u: "", c: "grains" },
+      { n: "romaine lettuce", q: 1, u: "head", c: "produce" },
+      { n: "tomatoes", q: 2, u: "", c: "produce" },
+      { n: "shredded cheddar", q: 1, u: "cup", c: "dairy" },
+      { n: "salsa", q: 1, u: "jar", c: "pantry" },
+      { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
+    ],
+    steps: [
+      "Heat the olive oil in a large skillet over medium-high heat (lean beef sticks without it; skip it only if your skillet is nonstick). Add the beef and cook 6 to 8 minutes, breaking it into small crumbles with your spatula. Wash your hands after handling the raw meat.",
+      "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low. Tilt the pan and spoon off any pooled fat.",
+      "Stir in the taco seasoning and two-thirds of a cup of water per seasoning packet used. Simmer 3 to 4 minutes until saucy.",
+      "While it simmers, chop the lettuce and dice the tomatoes into taco-size pieces.",
+      "Wrap the tortillas in a damp paper towel and microwave 30 seconds.",
+      "Set everything out build-your-own style: beef, lettuce, tomatoes, salsa, and yogurt instead of sour cream. Cheese is there for whoever wants it and easy to skip.",
+    ],
+  },
+  {
+    id: "steak-fajitas", v: "0.16.0", title: "Sheet-Pan Steak Fajitas", time: 35, tags: ["beef"],
+    ing: [
+      { n: "flank steak", q: 1.25, u: "lb", c: "protein" },
+      { n: "bell pepper", q: 3, u: "", c: "produce" },
+      { n: "red onion", q: 1, u: "", c: "produce" },
+      { n: "fajita seasoning", q: 1, u: "packet", c: "pantry" },
+      { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
+      { n: "small flour tortillas", q: 8, u: "", c: "grains" },
+      { n: "lime", q: 1, u: "", c: "produce" },
+      { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
+    ],
+    steps: [
+      "Heat the oven to 450 F. Slice the bell peppers and the onion into strips and toss them on a sheet pan with 1 tablespoon of the olive oil and half of the fajita seasoning.",
+      "Rub the steak all over with the rest of the oil and seasoning and lay it on top of the vegetables. Wash your hands after handling the raw meat.",
+      "Roast 12 to 15 minutes. Poke an instant-read thermometer into the thickest part of the steak: 145 F is medium with a blush of pink. Roast 3 more minutes and check again if it reads low.",
+      "Move the steak to a cutting board and let it rest 5 minutes so the juices stay in; stir the vegetables and return them to the oven meanwhile.",
+      "Look for the lines running along the steak and slice it thin across them (across the grain); this is what makes flank steak tender.",
+      "Wrap the tortillas in a damp paper towel and microwave 30 seconds. Build fajitas with steak, vegetables, a squeeze of the lime, and a spoon of yogurt.",
+    ],
+  },
+  {
+    id: "spaghetti-beef-marinara", v: "0.16.0", title: "Spaghetti with Beefy Hidden-Veggie Marinara", time: 35, tags: ["beef", "pasta"],
+    ing: [
+      { n: "lean ground beef", q: 1, u: "lb", c: "protein" },
+      { n: "spaghetti", q: 12, u: "oz", c: "grains" },
+      { n: "marinara sauce", q: 1, u: "jar", c: "pantry" },
+      { n: "onion", q: 1, u: "", c: "produce" },
+      { n: "garlic", q: 2, u: "clove", c: "produce" },
+      { n: "zucchini", q: 1, u: "", c: "produce" },
+      { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
+      { n: "Italian seasoning", q: 1, u: "tsp", c: "pantry" },
+      { n: "parmesan", q: 0.25, u: "cup", c: "dairy" },
+    ],
+    steps: [
+      "Put a big pot of water on to boil with a small handful of salt. Chop the onion small, mince the garlic, and grate the zucchini on the big holes of a box grater.",
+      "Heat the olive oil in a large skillet over medium-high heat. Add the beef and onion and cook 6 to 8 minutes, breaking the meat into crumbles. Wash your hands after handling the raw meat.",
+      "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low.",
+      "Add the garlic, the grated zucchini, and the Italian seasoning and stir 1 minute; the zucchini melts into the sauce where kids never find it. Pour in the marinara, rinse the jar with a splash of water into the pan, and simmer on low 10 minutes.",
+      "Meanwhile cook the spaghetti in the boiling water per the package time, then drain it.",
+      "Serve the sauce over the spaghetti. Parmesan on top is optional and easy to skip.",
+    ],
+  },
+  {
+    id: "beef-bean-chili", v: "0.16.0", title: "Beef and Bean Chili with Chips", time: 40, tags: ["beef", "soup"],
+    ing: [
+      { n: "lean ground beef", q: 1, u: "lb", c: "protein" },
+      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
+      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
+      { n: "onion", q: 1, u: "", c: "produce" },
+      { n: "bell pepper", q: 1, u: "", c: "produce" },
+      { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
+      { n: "chili powder", q: 3, u: "tsp", c: "pantry" },
+      { n: "ground cumin", q: 1, u: "tsp", c: "pantry" },
+      { n: "low-sodium chicken broth", q: 0.5, u: "cup", c: "pantry" },
+      { n: "tortilla chips", q: 1, u: "bag", c: "grains" },
+      { n: "shredded cheddar", q: 0.5, u: "cup", c: "dairy" },
+    ],
+    steps: [
+      "Chop the onion and bell pepper small. Heat the olive oil in a big soup pot over medium-high heat and cook them 4 minutes until soft.",
+      "Add the beef and cook 6 to 8 minutes, breaking it into crumbles. Wash your hands after handling the raw meat.",
+      "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low.",
+      "Stir in the chili powder and cumin for 30 seconds, then add the tomatoes with their juice, the tomato sauce, the beans (rinsed in a strainer), and the broth.",
+      "Simmer uncovered on medium-low for 15 minutes, stirring now and then, until it thickens to a scoopable chili. Taste and add salt a pinch at a time.",
+      "Serve in bowls with the chips for scooping. Cheese on top is optional and easy to skip.",
+    ],
+  },
+  {
+    id: "sheetpan-pork-tenderloin", v: "0.16.0", title: "Sheet-Pan Pork Tenderloin with Apples and Potatoes", time: 50, tags: ["pork"],
+    ing: [
+      { n: "pork tenderloin", q: 1.25, u: "lb", c: "protein" },
+      { n: "apples", q: 2, u: "", c: "produce" },
+      { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
+      { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
+      { n: "Dijon mustard", q: 1, u: "tbsp", c: "pantry" },
+      { n: "maple syrup", q: 1, u: "tbsp", c: "pantry" },
+      { n: "dried rosemary", q: 1, u: "tsp", c: "pantry" },
+    ],
+    steps: [
+      "Heat the oven to 425 F. Halve the baby potatoes and toss them on a sheet pan with 2 tablespoons of the olive oil, the rosemary, and half a teaspoon of salt. Roast 10 minutes.",
+      "Check the pork for a shiny, silvery strip along one side (silverskin); if you see one, slide the tip of a knife under it and cut it away, since it turns tough when cooked. Many store tenderloins come with it already removed.",
+      "Stir the mustard, maple syrup, half a teaspoon of salt, and the rest of the oil into a paste and rub it all over the pork. Wash your hands after handling the raw meat.",
+      "Cut the apples into thick wedges (no need to peel; just cut around the core).",
+      "Pull the pan out, push the potatoes to the edges, lay the pork in the middle, and scatter the apple wedges around it. Roast 18 to 22 minutes.",
+      "Poke an instant-read thermometer into the thickest part of the pork: it is done at 145 F with a blush of pink inside, which is safe and juicy. Roast 4 more minutes and check again if it reads low.",
+      "Move the pork to a cutting board and let it rest 5 minutes so the juices stay in, leaving the pan in the turned-off oven. Slice the pork into thick coins and serve with the potatoes and apples.",
+    ],
+  },
+  {
+    id: "ginger-pork-rice-bowls", v: "0.16.0", title: "Ginger Pork Rice Bowls", time: 30, tags: ["pork"],
+    ing: [
+      { n: "ground pork", q: 1, u: "lb", c: "protein" },
+      { n: "white rice", q: 1.5, u: "cup", c: "grains" },
+      { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
+      { n: "garlic", q: 2, u: "clove", c: "produce" },
+      { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
+      { n: "rice vinegar", q: 1, u: "tbsp", c: "pantry" },
+      { n: "ground ginger", q: 1, u: "tsp", c: "pantry" },
+      { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
+      { n: "toasted sesame oil", q: 1, u: "tbsp", c: "pantry" },
+      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+    ],
+    steps: [
+      "Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
+      "Heat the vegetable oil in a large skillet over medium-high heat. Add the pork and cook 6 to 8 minutes, breaking it into small crumbles. Wash your hands after handling the raw meat.",
+      "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground pork is done at 160 F. Cook 2 more minutes and check again if it reads low.",
+      "Peel and mince the garlic and add it with the ground ginger, soy sauce, and rice vinegar; stir 30 seconds.",
+      "Add the coleslaw mix and toss 2 minutes, just until it wilts but still has crunch. Turn off the heat and stir in the sesame oil.",
+      "Slice the green onions thin. Serve the pork over the rice with the green onions on top.",
+    ],
+  },
+  {
+    id: "skillet-pork-chops", v: "0.16.0", title: "Skillet Pork Chops with Smashed Potatoes and Peas", time: 35, tags: ["pork"],
+    ing: [
+      { n: "thick-cut boneless pork chops", q: 1.5, u: "lb", c: "protein" },
+      { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
+      { n: "frozen peas", q: 2, u: "cup", c: "produce" },
+      { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
+      { n: "butter", q: 1, u: "tbsp", c: "dairy" },
+      { n: "garlic powder", q: 1, u: "tsp", c: "pantry" },
+      { n: "smoked paprika", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "lemon", q: 1, u: "", c: "produce" },
+    ],
+    steps: [
+      "Put the baby potatoes in a pot, cover with water and a big pinch of salt, and boil 12 to 15 minutes until a fork slides in with no resistance.",
+      "Pat the pork chops dry and sprinkle each side with the garlic powder, smoked paprika, and a pinch of salt. Wash your hands after handling the raw meat.",
+      "Heat the olive oil in a large skillet over medium-high heat. Lay the chops in and cook 4 to 5 minutes per side without moving them, so they brown. These times fit chops about an inch thick; thin half-inch chops need only 2 to 3 minutes per side.",
+      "Poke an instant-read thermometer through the side of the thickest chop into its middle: pork is done at 145 F with a blush of pink, which is safe and juicy. Cook 2 more minutes per side and check again if it reads low.",
+      "Move the chops to a plate and let them rest 5 minutes so the juices stay in.",
+      "Drain the potatoes, add the butter and a pinch of salt, and smash them roughly with a fork. Microwave the peas with a splash of water, covered, for 3 to 4 minutes, stirring halfway.",
+      "Serve the chops with the potatoes and peas, with the lemon in wedges for squeezing over.",
     ],
   },
 ];
@@ -1027,6 +1405,8 @@ const GROUP_ORDER = [...CAT_ORDER, "staples"];
 // jars, by-weight meat) or are cupboard staples.
 const PACKS = {
   "ground turkey": { per: 1, one: "tray (1 lb)", many: "trays (1 lb)" },
+  "lean ground beef": { per: 1, one: "tray (1 lb)", many: "trays (1 lb)" },
+  "ground pork": { per: 1, one: "tray (1 lb)", many: "trays (1 lb)" },
   "chicken tenderloins": { per: 1.5, one: "pack (1.5 lb)", many: "packs (1.5 lb)" },
   "eggs": { per: 12, one: "dozen", many: "dozen" },
   "shredded cheddar": { per: 2, one: "bag (8 oz)", many: "bags (8 oz)" },
@@ -1071,6 +1451,7 @@ const DISCRETE_UNITS = new Set(["jar", "can", "head", "loaf", "packet", "block",
 // marinara sauce") so two different shelf sizes are never ambiguous. Heads,
 // bunches, and loaves are natural units and stay size-free.
 const SIZES = {
+  "canned tuna": "5 oz",
   "marinara sauce": "24 oz",
   "basil pesto": "8 oz",
   "salsa": "16 oz",
@@ -1105,12 +1486,67 @@ const TAG_FILTERS = [
   { id: "all", label: "All" },
   { id: "chicken", label: "Chicken" },
   { id: "turkey", label: "Turkey" },
+  { id: "beef", label: "Beef" },
+  { id: "pork", label: "Pork" },
+  { id: "fish", label: "Fish" },
   { id: "veggie", label: "Veggie" },
   { id: "vegan", label: "Vegan" },
   { id: "pasta", label: "Pasta" },
   { id: "soup", label: "Soup" },
   { id: "fast", label: "25 min or less" },
 ];
+
+// Share links: the plan packs into a 12-byte base64url slug in the URL hash:
+// format byte, the three APP_VERSION numbers, servings, then 7 slot bytes
+// indexing into the catalog as it stood at that version (255 = empty day).
+// Every meal carries the version it was added in (`v`), so a decoder on a
+// newer catalog rebuilds the older index space by filtering to v <= the
+// slug's version. The invariant that keeps old links working: once a version
+// ships, the meals it could see are never removed or reordered relative to
+// each other; new meals may land anywhere in the array with a higher `v`.
+const SLUG_FORMAT = 1;
+const SLUG_EMPTY = 255;
+
+function verParts(v) {
+  return v.split(".").map((n) => parseInt(n, 10));
+}
+
+function verLte(a, b) {
+  const [a1, a2, a3] = verParts(a);
+  const [b1, b2, b3] = verParts(b);
+  return a1 !== b1 ? a1 < b1 : a2 !== b2 ? a2 < b2 : a3 <= b3;
+}
+
+function catalogAt(version) {
+  return MEALS.filter((m) => verLte(m.v, version));
+}
+
+function encodeSlug(week, servings) {
+  const catalog = catalogAt(APP_VERSION);
+  const bytes = [SLUG_FORMAT, ...verParts(APP_VERSION), servings];
+  week.forEach((id) => {
+    const i = id ? catalog.findIndex((m) => m.id === id) : -1;
+    bytes.push(i >= 0 ? i : SLUG_EMPTY);
+  });
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeSlug(hash) {
+  try {
+    const raw = atob(hash.replace(/^#/, "").replace(/-/g, "+").replace(/_/g, "/"));
+    if (raw.length !== 12) return null;
+    const bytes = [...raw].map((ch) => ch.charCodeAt(0));
+    if (bytes[0] !== SLUG_FORMAT) return null;
+    const catalog = catalogAt(bytes.slice(1, 4).join("."));
+    const servings = Math.min(12, Math.max(1, bytes[4]));
+    const week = bytes.slice(5, 12).map((i) => (i < catalog.length ? catalog[i].id : null));
+    if (!week.some(Boolean)) return null;
+    return { week, servings };
+  } catch (e) {
+    // Not a slug this build understands; fall back to saved state
+    return null;
+  }
+}
 
 function shuffleMeals(pool = MEALS) {
   const shuffled = [...pool];
@@ -1121,11 +1557,49 @@ function shuffleMeals(pool = MEALS) {
   return shuffled;
 }
 
-function rerollDay(week, dayIndex, avoid = new Set(), pool = MEALS) {
+const mealById = (id) => MEALS.find((m) => m.id === id);
+
+// Fill the empty days of `kept` from `pool` (already in preference order:
+// fresh meals before last week's repeats), honoring the profile's weekly
+// quotas. Meals already on the plan count against ceilings first, targets
+// fill before the general pass, and target placement lands on random empty
+// days so fish nights do not pile up at the start of the week. With no
+// quotas this reduces to the plain first-come fill.
+function fillWeek(kept, pool, quotas) {
+  const next = [...kept];
+  const onPlan = (test) => next.filter((id) => id && test(mealById(id))).length;
+  const ceilings = ((quotas && quotas.ceilings) || []).map((c) => ({ ...c, n: onPlan(c.test) }));
+  const targets = ((quotas && quotas.targets) || []).map((t) => ({ ...t, n: onPlan(t.test) }));
+  const fits = (m) => ceilings.every((c) => !c.test(m) || c.n < c.max);
+  const empties = shuffleMeals(next.map((id, i) => (id ? null : i)).filter((i) => i !== null));
+  const remaining = new Set(pool.map((m) => m.id));
+  const take = (m) => {
+    next[empties.shift()] = m.id;
+    remaining.delete(m.id);
+    ceilings.forEach((c) => { if (c.test(m)) c.n++; });
+    targets.forEach((t) => { if (t.test(m)) t.n++; });
+  };
+  targets.forEach((t) => {
+    for (const m of pool) {
+      if (t.n >= t.want || empties.length === 0) break;
+      if (remaining.has(m.id) && t.test(m) && fits(m)) take(m);
+    }
+  });
+  for (const m of pool) {
+    if (empties.length === 0) break;
+    if (remaining.has(m.id) && fits(m)) take(m);
+  }
+  return next;
+}
+
+function rerollDay(week, dayIndex, avoid = new Set(), pool = MEALS, quotas = null) {
   const used = new Set(week.filter((id, i) => id && i !== dayIndex));
+  // A replacement may not push the rest of the week past a quota ceiling
+  const rest = week.filter((id, i) => id && i !== dayIndex).map(mealById);
+  const fits = (m) => ((quotas && quotas.ceilings) || []).every((c) => !c.test(m) || rest.filter(c.test).length < c.max);
   // Prefer meals that were not on last week's plan; fall back if that empties the pool
-  let options = pool.filter((m) => !used.has(m.id) && m.id !== week[dayIndex] && !avoid.has(m.id));
-  if (options.length === 0) options = pool.filter((m) => !used.has(m.id) && m.id !== week[dayIndex]);
+  let options = pool.filter((m) => !used.has(m.id) && m.id !== week[dayIndex] && !avoid.has(m.id) && fits(m));
+  if (options.length === 0) options = pool.filter((m) => !used.has(m.id) && m.id !== week[dayIndex] && fits(m));
   const pick = options[Math.floor(Math.random() * options.length)];
   const next = [...week];
   next[dayIndex] = pick ? pick.id : week[dayIndex];
@@ -1151,6 +1625,7 @@ const ITEM_PLURALS = {
 const ITEM_SINGULARS = {
   eggs: "egg", avocados: "avocado", tomatoes: "tomato", carrots: "carrot",
   cucumbers: "cucumber", "sweet potatoes": "sweet potato", "russet potatoes": "russet potato",
+  apples: "apple",
 };
 
 // Countables you cannot cook a fraction of: recipe cards round these up to
@@ -1275,6 +1750,18 @@ function VeganChip() {
   );
 }
 
+// A shared link or a profile switch can leave a planned meal the current
+// eating style would not have drawn; show the week faithfully, but say so
+function OutsideChip() {
+  return (
+    <span aria-label="outside your eating style" style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 800,
+      letterSpacing: "0.5px", textTransform: "uppercase", color: "#fff", background: P.cherry,
+      borderRadius: 999, padding: "2px 8px", marginLeft: 8, verticalAlign: "middle", whiteSpace: "nowrap" }}>
+      outside your style
+    </span>
+  );
+}
+
 function RecipeDetails({ meal, scale }) {
   return (
     <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.55 }}>
@@ -1309,6 +1796,7 @@ export default function SevenSuppers() {
   const [week, setWeek] = useState(Array(7).fill(null));
   const [locks, setLocks] = useState(Array(7).fill(false));
   const [lastWeek, setLastWeek] = useState([]);
+  const [profile, setProfile] = useState(DEFAULT_PROFILE);
   const [servings, setServings] = useState(DEFAULT_SERVINGS);
   const [store, setStore] = useState("none");
   const [cardPerPage, setCardPerPage] = useState(true);
@@ -1319,6 +1807,7 @@ export default function SevenSuppers() {
   const [view, setView] = useState("plan");
   const [checked, setChecked] = useState({});
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [shuffleTime, setShuffleTime] = useState(null); // null = any, 35 = 35 min or less
   const [shuffleDiet, setShuffleDiet] = useState("all");
@@ -1328,35 +1817,64 @@ export default function SevenSuppers() {
 
   useEffect(() => {
     (async () => {
+      // A share link in the URL wins over saved state: opening it adopts that
+      // week (and servings) as this device's plan. Locks stay unlocked since
+      // saved locks belong to the plan being replaced.
+      let fromLink = null;
       try {
-        const result = await window.storage.get("seven-suppers-week");
-        if (result && result.value) {
-          const saved = JSON.parse(result.value);
-          if (Array.isArray(saved) && saved.length === 7) {
-            // Drop ids that no longer exist in the catalog so slots stay usable
-            setWeek(saved.map((id) => (MEALS.some((m) => m.id === id) ? id : null)));
+        fromLink = decodeSlug(window.location.hash);
+      } catch (e) {
+        // No usable URL in this context
+      }
+      try {
+        const result = await window.storage.get("seven-suppers-profile");
+        if (result && result.value && PROFILES.some((p) => p.id === result.value)) {
+          setProfile(result.value);
+        } else {
+          // Migration: a device holding a saved week predates profiles, and
+          // back then the whole app was gout friendly; only genuinely fresh
+          // devices get the heart-healthy default
+          const w = await window.storage.get("seven-suppers-week");
+          if (w && w.value) setProfile("gout");
+        }
+      } catch (e) {
+        // Fresh device, keep the default profile
+      }
+      if (fromLink) {
+        setWeek(fromLink.week);
+        setServings(fromLink.servings);
+      }
+      if (!fromLink) {
+        try {
+          const result = await window.storage.get("seven-suppers-week");
+          if (result && result.value) {
+            const saved = JSON.parse(result.value);
+            if (Array.isArray(saved) && saved.length === 7) {
+              // Drop ids that no longer exist in the catalog so slots stay usable
+              setWeek(saved.map((id) => (MEALS.some((m) => m.id === id) ? id : null)));
+            }
           }
+        } catch (e) {
+          // No saved week yet, start fresh
         }
-      } catch (e) {
-        // No saved week yet, start fresh
-      }
-      try {
-        const result = await window.storage.get("seven-suppers-servings");
-        if (result && result.value) {
-          const n = parseInt(result.value, 10);
-          if (n >= 1 && n <= 12) setServings(n);
+        try {
+          const result = await window.storage.get("seven-suppers-servings");
+          if (result && result.value) {
+            const n = parseInt(result.value, 10);
+            if (n >= 1 && n <= 12) setServings(n);
+          }
+        } catch (e) {
+          // No saved servings, use the default
         }
-      } catch (e) {
-        // No saved servings, use the default
-      }
-      try {
-        const result = await window.storage.get("seven-suppers-locks");
-        if (result && result.value) {
-          const saved = JSON.parse(result.value);
-          if (Array.isArray(saved) && saved.length === 7) setLocks(saved.map(Boolean));
+        try {
+          const result = await window.storage.get("seven-suppers-locks");
+          if (result && result.value) {
+            const saved = JSON.parse(result.value);
+            if (Array.isArray(saved) && saved.length === 7) setLocks(saved.map(Boolean));
+          }
+        } catch (e) {
+          // No saved locks, start unlocked
         }
-      } catch (e) {
-        // No saved locks, start unlocked
       }
       try {
         const result = await window.storage.get("seven-suppers-last-week");
@@ -1449,12 +1967,35 @@ export default function SevenSuppers() {
     if (!loaded) return;
     (async () => {
       try {
+        await window.storage.set("seven-suppers-profile", profile);
+      } catch (e) {
+        // Storage unavailable
+      }
+    })();
+  }, [profile, loaded]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    (async () => {
+      try {
         await window.storage.set("seven-suppers-shuffle", JSON.stringify({ time: shuffleTime, diet: shuffleDiet, noSoups: shuffleNoSoups }));
       } catch (e) {
         // Storage unavailable
       }
     })();
   }, [shuffleTime, shuffleDiet, shuffleNoSoups, loaded]);
+
+  // The address bar always holds the share link for the current plan, so
+  // sharing the week is just copying the URL
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      const base = window.location.pathname + window.location.search;
+      window.history.replaceState(null, "", week.some(Boolean) ? base + "#" + encodeSlug(week, servings) : base);
+    } catch (e) {
+      // Sandboxed contexts (artifact iframes) may refuse URL edits
+    }
+  }, [week, servings, loaded]);
 
   const activeStore = STORES.find((s) => s.id === store && s.searchUrl) || null;
 
@@ -1475,17 +2016,40 @@ export default function SevenSuppers() {
     });
   }, [groceries]);
 
-  const filteredMeals = useMemo(() => {
-    if (filter === "all") return MEALS;
-    return MEALS.filter((m) => m.tags.includes(filter));
-  }, [filter]);
+  // The catalog this device sees: the active profile's slice of MEALS
+  const profileMeals = useMemo(() => MEALS.filter((m) => profileAllows(profile, m)), [profile]);
+  const activeQuotas = PROFILE_QUOTAS[profile] || null;
 
-  // What Shuffle and Reroll draw from, per the shuffle filters
-  const shufflePool = useMemo(() => MEALS.filter((m) =>
+  const filteredMeals = useMemo(() => {
+    if (filter === "all") return profileMeals;
+    return profileMeals.filter((m) => m.tags.includes(filter));
+  }, [filter, profileMeals]);
+
+  // Hide catalog chips no meal in this profile carries, and drop a stranded
+  // selection back to All when the profile switch empties it
+  const visibleTagFilters = useMemo(() => TAG_FILTERS.filter((t) =>
+    t.id === "all" || profileMeals.some((m) => m.tags.includes(t.id))
+  ), [profileMeals]);
+  useEffect(() => {
+    if (!visibleTagFilters.some((t) => t.id === filter)) setFilter("all");
+  }, [visibleTagFilters, filter]);
+
+  // What Shuffle and Reroll draw from: the profile's meals, narrowed by the shuffle filters
+  const shufflePool = useMemo(() => profileMeals.filter((m) =>
     (shuffleTime === null || m.time <= shuffleTime) &&
     (shuffleDiet === "all" || m.tags.includes(shuffleDiet)) &&
     (!shuffleNoSoups || !m.tags.includes("soup"))
-  ), [shuffleTime, shuffleDiet, shuffleNoSoups]);
+  ), [profileMeals, shuffleTime, shuffleDiet, shuffleNoSoups]);
+
+  // Hand-picking past a quota ceiling warns rather than blocks
+  const quotaNotes = useMemo(() => {
+    if (!activeQuotas) return [];
+    const label = PROFILES.find((p) => p.id === profile).label;
+    return (activeQuotas.ceilings || []).flatMap((c) => {
+      const n = week.filter((id) => id && c.test(mealById(id))).length;
+      return n > c.max ? [`${label} aims for at most ${c.max} ${c.label} a week; this week has ${n}.`] : [];
+    });
+  }, [week, profile, activeQuotas]);
 
   function assignMeal(mealId) {
     if (week.includes(mealId)) return; // each meal at most once per week
@@ -1538,13 +2102,7 @@ export default function SevenSuppers() {
     // top the pool up with last week's rather than leaving days empty
     const fresh = shuffleMeals(candidates.filter((m) => !avoid.has(m.id)));
     const repeats = shuffleMeals(candidates.filter((m) => avoid.has(m.id)));
-    const pool = [...fresh, ...repeats];
-    const next = [...kept];
-    let k = 0;
-    for (let i = 0; i < 7; i++) {
-      if (!next[i] && k < pool.length) next[i] = pool[k++].id;
-    }
-    setWeek(next);
+    setWeek(fillWeek(kept, [...fresh, ...repeats], activeQuotas));
     setSelectedDay(null);
   }
 
@@ -1571,6 +2129,17 @@ export default function SevenSuppers() {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      // Clipboard unavailable in some contexts
+    }
+  }
+
+  async function copyLink() {
+    const url = window.location.href.split("#")[0] + "#" + encodeSlug(week, servings);
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
     } catch (e) {
       // Clipboard unavailable in some contexts
     }
@@ -1670,6 +2239,21 @@ export default function SevenSuppers() {
         </button>
       </div>
 
+      {/* House diet profile */}
+      <div className="no-print" style={{ maxWidth: 860, margin: "10px auto 0", padding: "0 16px", display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: P.inkSoft }}>Eating style</span>
+        {PROFILES.map((p) => (
+          <button key={p.id} onClick={() => setProfile(p.id)} title={p.hint}
+            aria-pressed={profile === p.id}
+            style={{ ...btnBase, padding: "5px 11px", fontSize: 12,
+              background: profile === p.id ? P.cherry : P.card,
+              color: profile === p.id ? "#fff" : P.inkSoft,
+              border: `1.5px solid ${profile === p.id ? P.cherry : P.line}` }}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+
       {/* Servings */}
       <div className="no-print" style={{ maxWidth: 860, margin: "10px auto 0", padding: "0 16px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: P.inkSoft }}>Cooking for</span>
@@ -1701,6 +2285,13 @@ export default function SevenSuppers() {
               style={{ ...btnBase, background: "transparent", color: P.inkSoft, padding: "10px 12px", fontSize: 14,
                 border: `1.5px solid ${P.line}` }}>
               Clear
+            </button>
+            <button onClick={copyLink} disabled={plannedCount === 0}
+              title="Copy a link that opens this exact week on any device"
+              style={{ ...btnBase, background: "transparent", color: plannedCount === 0 ? P.inkSoft : P.cherry,
+                padding: "10px 12px", fontSize: 14, border: `1.5px solid ${P.line}`,
+                opacity: plannedCount === 0 ? 0.6 : 1 }}>
+              {linkCopied ? "Link copied" : "Copy week link"}
             </button>
           </div>
 
@@ -1740,6 +2331,13 @@ export default function SevenSuppers() {
               </span>
             )}
           </div>
+
+          {/* Quota ceilings exceeded by hand-picked meals: warn, never block */}
+          {quotaNotes.map((note) => (
+            <div key={note} style={{ fontSize: 12, color: P.cherry, fontWeight: 700, marginBottom: 14 }}>
+              {note}
+            </div>
+          ))}
 
           {/* Week rail: order tickets */}
           <section aria-label="Your week" style={{ display: "grid", gap: 12, marginBottom: 24 }}>
@@ -1784,6 +2382,7 @@ export default function SevenSuppers() {
                             {meal.title}
                             <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: P.inkSoft, fontWeight: 700 }}> {" "}{meal.time} min</span>
                             {meal.tags.includes("vegan") && <VeganChip />}
+                            {!profileAllows(profile, meal) && <OutsideChip />}
                           </span>
                           <span style={{ fontSize: 11, color: P.inkSoft, textDecoration: "underline" }}>
                             {expandedDay === i ? "Hide recipe" : "Show recipe"}
@@ -1809,7 +2408,7 @@ export default function SevenSuppers() {
                         </button>
                       ) : null}
                       {!isLocked && (
-                        <button onClick={() => setWeek(rerollDay(week, i, new Set(lastWeek), shufflePool))} aria-label={`Randomize ${day}`}
+                        <button onClick={() => setWeek(rerollDay(week, i, new Set(lastWeek), shufflePool, activeQuotas))} aria-label={`Randomize ${day}`}
                           style={{ ...btnBase, background: P.celerySoft, color: P.ink, padding: "8px 10px", fontSize: 13 }}>
                           Reroll
                         </button>
@@ -1847,7 +2446,7 @@ export default function SevenSuppers() {
           </p>
 
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-            {TAG_FILTERS.map((t) => (
+            {visibleTagFilters.map((t) => (
               <button key={t.id} onClick={() => setFilter(t.id)}
                 style={{ ...btnBase, padding: "6px 12px", fontSize: 13,
                   background: filter === t.id ? P.ink : P.card,
