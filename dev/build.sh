@@ -2,7 +2,8 @@
 # Build Seven Suppers into self-contained HTML files:
 #   seven-suppers.html  - standalone, open on any computer, no server needed
 #   dev/artifact.html   - body-only variant for publishing as a claude.ai artifact
-VERSION="0.2.1"
+#   public/index.html   - deploy staging for Cloudflare (npx wrangler deploy)
+VERSION="0.3.0"
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -40,6 +41,9 @@ fs.writeFileSync("dev/artifact.html", artifact);
 
 console.log("built seven-suppers.html and dev/artifact.html");
 EOF
+
+mkdir -p public
+cp seven-suppers.html public/index.html
 
 node dev/validate.mjs
 node dev/xcheck.mjs

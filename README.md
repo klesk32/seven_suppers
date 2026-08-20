@@ -1,14 +1,14 @@
-<!-- Version: 0.3.0 -->
+<!-- Version: 0.5.0 -->
 
 # Seven Suppers
 
-A weekly dinner planner for people cooking with and for kids at a beginner skill level. It has one job: fill seven dinner slots quickly and produce a combined grocery list.
+A weekly dinner planner for beginner cooks and busy households, with or without kids. It has one job: fill seven dinner slots quickly and produce a combined grocery list.
 
 The whole app is a single self-contained HTML file. No server, no install, no account.
 
 ## Try it
 
-Open `seven-suppers.html` in any browser. That is the entire app: a 57-meal catalog, a Sunday-through-Saturday week rail, and a merged grocery list with checkboxes. Your plan persists in the browser between visits.
+It is live at [dinner.tinkerling.net](https://dinner.tinkerling.net). Or open `seven-suppers.html` in any browser. That is the entire app: a 57-meal catalog, a Sunday-through-Saturday week rail, and a merged grocery list with checkboxes. Your plan persists in the browser between visits.
 
 ## What it does
 
@@ -26,7 +26,7 @@ Open `seven-suppers.html` in any browser. That is the entire app: a 57-meal cata
 
 The app was born in a household managing gout, and that heritage shows in the rules. Every meal in the catalog satisfies these:
 
-1. **Kid-friendly.** Familiar formats (tacos, pizza, pasta, nuggets, quesadillas) and build-your-own options where possible.
+1. **Kid-friendly, adult-fixable.** Familiar formats (tacos, pizza, pasta, nuggets, quesadillas) and build-your-own options where possible. Everything is mild by default, and every recipe card carries a "Like it hotter?" line with a per-serving heat suggestion, so spice lovers season their own plate while the shared batch stays gentle.
 2. **Beginner-friendly.** Common techniques only, most meals in 40 minutes or less. Meat and fish doneness is always an instant-read thermometer check (165 F poultry, 160 F ground beef and pork, 145 F fish and whole cuts), never a color check.
 3. **Health-leaning.** Vegetables in most meals, Greek yogurt instead of sour cream, low-sodium broth and soy sauce, lean cuts only, and no processed meats anywhere: no bacon, sausage, ham, or deli meat in any profile.
 4. **Dairy-light.** No milk as an ingredient, no cheese-centric mains; cheese appears only as a skippable topping.
@@ -54,6 +54,15 @@ The script installs dependencies on first run, bundles with esbuild, embeds the 
 
 A build fails if any check fails.
 
+### Deploying
+
+The site is a static-assets Cloudflare Worker (`wrangler.jsonc`); the build stages the app into `public/index.html`. To ship a new build:
+
+```sh
+./dev/build.sh
+CLOUDFLARE_API_TOKEN=<your token> npx wrangler deploy
+```
+
 ## Repository layout
 
 | Path | What it is |
@@ -61,4 +70,5 @@ A build fails if any check fails.
 | `seven-suppers.jsx` | The app: catalog, data rules, and UI in one React component |
 | `seven-suppers.html` | Built standalone app, ready to open |
 | `seven-suppers-spec.md` | Specification and version history |
+| `wrangler.jsonc` | Cloudflare deploy config for dinner.tinkerling.net |
 | `dev/` | Build script, validators, and tests |

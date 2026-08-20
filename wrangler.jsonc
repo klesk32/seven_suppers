@@ -1,0 +1,20 @@
+{
+	// Cloudflare Workers config, static assets only (no worker script: the app
+	// is one self-contained HTML file and persistence is per-browser).
+	// Deploy with: CLOUDFLARE_API_TOKEN=<token> npx wrangler deploy
+	// dev/build.sh stages the built app into public/ first.
+	"name": "seven-suppers",
+	"compatibility_date": "2026-08-19",
+	"assets": {
+		"directory": "./public"
+	},
+	"routes": [
+		{
+			"pattern": "dinner.tinkerling.net",
+			"custom_domain": true
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}

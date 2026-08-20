@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.5.0";
+const VERSION = "0.6.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -51,6 +51,7 @@ const TAGS = new Set(["chicken", "turkey", "beef", "pork", "fish", "veggie", "ve
 MEALS.forEach((m) => {
   if (m.steps.length < 5 || m.steps.length > 7) fail(`${m.id} has ${m.steps.length} steps`);
   if (typeof m.time !== "number") fail(`${m.id} bad time`);
+  if (typeof m.spice !== "string" || !m.spice.trim()) fail(`${m.id} has no spice note`);
   m.tags.forEach((t) => { if (!TAGS.has(t)) fail(`${m.id} unknown tag ${t}`); });
   m.ing.forEach((i) => {
     if (!CATS.has(i.c)) fail(`${m.id} bad category ${i.c}`);

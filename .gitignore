@@ -6,6 +6,8 @@ node_modules/
 dev/bundle.min.js
 dev/artifact.html
 dev/www/bundle.js
+public/
+.wrangler/
 
 # Printed weekly plans, kept local
 2026/
