@@ -1,0 +1,38 @@
+name: Recipe feedback
+description: Tell us how a recipe actually went in your kitchen
+title: "Recipe feedback: "
+labels: ["recipe-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for cooking! Real-kitchen reports are how these recipes get better. Past feedback has rebuilt whole dishes, so do not hold back.
+  - type: input
+    id: recipe
+    attributes:
+      label: Which recipe?
+      placeholder: e.g. Ginger Pork Rice Bowls
+    validations:
+      required: true
+  - type: input
+    id: servings
+    attributes:
+      label: How many servings did you cook?
+      placeholder: "3"
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Times, temperatures, amounts, confusing steps. What worked and what did not.
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What would you change?
+      description: Your suggested fix, if you have one.
+  - type: input
+    id: source
+    attributes:
+      label: Supporting link (optional)
+      description: A published recipe or guide that backs the change.

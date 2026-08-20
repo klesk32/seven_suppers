@@ -2,8 +2,8 @@
 // rounding, spice merging, thermometer doneness text in the printed recipe,
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
-// heart-healthy weekly quotas, and per-serving spice notes
-const VERSION = "0.8.0";
+// heart-healthy weekly quotas, per-serving spice notes, and feedback links
+const VERSION = "0.9.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -122,6 +122,9 @@ function boot(seed, url = "http://localhost/") {
   const ptext = cdoc.getElementById("root").textContent;
   check("print view has 165 F checks", (ptext.match(/165 F/g) || []).length === 3);
   check("recipe cards carry the spice note", (ptext.match(/Like it hotter\?/g) || []).length === 3);
+  const fbLinks = [...cdoc.querySelectorAll("a")].filter((x) => x.href.includes("/issues/new?template=recipe-feedback"));
+  check("recipe cards link to prefilled feedback issues",
+    fbLinks.length === 3 && fbLinks.every((x) => x.href.includes("recipe=") && x.href.includes("title=Recipe%20feedback")));
   check("print view has no pinkness checks", !/no pink/i.test(ptext));
   check("recipe cards show fractional countables", ptext.includes("1 and a half cucumbers"));
   check("scaled cards carry the trim-to-match note", ptext.includes("trim it to match"));

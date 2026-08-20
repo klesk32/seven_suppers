@@ -1,6 +1,11 @@
 # Seven Suppers - Specification
 
-Version: 0.16.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.17.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.17.0 (recipe feedback):
+
+- Every recipe card (catalog, week rail, and print view's on-screen state) ends with a "Cooked this? Tell us how it went." link that opens a prefilled GitHub issue using the `recipe-feedback` issue form (`.github/ISSUE_TEMPLATE/recipe-feedback.yml`): recipe name and title arrive filled in, and the form asks for servings cooked, what happened, the suggested change, and an optional supporting link. The link is `no-print`, so paper cards stay clean. `REPO_URL` holds the repository address.
+- The form applies a `recipe-feedback` label (created repo-side) so kitchen reports are easy to filter from ordinary issues.
 
 0.16.0 (diet profiles, weekly quotas, and 15 beef, pork, and fish recipes):
 

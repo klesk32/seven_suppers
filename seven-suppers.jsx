@@ -1,7 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a gout-friendly, kid-friendly weekly dinner planner
-const APP_VERSION = "0.16.0";
+const APP_VERSION = "0.17.0";
+
+// Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
+const REPO_URL = "https://github.com/klesk32/seven_suppers";
 
 // Every recipe in the catalog is written for this many servings
 const BASE_SERVINGS = 4;
@@ -1850,6 +1853,12 @@ function RecipeDetails({ meal, scale }) {
           Like it hotter? {meal.spice} The shared batch stays mild.
         </div>
       )}
+      {/* The recipe field prefills through the issue form's field id */}
+      <a className="no-print" target="_blank" rel="noreferrer"
+        href={`${REPO_URL}/issues/new?template=recipe-feedback.yml&title=${encodeURIComponent(`Recipe feedback: ${meal.title}`)}&recipe=${encodeURIComponent(meal.title)}`}
+        style={{ display: "inline-block", marginTop: 8, fontSize: 12, color: P.inkSoft }}>
+        Cooked this? Tell us how it went.
+      </a>
     </div>
   );
 }

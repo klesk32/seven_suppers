@@ -1,4 +1,4 @@
-<!-- Version: 0.5.0 -->
+<!-- Version: 0.6.0 -->
 
 # Seven Suppers
 
@@ -36,6 +36,10 @@ The Gout friendly profile applies the strictest rule set: no red meat, no fish, 
 The full data model, invariants, and version history live in [seven-suppers-spec.md](seven-suppers-spec.md).
 
 This is a home cooking tool built around one household's dietary needs, not medical advice. If you are managing gout or any other condition, talk to your doctor or dietitian about what belongs on your plate.
+
+## Recipe feedback
+
+Cooked something that did not go as written? Every recipe card has a "Cooked this? Tell us how it went." link that opens a prefilled [recipe feedback issue](https://github.com/klesk32/seven_suppers/issues/new?template=recipe-feedback.yml). Real-kitchen reports have rebuilt whole recipes before; times, amounts, and confusing steps are all fair game.
 
 ## Development
 
