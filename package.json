@@ -2,7 +2,7 @@
   "name": "seven-suppers",
   "version": "0.17.0",
   "private": true,
-  "description": "Gout-friendly weekly dinner planner",
+  "description": "Simple weekly dinner planner with eating-style profiles and a combined grocery list",
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

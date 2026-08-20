@@ -60,7 +60,7 @@ Platform: Single-file React artifact (Claude Artifacts)
 
 ## Purpose
 
-A weekly dinner planner born in a household managing gout, cooking with and for kids, at a beginner skill level. The app's single job: fill 7 dinner slots quickly and produce a combined grocery list. Since 0.16.0 an "Eating style" profile scopes the catalog per device (Heart healthy, All in, Gout friendly, Pescatarian, Vegetarian, Vegan), so other households can use the same catalog without inheriting the original one's medical constraint.
+A simple weekly dinner planner. The app's single job: fill 7 dinner slots quickly and produce a combined grocery list. An "Eating style" profile (0.16.0) scopes the catalog per device: Heart healthy (default), All in, Gout friendly, Pescatarian, Vegetarian, Vegan. The catalog is written for beginner cooks and mixed tables (kid-friendly formats, mild by default); the Gout friendly style is the strictest rule set and was the app's original scope, which is why rule 1 below reads the way it does.
 
 ## Constraints and Dietary Rules
 
