@@ -5,7 +5,6 @@ node_modules/
 # (seven-suppers.html stays tracked as the distributable)
 dev/bundle.min.js
 dev/artifact.html
-dev/www/bundle.js
 public/
 .wrangler/
 

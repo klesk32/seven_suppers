@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.17.4";
+const APP_VERSION = "0.18.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -128,7 +128,7 @@ const MEALS = [
     ],
   },
   {
-    id: "veggie-fried-rice", v: "0.1.0", title: "Veggie Fried Rice with Eggs", time: 20, tags: ["veggie", "fast"],
+    id: "veggie-fried-rice", v: "0.1.0", title: "Veggie Fried Rice with Eggs", time: 35, tags: ["veggie"],
     spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
@@ -2112,14 +2112,23 @@ export default function SevenSuppers() {
     (!shuffleNoSoups || !m.tags.includes("soup"))
   ), [profileMeals, shuffleTime, shuffleDiet, shuffleNoSoups]);
 
-  // Hand-picking past a quota ceiling warns rather than blocks
+  // Hand-picking past a quota ceiling warns rather than blocks, and a full
+  // week that missed a best-effort target says so instead of passing silently
   const quotaNotes = useMemo(() => {
     if (!activeQuotas) return [];
     const label = PROFILES.find((p) => p.id === profile).label;
-    return (activeQuotas.ceilings || []).flatMap((c) => {
-      const n = week.filter((id) => id && c.test(mealById(id))).length;
+    const count = (test) => week.filter((id) => id && test(mealById(id))).length;
+    const notes = (activeQuotas.ceilings || []).flatMap((c) => {
+      const n = count(c.test);
       return n > c.max ? [`${label} aims for at most ${c.max} ${c.label} a week; this week has ${n}.`] : [];
     });
+    if (week.filter(Boolean).length === 7) {
+      (activeQuotas.targets || []).forEach((t) => {
+        const n = count(t.test);
+        if (n < t.want) notes.push(`${label} aims for ${t.want} ${t.label}s a week; this week has ${n}. Widen the shuffle filters or swap one in.`);
+      });
+    }
+    return notes;
   }, [week, profile, activeQuotas]);
 
   function assignMeal(mealId) {
@@ -2323,6 +2332,9 @@ export default function SevenSuppers() {
             {p.label}
           </button>
         ))}
+        <span style={{ flexBasis: "100%", fontSize: 12, color: P.inkSoft }}>
+          {PROFILES.find((p) => p.id === profile).hint}.
+        </span>
       </div>
 
       {/* Servings */}

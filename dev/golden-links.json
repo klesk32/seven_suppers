@@ -1,0 +1,48 @@
+{
+  "_comment": "Golden share links. Each slug was minted at the stated catalog version and must decode to exactly this week and servings in every future build. Never regenerate these; add new ones per release.",
+  "fixtureVersion": "0.1.0",
+  "links": [
+    {
+      "slug": "AQAPAAQBBQsQKf__",
+      "version": "0.15.0",
+      "servings": 4,
+      "week": [
+        "turkey-tacos",
+        "chickpea-curry",
+        "omelet-night",
+        "tofu-nuggets",
+        "falafel-bowls",
+        null,
+        null
+      ]
+    },
+    {
+      "slug": "AQAQAAIqMjgnEwAx",
+      "version": "0.16.0",
+      "servings": 2,
+      "week": [
+        "sheetpan-lemon-salmon",
+        "beef-tacos",
+        "skillet-pork-chops",
+        "veggie-lo-mein",
+        "turkey-burgers",
+        "sheetpan-lemon-chicken",
+        "teriyaki-salmon-bowls"
+      ]
+    },
+    {
+      "slug": "AQARBAws_zcm_y0k",
+      "version": "0.17.4",
+      "servings": 12,
+      "week": [
+        "fish-tacos",
+        null,
+        "ginger-pork-rice-bowls",
+        "pasta-e-ceci",
+        null,
+        "tuna-patties",
+        "shakshuka"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,14 @@
 # Seven Suppers - Specification
 
-Version: 0.17.4 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.18.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.18.0 (trust pass, prompted by an external review):
+
+- Veggie fried rice told the truth about time: it is the only catalog meal that cooks rice sequentially (cook, then cool, then fry) rather than in parallel, so its 20-minute claim was fantasy. Now 35 minutes, and it loses the `fast` tag (fast count 18 to 17). Every other rice meal runs the pot in parallel inside its stated time and was left alone.
+- The active eating style's description now renders as a visible line under the profile chips instead of living only in mouse-only `title` tooltips, so phones see exactly what each profile enforces.
+- A full week that misses a best-effort target says so: "Heart healthy aims for 2 fish dinners a week; this week has 0. Widen the shuffle filters or swap one in." Ceiling warnings are unchanged. Silence no longer implies the composition goal was met.
+- Golden share links: `dev/golden-links.json` freezes three slugs minted at 0.15.0, 0.16.0, and 0.17.4; the functional suite boots each and asserts it decodes to exactly its original week and servings. These fixtures are never regenerated; new ones get added per release. The append-only catalog invariant is now a regression test, not just documentation.
+- Property tests: `dev/planner-prop.mjs` (run by the build) pushes 3000 randomized profile/filter/locked-week states through `fillWeek` and `rerollDay` with a seeded PRNG, asserting kept meals survive, no duplicates, auto-picks stay inside the filtered pool, hard ceilings never break, targets are met whenever reachable, and days go empty only when the pool is truly exhausted.
 
 0.17.4: the footer and README gained an allergen sentence: recipes contain common allergens (peanuts, eggs, dairy, wheat, soy, fish); check ingredient lists against your own needs. The eating styles vet meals along their own axes only.
 
@@ -119,7 +127,7 @@ Array of 7 slots (Sunday through Saturday as of 0.11.0), each holding a meal `id
 
 ## Catalog
 
-57 meals as of 0.16.0: 16 chicken, 8 turkey, 4 beef, 3 pork, 8 fish, 18 veggie (12 of them vegan), 9 pasta, 9 soup, 18 fast. Every profile pool can fill a week avoiding last week's seven.
+57 meals as of 0.16.0: 16 chicken, 8 turkey, 4 beef, 3 pork, 8 fish, 18 veggie (12 of them vegan), 9 pasta, 9 soup, 17 fast. Every profile pool can fill a week avoiding last week's seven.
 
 Invariants enforced by `dev/validate.mjs`:
 

@@ -1,4 +1,4 @@
-<!-- Version: 0.7.2 -->
+<!-- Version: 0.7.3 -->
 
 # Seven Suppers
 
@@ -47,6 +47,7 @@ The script installs dependencies on first run, bundles with esbuild, embeds the 
 
 - `dev/validate.mjs` enforces the catalog invariants: canonical units and categories so grocery lines always merge, per-style dietary rules, thermometer doneness cues, shoppable package sizes, and step wording that scales.
 - `dev/xcheck.mjs` cross-checks that every listed ingredient is actually mentioned in its recipe's steps.
+- `dev/planner-prop.mjs` property-tests the planner engine: thousands of randomized profile, filter, and locked-week states asserting quota ceilings never break and days only go empty when the pool is exhausted.
 - `dev/smoke.js` loads the built HTML in jsdom and verifies the app mounts.
 - `dev/func-test.js` exercises the features end to end: shuffle variety, locks, filters, scaling, share links, eating styles, quotas, and more.
 

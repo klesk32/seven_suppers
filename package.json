@@ -1,6 +1,6 @@
 {
   "name": "seven-suppers",
-  "version": "0.17.4",
+  "version": "0.18.0",
   "private": true,
   "description": "Simple weekly dinner planner with eating-style profiles and a combined grocery list",
   "dependencies": {

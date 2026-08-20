@@ -3,7 +3,7 @@
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
 // heart-healthy weekly quotas, per-serving spice notes, and feedback links
-const VERSION = "0.9.1";
+const VERSION = "0.10.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -191,9 +191,23 @@ function boot(seed, url = "http://localhost/") {
   check("out-of-range and empty slots decode to empty days", fweek.slice(2).every((id) => id === null));
   check("slug servings apply", f.window.localStorage.getItem("seven-suppers-servings") === "2");
 
+  // Golden share links: slugs minted at past catalog versions must decode to
+  // exactly the same weeks forever (dev/golden-links.json; never regenerate)
+  const golden = JSON.parse(fs.readFileSync(path.join(__dirname, "golden-links.json"), "utf8"));
+  for (const fix of golden.links) {
+    const gdom = boot(null, "http://localhost/#" + fix.slug);
+    await wait(600);
+    const gw = JSON.parse(gdom.window.localStorage.getItem("seven-suppers-week") || "[]");
+    check(`golden link (${fix.version}) decodes to its exact week`,
+      JSON.stringify(gw) === JSON.stringify(fix.week) &&
+      gdom.window.localStorage.getItem("seven-suppers-servings") === String(fix.servings));
+  }
+
   // Profiles: a fresh device defaults to heart healthy; a device with a saved
   // week from before profiles existed is inferred as gout friendly
   check("fresh device defaults to heart healthy", a.window.localStorage.getItem("seven-suppers-profile") === "heart");
+  check("active profile description is visible, not tooltip-only",
+    adoc.getElementById("root").textContent.includes("aiming for fish twice a week and red meat at most once"));
   check("pre-profile device with a saved week infers gout", b.window.localStorage.getItem("seven-suppers-profile") === "gout");
 
   // Instance G: heart-healthy quotas shape the shuffle: aim for 2 fish, never
