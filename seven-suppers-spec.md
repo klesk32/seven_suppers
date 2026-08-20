@@ -1,6 +1,14 @@
 # Seven Suppers - Specification
 
-Version: 0.17.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.17.4 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.17.4: the footer and README gained an allergen sentence: recipes contain common allergens (peanuts, eggs, dairy, wheat, soy, fish); check ingredient lists against your own needs. The eating styles vet meals along their own axes only.
+
+0.17.3: the page footer caught up with profiles. It was still the 0.1.0 low-purine disclaimer ("For medical questions about gout..."); it now speaks for all eating styles: guidance-based styles, USDA doneness, not medical advice.
+
+0.17.2: spice notes stopped talking down. The prefix is now "Want more heat?" and each note is just a dish-appropriate additive, with specific sauces named where one fits: Tapatio, Cholula, and Valentina on the Tex-Mex plates, Frank's RedHot and Tabasco on the American ones, harissa and Aleppo pepper for the shawarma, falafel, kebabs, and shakshuka, sriracha and chili crisp for the Asian-leaning bowls and noodles, Calabrian chile paste as an option on two Italian dishes, cayenne or chipotle in adobo for the chilis and curries.
+
+0.17.1: the spice note no longer appends "The shared batch stays mild." to every card; the note is just the suggestion ("Like it hotter? Sriracha stirred into your own bowl.").
 
 0.17.0 (recipe feedback):
 
@@ -90,7 +98,7 @@ Rules 2 through 5 apply to every catalog meal. Rule 1 defines the Gout friendly 
 | `v` | string | Version the meal was added in (0.15.0), e.g. `"0.10.0"`; anchors share-link index reconstruction |
 | `time` | number | Total minutes |
 | `tags` | string[] | Subset of: `chicken`, `turkey`, `beef`, `pork`, `fish`, `veggie`, `vegan`, `pasta`, `soup`, `fast` (fast = 25 min or less; vegan = no meat, eggs, dairy, or honey, and always paired with `veggie`; beef/pork/fish must be earned by a matching protein ingredient) |
-| `spice` | string | One-line per-serving heat suggestion (0.16.0), shown as "Like it hotter? ..." under the steps; the shared batch always stays mild |
+| `spice` | string | One-line heat suggestion (0.16.0), shown as "Want more heat? ..." under the steps; names a specific dish-appropriate additive |
 | `ing` | Ingredient[] | See below |
 | `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues |
 

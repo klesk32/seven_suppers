@@ -1,4 +1,4 @@
-<!-- Version: 0.7.0 -->
+<!-- Version: 0.7.2 -->
 
 # Seven Suppers
 
@@ -24,12 +24,12 @@ Live at [dinner.tinkerling.net](https://dinner.tinkerling.net), or open `seven-s
 
 All 57 meals share a few commitments:
 
-- **Approachable.** Familiar formats (tacos, pasta, sheet-pan dinners, build-your-own bowls) that work for mixed tables, kids included. Everything is mild by default; each card carries a "Like it hotter?" line with a per-serving heat suggestion, so heat lovers fix their own plate.
+- **Approachable.** Familiar formats (tacos, pasta, sheet-pan dinners, build-your-own bowls) that work for mixed tables, kids included. Everything is mild by default; each card carries a "Want more heat?" line naming a dish-appropriate additive (Tapatio on the tacos, chili crisp on the noodles, harissa on the shakshuka).
 - **Precise about doneness.** Always an instant-read thermometer per USDA (165 F poultry, 160 F ground beef and pork, 145 F fish and whole cuts), never a color check.
 - **Health-leaning.** Vegetables in most meals, Greek yogurt over sour cream, low-sodium broth and soy sauce, lean cuts only, no processed meats anywhere.
 - **Dairy-light.** No milk as an ingredient and no cheese-centric mains; cheese appears only as a skippable topping.
 
-The Gout friendly style is the strictest: no red meat, no fish or shellfish, no organ meats, with protein from poultry, eggs, low-fat dairy, beans, and tofu. This is a home cooking tool, not medical advice; if you are managing a condition, check with your doctor or dietitian.
+The Gout friendly style is the strictest: no red meat, no fish or shellfish, no organ meats, with protein from poultry, eggs, low-fat dairy, beans, and tofu. Recipes contain common allergens (peanuts, eggs, dairy, wheat, soy, fish); check ingredient lists against your own needs. This is a home cooking tool, not medical advice; if you are managing a condition, check with your doctor or dietitian.
 
 ## Recipe feedback
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
-// Seven Suppers: a gout-friendly, kid-friendly weekly dinner planner
-const APP_VERSION = "0.17.0";
+// Seven Suppers: a simple weekly dinner planner with eating-style profiles
+const APP_VERSION = "0.17.4";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -85,7 +85,7 @@ const PROFILE_QUOTAS = {
 const MEALS = [
   {
     id: "sheetpan-lemon-chicken", v: "0.1.0", title: "Sheet-Pan Lemon Chicken and Potatoes", time: 40, tags: ["chicken"],
-    spice: "A pinch of red pepper flakes over your portion.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -107,7 +107,7 @@ const MEALS = [
   },
   {
     id: "turkey-tacos", v: "0.1.0", title: "Turkey Taco Night", time: 25, tags: ["turkey", "fast"],
-    spice: "Hot sauce or sliced jalapenos at the table.",
+    spice: "Add Tapatio or pickled jalapenos.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "taco seasoning", q: 1, u: "packet", c: "pantry" },
@@ -129,7 +129,7 @@ const MEALS = [
   },
   {
     id: "veggie-fried-rice", v: "0.1.0", title: "Veggie Fried Rice with Eggs", time: 20, tags: ["veggie", "fast"],
-    spice: "Sriracha stirred into your own bowl.",
+    spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
       { n: "eggs", q: 4, u: "", c: "dairy" },
@@ -150,7 +150,7 @@ const MEALS = [
   },
   {
     id: "creamy-tomato-pasta", v: "0.1.0", title: "Creamy Tomato Pasta with Hidden Veggies", time: 30, tags: ["veggie", "pasta"],
-    spice: "Red pepper flakes over your serving.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "penne pasta", q: 12, u: "oz", c: "grains" },
       { n: "marinara sauce", q: 1, u: "jar", c: "pantry" },
@@ -171,7 +171,7 @@ const MEALS = [
   },
   {
     id: "chicken-tenders", v: "0.1.0", title: "Baked Chicken Tenders and Sweet Potato Fries", time: 35, tags: ["chicken"],
-    spice: "A dash of hot sauce in your ketchup.",
+    spice: "Add a dash of Frank's RedHot to the ketchup.",
     ing: [
       { n: "chicken tenderloins", q: 1.25, u: "lb", c: "protein" },
       { n: "sweet potatoes", q: 2, u: "", c: "produce" },
@@ -193,7 +193,7 @@ const MEALS = [
   },
   {
     id: "chickpea-curry", v: "0.1.0", title: "Mild Chickpea Coconut Curry", time: 25, tags: ["veggie", "vegan", "fast"],
-    spice: "A pinch of cayenne in your own bowl.",
+    spice: "Add a pinch of cayenne.",
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
@@ -219,7 +219,7 @@ const MEALS = [
   },
   {
     id: "chicken-noodle-soup", v: "0.1.0", title: "Easy Chicken Noodle Soup", time: 35, tags: ["chicken", "soup"],
-    spice: "A few grinds of black pepper and a dash of hot sauce in your bowl.",
+    spice: "Add black pepper and a dash of Tabasco.",
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "carrots", q: 3, u: "", c: "produce" },
@@ -242,7 +242,7 @@ const MEALS = [
   },
   {
     id: "breakfast-burritos", v: "0.1.0", title: "Egg and Black Bean Breakfast Burritos", time: 20, tags: ["veggie", "fast"],
-    spice: "Hot sauce rolled into your own burrito.",
+    spice: "Add Cholula or Valentina.",
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -266,7 +266,7 @@ const MEALS = [
   },
   {
     id: "honey-garlic-stirfry", v: "0.1.0", title: "Honey-Garlic Chicken Stir-Fry", time: 25, tags: ["chicken", "fast"],
-    spice: "Sriracha stirred into your own bowl.",
+    spice: "Add sriracha to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "frozen stir-fry vegetables", q: 1, u: "bag", c: "produce" },
@@ -288,7 +288,7 @@ const MEALS = [
   },
   {
     id: "veggie-primavera", v: "0.1.0", title: "Veggie Primavera Pasta", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
-    spice: "Red pepper flakes over your serving.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "whole wheat penne", q: 12, u: "oz", c: "grains" },
       { n: "zucchini", q: 1, u: "", c: "produce" },
@@ -310,7 +310,7 @@ const MEALS = [
   },
   {
     id: "turkey-meatballs", v: "0.1.0", title: "Turkey Meatballs with Spaghetti", time: 35, tags: ["turkey", "pasta"],
-    spice: "Red pepper flakes over your serving.",
+    spice: "Add red pepper flakes or Calabrian chile paste.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
@@ -333,7 +333,7 @@ const MEALS = [
   },
   {
     id: "omelet-night", v: "0.1.0", title: "Veggie Omelet Night with Toast", time: 20, tags: ["veggie", "fast"],
-    spice: "Hot sauce on your own omelet.",
+    spice: "Add Cholula or Tabasco.",
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
       { n: "bell pepper", q: 1, u: "", c: "produce" },
@@ -354,7 +354,7 @@ const MEALS = [
   },
   {
     id: "fajita-bowls", v: "0.1.0", title: "Chicken Fajita Bowls", time: 30, tags: ["chicken"],
-    spice: "Hot sauce or sliced jalapenos at the table.",
+    spice: "Add Tapatio or sliced jalapenos.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "bell pepper", q: 2, u: "", c: "produce" },
@@ -377,7 +377,7 @@ const MEALS = [
   },
   {
     id: "veggie-minestrone", v: "0.1.0", title: "Weeknight Vegetable Minestrone", time: 35, tags: ["veggie", "vegan", "soup"],
-    spice: "Red pepper flakes in your bowl.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "canned cannellini beans", q: 1, u: "can", c: "pantry" },
       { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
@@ -399,7 +399,7 @@ const MEALS = [
   },
   {
     id: "turkey-bean-chili", v: "0.1.0", title: "Turkey and White Bean Chili", time: 35, tags: ["turkey", "soup"],
-    spice: "A pinch of cayenne in your own bowl.",
+    spice: "Add a pinch of cayenne or minced chipotle in adobo.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "canned cannellini beans", q: 2, u: "can", c: "pantry" },
@@ -423,7 +423,7 @@ const MEALS = [
   },
   {
     id: "chicken-kebab-plates", v: "0.1.0", title: "Oven Chicken and Veggie Kebab Plates", time: 35, tags: ["chicken"],
-    spice: "A pinch of cayenne over your plate.",
+    spice: "Add Aleppo pepper or harissa.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "bell pepper", q: 2, u: "", c: "produce" },
@@ -446,7 +446,7 @@ const MEALS = [
   },
   {
     id: "tofu-nuggets", v: "0.1.0", title: "Crispy Tofu Nuggets with Rice and Cucumbers", time: 30, tags: ["veggie", "vegan"],
-    spice: "Sriracha in your dipping sauce.",
+    spice: "Add sriracha to the dipping sauce.",
     ing: [
       { n: "extra-firm tofu", q: 1, u: "block", c: "protein" },
       { n: "cornstarch", q: 3, u: "tbsp", c: "pantry" },
@@ -469,7 +469,7 @@ const MEALS = [
   },
   {
     id: "sweet-potato-bar", v: "0.1.0", title: "Loaded Sweet Potato Bar", time: 50, tags: ["veggie", "vegan"],
-    spice: "Hot sauce at the table.",
+    spice: "Add Cholula or chipotle salsa.",
     ing: [
       { n: "sweet potatoes", q: 4, u: "", c: "produce" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -490,7 +490,7 @@ const MEALS = [
   },
   {
     id: "pesto-pasta-peas", v: "0.1.0", title: "Pesto Pasta with Peas and Chicken", time: 25, tags: ["chicken", "pasta", "fast"],
-    spice: "Red pepper flakes over your serving.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "rotini pasta", q: 12, u: "oz", c: "grains" },
       { n: "basil pesto", q: 1, u: "jar", c: "pantry" },
@@ -511,7 +511,7 @@ const MEALS = [
   },
   {
     id: "turkey-burgers", v: "0.1.0", title: "Turkey Burgers with Cucumber Salad", time: 25, tags: ["turkey", "fast"],
-    spice: "Hot sauce on your own patty.",
+    spice: "Add a dash of Frank's RedHot.",
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
       { n: "whole wheat burger buns", q: 4, u: "", c: "grains" },
@@ -534,7 +534,7 @@ const MEALS = [
   },
   {
     id: "chicken-shawarma-bowls", v: "0.10.0", title: "Sheet-Pan Chicken Shawarma Bowls", time: 40, tags: ["chicken"],
-    spice: "A pinch of cayenne over your bowl.",
+    spice: "Add harissa to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "canned chickpeas", q: 1, u: "can", c: "pantry" },
@@ -559,7 +559,7 @@ const MEALS = [
   },
   {
     id: "chicken-tortilla-soup", v: "0.10.0", title: "Chicken Tortilla Soup", time: 35, tags: ["chicken", "soup"],
-    spice: "Sliced jalapenos or hot sauce in your bowl.",
+    spice: "Add Valentina or sliced jalapenos.",
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "low-sodium chicken broth", q: 6, u: "cup", c: "pantry" },
@@ -586,7 +586,7 @@ const MEALS = [
   },
   {
     id: "teriyaki-chicken-bowls", v: "0.10.0", title: "Teriyaki Chicken Rice Bowls", time: 25, tags: ["chicken", "fast"],
-    spice: "Sriracha zigzagged over your bowl.",
+    spice: "Add sriracha to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
@@ -611,7 +611,7 @@ const MEALS = [
   },
   {
     id: "bbq-chicken-sheetpan", v: "0.10.0", title: "Sheet-Pan BBQ Chicken and Potatoes", time: 45, tags: ["chicken"],
-    spice: "A spicier barbecue sauce on your portion.",
+    spice: "Swap in a spicier barbecue sauce.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -633,7 +633,7 @@ const MEALS = [
   },
   {
     id: "sesame-noodles-chicken", v: "0.10.0", title: "Sesame Noodles with Chicken and Cucumber", time: 25, tags: ["chicken", "pasta", "fast"],
-    spice: "Chili crisp or sriracha tossed into your serving.",
+    spice: "Add chili crisp or sriracha.",
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
@@ -658,7 +658,7 @@ const MEALS = [
   },
   {
     id: "lemon-orzo-chicken-soup", v: "0.10.0", title: "Lemon Orzo Chicken Soup", time: 35, tags: ["chicken", "soup"],
-    spice: "A few grinds of black pepper and red pepper flakes in your bowl.",
+    spice: "Add black pepper and red pepper flakes.",
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "orzo", q: 1, u: "cup", c: "grains" },
@@ -682,7 +682,7 @@ const MEALS = [
   },
   {
     id: "honey-mustard-chicken", v: "0.10.0", title: "Honey-Mustard Chicken with Green Beans", time: 40, tags: ["chicken"],
-    spice: "A pinch of cayenne in the glaze on your portion.",
+    spice: "Add a pinch of cayenne to the glaze.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -704,7 +704,7 @@ const MEALS = [
   },
   {
     id: "chicken-enchilada-skillet", v: "0.10.0", title: "Chicken Enchilada Skillet", time: 30, tags: ["chicken"],
-    spice: "Hot sauce or sliced jalapenos on your serving.",
+    spice: "Add Tapatio or sliced jalapenos.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "small corn tortillas", q: 8, u: "", c: "grains" },
@@ -728,7 +728,7 @@ const MEALS = [
   },
   {
     id: "coconut-butter-chicken", v: "0.10.0", title: "Mild Coconut Butter Chicken", time: 35, tags: ["chicken"],
-    spice: "A pinch of cayenne in your own bowl.",
+    spice: "Add a pinch of cayenne.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
@@ -753,7 +753,7 @@ const MEALS = [
   },
   {
     id: "turkey-sloppy-joes", v: "0.10.0", title: "Turkey Sloppy Joes", time: 25, tags: ["turkey", "fast"],
-    spice: "A dash of hot sauce on your own bun.",
+    spice: "Add a dash of Frank's RedHot.",
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
       { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
@@ -778,7 +778,7 @@ const MEALS = [
   },
   {
     id: "turkey-stuffed-peppers", v: "0.10.0", title: "Turkey and Rice Stuffed Peppers", time: 50, tags: ["turkey"],
-    spice: "Hot sauce over your pepper.",
+    spice: "Add a dash of Tabasco.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "bell pepper", q: 4, u: "", c: "produce" },
@@ -803,7 +803,7 @@ const MEALS = [
   },
   {
     id: "turkey-meatball-soup", v: "0.10.0", title: "Turkey Meatball and Orzo Soup", time: 40, tags: ["turkey", "soup"],
-    spice: "Red pepper flakes in your bowl.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "breadcrumbs", q: 0.5, u: "cup", c: "pantry" },
@@ -829,7 +829,7 @@ const MEALS = [
   },
   {
     id: "turkey-egg-roll-bowls", v: "0.10.0", title: "Turkey Egg Roll Bowls", time: 25, tags: ["turkey", "fast"],
-    spice: "Sriracha stirred into your own bowl.",
+    spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
       { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
@@ -853,7 +853,7 @@ const MEALS = [
   },
   {
     id: "red-lentil-soup", v: "0.10.0", title: "Red Lentil and Coconut Soup", time: 35, tags: ["veggie", "vegan", "soup"],
-    spice: "A pinch of cayenne in your own bowl.",
+    spice: "Add a pinch of cayenne.",
     ing: [
       { n: "red lentils", q: 1.5, u: "cup", c: "pantry" },
       { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
@@ -878,7 +878,7 @@ const MEALS = [
   },
   {
     id: "peanut-noodles-tofu", v: "0.10.0", title: "Peanut Noodles with Tofu and Edamame", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
-    spice: "Sriracha or chili crisp tossed into your serving.",
+    spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
       { n: "extra-firm tofu", q: 1, u: "block", c: "protein" },
@@ -906,7 +906,7 @@ const MEALS = [
   },
   {
     id: "black-bean-burgers", v: "0.10.0", title: "Black Bean Burgers with Oven Fries", time: 50, tags: ["veggie", "vegan"],
-    spice: "Hot sauce on your own bun.",
+    spice: "Add Cholula or sliced jalapenos.",
     ing: [
       { n: "canned black beans", q: 2, u: "can", c: "pantry" },
       { n: "rolled oats", q: 1, u: "cup", c: "grains" },
@@ -933,7 +933,7 @@ const MEALS = [
   },
   {
     id: "shakshuka", v: "0.10.0", title: "Skillet Eggs in Spiced Tomato Sauce", time: 30, tags: ["veggie"],
-    spice: "A pinch of cayenne over your eggs.",
+    spice: "Add harissa or a pinch of cayenne.",
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
       { n: "canned crushed tomatoes", q: 1, u: "can", c: "pantry" },
@@ -957,7 +957,7 @@ const MEALS = [
   },
   {
     id: "sweet-potato-tacos", v: "0.10.0", title: "Sweet Potato and Black Bean Tacos", time: 40, tags: ["veggie", "vegan"],
-    spice: "Hot sauce at the table.",
+    spice: "Add Tapatio or Cholula.",
     ing: [
       { n: "sweet potatoes", q: 3, u: "", c: "produce" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -983,7 +983,7 @@ const MEALS = [
   },
   {
     id: "pasta-e-ceci", v: "0.10.0", title: "Chickpea and Tomato Pasta Stew", time: 30, tags: ["veggie", "vegan", "pasta", "soup"],
-    spice: "Red pepper flakes in your bowl.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "small pasta shells", q: 1.5, u: "cup", c: "grains" },
@@ -1006,7 +1006,7 @@ const MEALS = [
   },
   {
     id: "veggie-lo-mein", v: "0.10.0", title: "Veggie Lo Mein", time: 25, tags: ["veggie", "vegan", "pasta", "fast"],
-    spice: "Sriracha or chili crisp tossed into your serving.",
+    spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
       { n: "frozen stir-fry vegetables", q: 1, u: "bag", c: "produce" },
@@ -1030,7 +1030,7 @@ const MEALS = [
   },
   {
     id: "potato-pea-curry", v: "0.10.0", title: "Potato and Pea Curry", time: 40, tags: ["veggie", "vegan"],
-    spice: "A pinch of cayenne in your own bowl.",
+    spice: "Add a pinch of cayenne.",
     ing: [
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
       { n: "frozen peas", q: 1.5, u: "cup", c: "produce" },
@@ -1056,7 +1056,7 @@ const MEALS = [
   },
   {
     id: "falafel-bowls", v: "0.10.0", title: "Baked Chickpea Patty Bowls", time: 40, tags: ["veggie"],
-    spice: "Hot sauce drizzled over your bowl.",
+    spice: "Add harissa to taste.",
     ing: [
       { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
       { n: "fresh parsley", q: 1, u: "bunch", c: "produce" },
@@ -1084,7 +1084,7 @@ const MEALS = [
   },
   {
     id: "sheetpan-lemon-salmon", v: "0.16.0", title: "Sheet-Pan Lemon Salmon with Potatoes and Green Beans", time: 35, tags: ["fish"],
-    spice: "Red pepper flakes over your fillet.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "salmon fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -1105,7 +1105,7 @@ const MEALS = [
   },
   {
     id: "honey-garlic-salmon", v: "0.16.0", title: "Honey-Garlic Salmon with Broccoli and Rice", time: 25, tags: ["fish", "fast"],
-    spice: "A little sriracha on your portion.",
+    spice: "Add sriracha to taste.",
     ing: [
       { n: "salmon fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
@@ -1128,7 +1128,7 @@ const MEALS = [
   },
   {
     id: "fish-tacos", v: "0.16.0", title: "Crispy Baked Fish Tacos with Slaw", time: 35, tags: ["fish"],
-    spice: "Hot sauce or sliced jalapenos at the table.",
+    spice: "Add Tapatio or Valentina.",
     ing: [
       { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "small corn tortillas", q: 8, u: "", c: "grains" },
@@ -1155,7 +1155,7 @@ const MEALS = [
   },
   {
     id: "tuna-patties", v: "0.16.0", title: "Crispy Tuna Patties with Lemon Yogurt Sauce", time: 25, tags: ["fish", "fast"],
-    spice: "A dash of hot sauce in your yogurt sauce.",
+    spice: "Add a dash of Tabasco to the yogurt sauce.",
     ing: [
       { n: "canned tuna", q: 3, u: "can", c: "protein" },
       { n: "eggs", q: 2, u: "", c: "dairy" },
@@ -1178,7 +1178,7 @@ const MEALS = [
   },
   {
     id: "baked-fish-sticks", v: "0.16.0", title: "Baked Fish Sticks with Sweet Potato Fries", time: 40, tags: ["fish"],
-    spice: "A dash of hot sauce in your ketchup.",
+    spice: "Add a dash of Frank's RedHot to the ketchup.",
     ing: [
       { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "sweet potatoes", q: 2, u: "", c: "produce" },
@@ -1201,7 +1201,7 @@ const MEALS = [
   },
   {
     id: "tilapia-foil-packets", v: "0.16.0", title: "Tilapia and Veggie Foil Packets", time: 30, tags: ["fish"],
-    spice: "Red pepper flakes sprinkled into your packet.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "tilapia fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "zucchini", q: 2, u: "", c: "produce" },
@@ -1224,7 +1224,7 @@ const MEALS = [
   },
   {
     id: "tomato-braised-cod", v: "0.16.0", title: "Tomato-Braised Cod with White Beans", time: 30, tags: ["fish"],
-    spice: "Red pepper flakes in your bowl.",
+    spice: "Add red pepper flakes or Calabrian chile paste.",
     ing: [
       { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
@@ -1247,7 +1247,7 @@ const MEALS = [
   },
   {
     id: "teriyaki-salmon-bowls", v: "0.16.0", title: "Teriyaki Salmon Rice Bowls", time: 30, tags: ["fish"],
-    spice: "Sriracha zigzagged over your bowl.",
+    spice: "Add sriracha to taste.",
     ing: [
       { n: "salmon fillets", q: 1.5, u: "lb", c: "protein" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
@@ -1271,7 +1271,7 @@ const MEALS = [
   },
   {
     id: "beef-tacos", v: "0.16.0", title: "Classic Beef Taco Night", time: 25, tags: ["beef", "fast"],
-    spice: "Hot sauce or sliced jalapenos at the table.",
+    spice: "Add Tapatio or pickled jalapenos.",
     ing: [
       { n: "lean ground beef", q: 1.25, u: "lb", c: "protein" },
       { n: "olive oil", q: 0.5, u: "tbsp", c: "pantry" },
@@ -1294,7 +1294,7 @@ const MEALS = [
   },
   {
     id: "steak-fajitas", v: "0.16.0", title: "Sheet-Pan Steak Fajitas", time: 35, tags: ["beef"],
-    spice: "Hot sauce or sliced jalapenos at the table.",
+    spice: "Add Tapatio or sliced jalapenos.",
     ing: [
       { n: "flank steak", q: 1.25, u: "lb", c: "protein" },
       { n: "bell pepper", q: 3, u: "", c: "produce" },
@@ -1316,7 +1316,7 @@ const MEALS = [
   },
   {
     id: "spaghetti-beef-marinara", v: "0.16.0", title: "Spaghetti with Beefy Hidden-Veggie Marinara", time: 35, tags: ["beef", "pasta"],
-    spice: "Red pepper flakes over your serving.",
+    spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "lean ground beef", q: 1, u: "lb", c: "protein" },
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
@@ -1339,7 +1339,7 @@ const MEALS = [
   },
   {
     id: "beef-bean-chili", v: "0.16.0", title: "Beef and Bean Chili with Chips", time: 40, tags: ["beef", "soup"],
-    spice: "A pinch of cayenne in your own bowl.",
+    spice: "Add a pinch of cayenne or minced chipotle in adobo.",
     ing: [
       { n: "lean ground beef", q: 1, u: "lb", c: "protein" },
       { n: "canned black beans", q: 1, u: "can", c: "pantry" },
@@ -1365,7 +1365,7 @@ const MEALS = [
   },
   {
     id: "sheetpan-pork-tenderloin", v: "0.16.0", title: "Sheet-Pan Pork Tenderloin with Apples and Potatoes", time: 50, tags: ["pork"],
-    spice: "A dash of hot sauce on your slices.",
+    spice: "Add a pinch of cayenne to the rub.",
     ing: [
       { n: "pork tenderloin", q: 1.25, u: "lb", c: "protein" },
       { n: "apples", q: 2, u: "", c: "produce" },
@@ -1387,7 +1387,7 @@ const MEALS = [
   },
   {
     id: "ginger-pork-rice-bowls", v: "0.16.0", title: "Ginger Pork Rice Bowls", time: 30, tags: ["pork"],
-    spice: "Sriracha stirred into your own bowl.",
+    spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "ground pork", q: 1, u: "lb", c: "protein" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
@@ -1411,7 +1411,7 @@ const MEALS = [
   },
   {
     id: "skillet-pork-chops", v: "0.16.0", title: "Skillet Pork Chops with Smashed Potatoes and Peas", time: 35, tags: ["pork"],
-    spice: "A dash of hot sauce on your chop.",
+    spice: "Add a dash of Frank's RedHot.",
     ing: [
       { n: "thick-cut boneless pork chops", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
@@ -1850,7 +1850,7 @@ function RecipeDetails({ meal, scale }) {
       </ol>
       {meal.spice && (
         <div style={{ fontSize: 12, color: P.inkSoft, marginTop: 8 }}>
-          Like it hotter? {meal.spice} The shared batch stays mild.
+          Want more heat? {meal.spice}
         </div>
       )}
       {/* The recipe field prefills through the issue form's field id */}
@@ -2700,8 +2700,10 @@ export default function SevenSuppers() {
       )}
 
       <footer className="no-print" style={{ maxWidth: 860, margin: "0 auto", padding: "8px 16px 28px", fontSize: 12, color: P.inkSoft, lineHeight: 1.5 }}>
-        Built around common low-purine guidance: lean poultry, eggs, low-fat dairy, beans, grains,
-        and plenty of vegetables. For medical questions about gout, check with your doctor or a dietitian.
+        Eating styles follow common published dietary guidance, and doneness checks follow USDA
+        temperatures. Recipes contain common allergens (peanuts, eggs, dairy, wheat, soy, fish);
+        check ingredient lists against your own needs. This is a home cooking tool, not medical
+        advice; for questions about your own diet, check with your doctor or a dietitian.
       </footer>
     </div>
   );

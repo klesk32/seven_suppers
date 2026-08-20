@@ -3,7 +3,7 @@
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
 // heart-healthy weekly quotas, per-serving spice notes, and feedback links
-const VERSION = "0.9.0";
+const VERSION = "0.9.1";
 const fs = require("fs");
 const path = require("path");
 
@@ -121,7 +121,7 @@ function boot(seed, url = "http://localhost/") {
   await wait(200);
   const ptext = cdoc.getElementById("root").textContent;
   check("print view has 165 F checks", (ptext.match(/165 F/g) || []).length === 3);
-  check("recipe cards carry the spice note", (ptext.match(/Like it hotter\?/g) || []).length === 3);
+  check("recipe cards carry the spice note", (ptext.match(/Want more heat\?/g) || []).length === 3);
   const fbLinks = [...cdoc.querySelectorAll("a")].filter((x) => x.href.includes("/issues/new?template=recipe-feedback"));
   check("recipe cards link to prefilled feedback issues",
     fbLinks.length === 3 && fbLinks.every((x) => x.href.includes("recipe=") && x.href.includes("title=Recipe%20feedback")));
