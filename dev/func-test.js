@@ -3,7 +3,7 @@
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
 // heart-healthy weekly quotas, per-serving spice notes, and feedback links
-const VERSION = "0.10.0";
+const VERSION = "0.11.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -127,7 +127,9 @@ function boot(seed, url = "http://localhost/") {
     fbLinks.length === 3 && fbLinks.every((x) => x.href.includes("recipe=") && x.href.includes("title=Recipe%20feedback")));
   check("print view has no pinkness checks", !/no pink/i.test(ptext));
   check("recipe cards show fractional countables", ptext.includes("1 and a half cucumbers"));
-  check("scaled cards carry the trim-to-match note", ptext.includes("trim it to match"));
+  check("step amounts scale with servings", ptext.includes("three-quarters of a teaspoon of salt"));
+  check("no unresolved step tokens leak", !ptext.includes("[["));
+  check("the trim-to-match note is gone", !ptext.includes("trim it to match"));
   check("no fractional eggs anywhere", !/half an? egg/i.test(ptext));
 
   // Instance D: vegan chip, catalog gray-out, and drag-to-swap

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.6.0";
+const VERSION = "0.7.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -142,6 +142,36 @@ const UNSCALED = /whole (can|jar|bag|block)\b|both cans|\b\d+ shallow wells|into
 MEALS.forEach((m) => m.steps.forEach((s) => {
   if (UNSCALED.test(s)) fail(`${m.id} has non-scaling step wording: "${s.match(UNSCALED)[0]}"`);
 }));
+
+// 7d. step amounts must scale: absolute tsp/tbsp/cup amounts belong in
+// [[q|unit|...]] tokens, never in bare prose. Relative phrasings ("the rest
+// of the oil", "per seasoning packet used") are exempt by construction.
+const PER_PACKET_OK = "of a cup of water per seasoning packet used";
+MEALS.forEach((m) => m.steps.forEach((s) => {
+  const stripped = s.replace(/\[\[[0-9.]+\|(?:tsp|tbsp|cup)\|[^\]]+\]\]/g, "").replace(PER_PACKET_OK, "");
+  const bare = stripped.match(/\b(?:\d[\d.\/]*|a|an|another|half a) (?:tablespoons?|teaspoons?|cups?) of\b/);
+  if (bare) fail(`${m.id} has un-tokenized amount "${bare[0]}" in a step`);
+}));
+
+// 7e. split-ingredient allocation: when a step takes a tokenized share of a
+// listed tsp/tbsp/cup ingredient, the shares plus at most one "the rest"
+// must account for exactly the listed amount
+MEALS.forEach((m) => {
+  const text = m.steps.join(" ");
+  m.ing.forEach((i) => {
+    if (!["tsp", "tbsp", "cup"].includes(i.u)) return;
+    const short = i.n.split(" ").pop(); // "olive oil" -> "oil"
+    const tokens = [...text.matchAll(/\[\[([0-9.]+)\|(tsp|tbsp|cup)\|([^\]]+)\]\]/g)]
+      .filter((t) => t[3].includes(i.n) || t[3].endsWith(`the ${short}`));
+    if (tokens.length === 0) return;
+    if (tokens.some((t) => t[2] !== i.u)) fail(`${m.id}: ${i.n} token unit mismatch`);
+    const sum = tokens.reduce((a, t) => a + parseFloat(t[1]), 0);
+    const rests = (text.match(new RegExp(`the rest of the (?:${i.n}|${short})`, "g")) || []).length;
+    if (rests > 1) fail(`${m.id}: ${i.n} has ${rests} "the rest" mentions`);
+    if (rests === 1 && sum >= i.q) fail(`${m.id}: ${i.n} tokens use ${sum} of ${i.q} ${i.u} but a step still adds "the rest"`);
+    if (rests === 0 && sum !== i.q) fail(`${m.id}: ${i.n} tokens use ${sum} of ${i.q} ${i.u} with no "the rest" step`);
+  });
+});
 
 // 8. non-staple, non-discrete measured items should have a PACKS entry or be sold that way
 const SELF_SHOPPABLE = new Set(["lb", "oz", "", "bunch"]);

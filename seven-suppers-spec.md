@@ -1,6 +1,13 @@
 # Seven Suppers - Specification
 
-Version: 0.18.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.19.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.19.0 (step-aware scaling):
+
+- Recipe steps now scale with the serving count. Absolute amounts in step prose are `[[q|unit|phrase]]` tokens ("Heat [[2|tbsp|of the olive oil]]..."); the renderer multiplies by the scale and rounds to a measure a kitchen owns: quarter-teaspoon and quarter-cup granularity, half-tablespoon granularity, never below the smallest measure. At 2 servings the salmon pan gets "1 tablespoon of the olive oil"; at 12, "6 tablespoons". The "trim it to match" note is gone because there is nothing left to trim: the catalog held only 41 absolute amounts (mostly salt and split olive oil; the 0.14.0 sweep had removed the rest), 39 became tokens, and the 2 per-packet taco waters were already scale-relative prose.
+- Relative phrasings ("the rest of the oil", "half of the lemons", "double its volume of water") stay prose since they scale by construction. Five recipes said "the last tablespoon of olive oil", which is a remainder that dishonestly names an amount (at 2 servings the remainder is half a tablespoon); all five normalized to "the rest of the olive oil".
+- The token layer doubles as the ingredient-allocation audit: the validator requires that tokenized shares of a listed tsp/tbsp/cup ingredient, plus at most one "the rest" step, account for exactly the listed quantity, and it forbids bare absolute amounts anywhere in step prose. The audit caught the five "last tablespoon" cases on its first run.
+- `dev/render-check.mjs` (run by the build) pins the 4-serving rendering byte-for-byte to `dev/steps-baseline.json`, so no future edit can silently reword a recipe; the only baseline diffs ever approved were normalizations ("a teaspoon of salt" to "1 teaspoon of salt", and the five remainder phrases). It also renders every step at every supported serving count and rejects unresolved tokens or unmeasurable amounts.
 
 0.18.0 (trust pass, prompted by an external review):
 
@@ -108,7 +115,7 @@ Rules 2 through 5 apply to every catalog meal. Rule 1 defines the Gout friendly 
 | `tags` | string[] | Subset of: `chicken`, `turkey`, `beef`, `pork`, `fish`, `veggie`, `vegan`, `pasta`, `soup`, `fast` (fast = 25 min or less; vegan = no meat, eggs, dairy, or honey, and always paired with `veggie`; beef/pork/fish must be earned by a matching protein ingredient) |
 | `spice` | string | One-line heat suggestion (0.16.0), shown as "Want more heat? ..." under the steps; names a specific dish-appropriate additive |
 | `ing` | Ingredient[] | See below |
-| `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues |
+| `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues. Absolute amounts are `[[q\|unit\|phrase]]` tokens that scale with the serving count (0.19.0); relative phrasings stay prose |
 
 All recipes are written for `BASE_SERVINGS` (4) servings; there is no per-meal serves field.
 

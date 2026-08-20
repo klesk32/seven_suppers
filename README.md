@@ -1,4 +1,4 @@
-<!-- Version: 0.7.3 -->
+<!-- Version: 0.8.0 -->
 
 # Seven Suppers
 
@@ -16,7 +16,7 @@ Live at [dinner.tinkerling.net](https://dinner.tinkerling.net), or open `seven-s
 - **Fill a week fast.** Shuffle all seven days, reroll one, or pick by hand. Lock days you like, drag dinners between days, and let variety memory keep this week from repeating last week.
 - **Shuffle filters.** Constrain the draw to 35 minutes or less, veggie or vegan only, or no soups. Filters stack and persist.
 - **One grocery list.** Ingredients merge across recipes into shoppable lines grouped by aisle, with package sizes ("1 can (28 oz) crushed tomatoes") and honest need notes ("2 onions (need 1 and a half)"). Pantry staples get their own check-before-you-shop section.
-- **Serving scaling.** Recipes are written for 4 and scale from 1 to 12, rounding countable items to the nearest honest half and indivisible ones (eggs, buns, tortillas) up to whole units.
+- **Serving scaling.** Recipes are written for 4 and scale from 1 to 12, rounding countable items to the nearest honest half and indivisible ones (eggs, buns, tortillas) up to whole units. The steps scale too: cook for 2 and the card says "1 tablespoon of the olive oil" and "half a teaspoon of salt", not a note telling you to do the math.
 - **Share the week as a link.** The address bar always holds a short link for the current plan, and a "Copy week link" button copies it. Open it on another device or send it to whoever you cook with, and it becomes that browser's plan. Links keep working as the catalog grows.
 - **Printable recipe cards.** Each meal has 5 to 7 numbered steps that assume no technique knowledge: every step names the pan and heat level, gives times and plain-language cut sizes, and ends with a doneness check.
 
@@ -47,6 +47,7 @@ The script installs dependencies on first run, bundles with esbuild, embeds the 
 
 - `dev/validate.mjs` enforces the catalog invariants: canonical units and categories so grocery lines always merge, per-style dietary rules, thermometer doneness cues, shoppable package sizes, and step wording that scales.
 - `dev/xcheck.mjs` cross-checks that every listed ingredient is actually mentioned in its recipe's steps.
+- `dev/render-check.mjs` pins the 4-serving step text byte-for-byte to an approved baseline and renders every step at every serving count, so scaling changes can never silently reword a recipe.
 - `dev/planner-prop.mjs` property-tests the planner engine: thousands of randomized profile, filter, and locked-week states asserting quota ceilings never break and days only go empty when the pool is exhausted.
 - `dev/smoke.js` loads the built HTML in jsdom and verifies the app mounts.
 - `dev/func-test.js` exercises the features end to end: shuffle variety, locks, filters, scaling, share links, eating styles, quotas, and more.

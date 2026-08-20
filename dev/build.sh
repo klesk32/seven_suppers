@@ -3,7 +3,7 @@
 #   seven-suppers.html  - standalone, open on any computer, no server needed
 #   dev/artifact.html   - body-only variant for publishing as a claude.ai artifact
 #   public/index.html   - deploy staging for Cloudflare (npx wrangler deploy)
-VERSION="0.4.0"
+VERSION="0.5.0"
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -47,6 +47,7 @@ cp seven-suppers.html public/index.html
 
 node dev/validate.mjs
 node dev/xcheck.mjs
+node dev/render-check.mjs
 node dev/planner-prop.mjs
 node dev/smoke.js
 node dev/func-test.js

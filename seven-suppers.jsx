@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.18.0";
+const APP_VERSION = "0.19.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -98,7 +98,7 @@ const MEALS = [
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
       "Rinse the potatoes and cut each one in half. No peeling needed.",
-      "Put the potatoes and chicken on the pan. Drizzle with the olive oil, sprinkle with the garlic powder, the oregano, 1 teaspoon of salt, and a little pepper, then mix with your hands until coated. Spread everything in a single layer. Wash your hands after touching raw chicken.",
+      "Put the potatoes and chicken on the pan. Drizzle with the olive oil, sprinkle with the garlic powder, the oregano, [[1|tsp|of salt]], and a little pepper, then mix with your hands until coated. Spread everything in a single layer. Wash your hands after touching raw chicken.",
       "Roast for 20 minutes. Set a timer.",
       "While it roasts, cut the broccoli into bite-size pieces and cut the lemon in half.",
       "Add the broccoli to the pan, stir once, and roast 15 more minutes. Poke an instant-read thermometer into the thickest piece of chicken, not touching the pan: it is done at 165 F. Thighs stay juicy even at 175 F, so give it 5 more minutes if it reads low.",
@@ -142,7 +142,7 @@ const MEALS = [
     steps: [
       "Cook the rice following the package directions, then spread it on a plate to cool while you prep. Leftover cold rice from another night works even better and skips this step.",
       "Crack the eggs into a bowl and beat them with a fork until evenly yellow. Slice the green onions into thin rings.",
-      "Heat 1 tablespoon of the oil in your largest skillet over medium heat for 1 minute. Pour in the eggs, wait 20 seconds, then push them around with a spatula until they set into soft clumps, about 1 minute. Slide them onto a plate.",
+      "Heat [[1|tbsp|of the oil]] in your largest skillet over medium heat for 1 minute. Pour in the eggs, wait 20 seconds, then push them around with a spatula until they set into soft clumps, about 1 minute. Slide them onto a plate.",
       "Add the rest of the oil to the pan, then the frozen peas and carrots straight from the bag. Sprinkle in the garlic powder and stir for 2 minutes.",
       "Add the rice and cook 3 to 4 minutes, stirring every 30 seconds, until everything is hot.",
       "Turn off the heat. Stir in the soy sauce, the eggs, and the green onions, and serve.",
@@ -161,7 +161,7 @@ const MEALS = [
       { n: "parmesan", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring it to a rolling boil over high heat.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
       "While the water heats, peel the carrots and grate them and the zucchini on the large holes of a box grater. The zucchini skin can stay on.",
       "Pour the marinara into a second pot over medium-low heat, stir in the grated vegetables and the Italian seasoning, and let it bubble gently for 8 minutes, stirring occasionally.",
       "When the water boils, add the penne and cook for the time printed on the box. Before draining, scoop out a coffee mug of the cooking water, then drain the pasta in a colander.",
@@ -184,8 +184,8 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Get out two baking sheets.",
-      "Scrub the sweet potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with 2 tablespoons of the olive oil and a big pinch of salt on one pan and spread them out flat.",
-      "Crack the eggs into a bowl and beat them with a fork. Pour the panko into a second bowl with the smoked paprika, the garlic powder, half a teaspoon of salt, and the last tablespoon of olive oil, and stir until the crumbs look slightly damp; this is what lets them turn golden.",
+      "Scrub the sweet potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan and spread them out flat.",
+      "Crack the eggs into a bowl and beat them with a fork. Pour the panko into a second bowl with the smoked paprika, the garlic powder, [[0.5|tsp|of salt]], and the rest of the olive oil, and stir until the crumbs look slightly damp; this is what lets them turn golden.",
       "One at a time: dip a tender in the egg, let the extra drip off, roll it in panko, press so the crumbs stick, and lay it on the second pan. Wash your hands when done.",
       "Bake both pans 10 minutes, flip everything with tongs, then bake 10 more, until the tenders are golden. Poke an instant-read thermometer lengthwise into the thickest tender: it is done at 165 F.",
       "Serve with ketchup.",
@@ -213,7 +213,7 @@ const MEALS = [
       "Peel the onion and chop it into small pieces, roughly pea-size. Uneven is fine.",
       "Warm the olive oil in a medium pot over medium heat for 30 seconds. Add the onion and cook 4 minutes, stirring every minute, until it looks glassy instead of white.",
       "Add the curry powder, garam masala, garlic powder, and ground ginger and stir for 30 seconds until they smell toasty.",
-      "Open the chickpeas, pour them into a colander, and rinse under the tap. Add them to the pot with the diced tomatoes (juice included), the coconut milk, and half a teaspoon of salt. Cover and let it bubble gently for 10 minutes.",
+      "Open the chickpeas, pour them into a colander, and rinse under the tap. Add them to the pot with the diced tomatoes (juice included), the coconut milk, and [[0.5|tsp|of salt]]. Cover and let it bubble gently for 10 minutes.",
       "Turn off the heat and stir in the spinach a handful at a time until the leaves go dark and soft. Squeeze half the lime in, then taste a cooled spoonful and add salt a pinch at a time until it tastes bright instead of flat. Spoon over the rice.",
     ],
   },
@@ -300,7 +300,7 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring to a rolling boil over high heat.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring to a rolling boil over high heat.",
       "Cut the zucchini lengthwise into quarters, then across into small wedges. Cut the cherry tomatoes in half. Peel the garlic and chop it into tiny bits.",
       "Add the penne to the boiling water and cook for the time on the box, dropping the frozen peas in for the last 2 minutes. Before draining, scoop out a coffee mug of the cooking water.",
       "While the pasta cooks, warm the olive oil in a large skillet over medium heat. Add the zucchini and cook 3 minutes, then add the tomatoes, garlic, and oregano for 2 more.",
@@ -323,7 +323,7 @@ const MEALS = [
       { n: "parmesan", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, onion powder, and half a teaspoon of salt, and mix with clean hands just until combined.",
+      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, onion powder, and [[0.5|tsp|of salt]], and mix with clean hands just until combined.",
       "Roll the mix into balls the size of a golf ball and set them on a plate. Wash your hands after.",
       "Warm the olive oil in a large skillet over medium heat. Add the meatballs and turn them every 2 minutes with tongs until browned in spots, about 6 minutes. They finish cooking in the sauce.",
       "Pour the marinara over the meatballs, lower the heat to a gentle bubble, cover, and cook 12 minutes. Poke an instant-read thermometer into the middle of the biggest meatball: 165 F means done.",
@@ -439,7 +439,7 @@ const MEALS = [
     steps: [
       "Start the rice following the package directions. Turn the broiler on high and move an oven rack about 6 inches below it. Line a baking sheet with foil.",
       "Cut the chicken, peppers, zucchini, and onion into chunks of roughly the same size, about an inch. Wash the board, knife, and your hands with soap after the chicken.",
-      "Toss everything with the olive oil, the oregano, the smoked paprika, a teaspoon of salt, and some pepper, then thread onto skewers or just spread it on the pan.",
+      "Toss everything with the olive oil, the oregano, the smoked paprika, [[1|tsp|of salt]], and some pepper, then thread onto skewers or just spread it on the pan.",
       "Broil 6 to 7 minutes, turn everything with tongs, and broil 6 to 7 more, until the edges brown. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
       "Fluff the rice with a fork, squeeze the lemon over the chicken, and serve it all together with the yogurt for dipping.",
     ],
@@ -501,7 +501,7 @@ const MEALS = [
       { n: "parmesan", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring to a rolling boil.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring to a rolling boil.",
       "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
       "Add the rotini to the boiling water and cook for the time on the box, dropping the frozen peas in for the last 2 minutes. Scoop out a coffee mug of the cooking water before draining.",
       "While the pasta cooks, warm the olive oil in a large skillet over medium-high heat. Add the chicken in one layer, leave it 4 minutes, then stir and cook 4 more. Poke an instant-read thermometer into a big piece: 165 F means done.",
@@ -524,8 +524,8 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Put the turkey in a bowl with the garlic powder, onion powder, a teaspoon of salt, and some pepper. Mix briefly and shape into patties a little wider than the buns (they shrink), one per bun, pressing a small dimple into the center of each. Wash your hands after.",
-      "Slice the cucumbers and tomatoes, and toss them with 1 tablespoon of the olive oil, the juice of the lemon, and a pinch of salt.",
+      "Put the turkey in a bowl with the garlic powder, onion powder, [[1|tsp|of salt]], and some pepper. Mix briefly and shape into patties a little wider than the buns (they shrink), one per bun, pressing a small dimple into the center of each. Wash your hands after.",
+      "Slice the cucumbers and tomatoes, and toss them with [[1|tbsp|of the olive oil]], the juice of the lemon, and a pinch of salt.",
       "Heat the rest of the oil in a large skillet over medium heat. Lay in the patties and cook 5 minutes per side without pressing on them.",
       "Poke an instant-read thermometer through the side of a patty into its middle: ground turkey is done at 165 F. Color alone cannot tell you this, so cook another minute per side and check again if it reads low.",
       "Optional: toast the buns cut-side down in the empty pan for 1 minute.",
@@ -550,7 +550,7 @@ const MEALS = [
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
       "Peel the red onion and cut it into thin wedges. Open the chickpeas, pour them into a colander, rinse under the tap, and shake them dry.",
-      "Put the chicken, onion, and chickpeas on the pan. Add the olive oil, cumin, smoked paprika, garlic powder, a teaspoon of salt, and some pepper, and mix with your hands until everything is coated. Spread it into a single layer. Wash your hands after touching raw chicken.",
+      "Put the chicken, onion, and chickpeas on the pan. Add the olive oil, cumin, smoked paprika, garlic powder, [[1|tsp|of salt]], and some pepper, and mix with your hands until everything is coated. Spread it into a single layer. Wash your hands after touching raw chicken.",
       "Roast 30 minutes without stirring. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and thighs are even better at 175 F.",
       "While it roasts, stir the yogurt in a small bowl with the juice of half the lemon and a pinch of salt. That is your sauce.",
       "Put the pitas in the oven for the last 2 minutes to warm.",
@@ -602,7 +602,7 @@ const MEALS = [
     steps: [
       "Start the rice following the package directions.",
       "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
-      "Peel the garlic and chop it into tiny bits. Stir the soy sauce, honey, rice vinegar, ground ginger, garlic, cornstarch, and 3 tablespoons of water together in a small bowl until no lumps are left.",
+      "Peel the garlic and chop it into tiny bits. Stir the soy sauce, honey, rice vinegar, ground ginger, garlic, cornstarch, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
       "Heat the oil in your largest skillet over medium-high until it shimmers. Add the chicken in one layer, leave it 3 minutes, then stir and cook 3 more.",
       "Add the frozen broccoli straight from the bag with a splash of water, cover, and cook 4 minutes.",
       "Stir the sauce again (the cornstarch settles to the bottom) and pour it in. Let it bubble 1 to 2 minutes until it turns glossy and clings to the chicken. Poke an instant-read thermometer into the biggest piece: 165 F means done.",
@@ -623,8 +623,8 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil. Do not skip the foil here, because barbecue sauce bakes onto a bare pan like glue.",
-      "Rinse the potatoes and cut each one in half. Toss them on the pan with 1 tablespoon of the olive oil, the smoked paprika, the garlic powder, and a big pinch of salt, then push them to one side.",
-      "Put the chicken on the empty side, rub it with the rest of the oil and a teaspoon of salt, and wash your hands.",
+      "Rinse the potatoes and cut each one in half. Toss them on the pan with [[1|tbsp|of the olive oil]], the smoked paprika, the garlic powder, and a big pinch of salt, then push them to one side.",
+      "Put the chicken on the empty side, rub it with the rest of the oil and [[1|tsp|of salt]], and wash your hands.",
       "Roast 20 minutes. Set a timer.",
       "Snap the stem ends off the green beans. Scatter them over the pan, then brush the chicken generously with barbecue sauce.",
       "Roast 15 more minutes. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and 175 F makes thighs even more tender.",
@@ -647,7 +647,7 @@ const MEALS = [
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring it to a rolling boil over high heat.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
       "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
       "Stir the soy sauce, sesame oil, honey, rice vinegar, and garlic powder together in a small bowl. Slice the cucumbers into thin half-moons and the green onions into rings.",
       "Add the spaghetti to the boiling water and cook for the time on the box. Before draining, scoop out a coffee mug of the cooking water.",
@@ -695,7 +695,7 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
-      "Stir the Dijon, honey, 1 tablespoon of the olive oil, the garlic powder, and the thyme together in a small bowl.",
+      "Stir the Dijon, honey, [[1|tbsp|of the olive oil]], the garlic powder, and the thyme together in a small bowl.",
       "Rinse the potatoes and cut each one in half. Toss them on the pan with the rest of the oil and a big pinch of salt, and spread them out flat. Roast 15 minutes.",
       "Push the potatoes to one side of the pan. Lay the chicken on the empty side, spoon the honey-mustard over it, and wash your hands after touching raw chicken.",
       "Roast 15 minutes.",
@@ -795,7 +795,7 @@ const MEALS = [
       "Start the rice following the package directions. Heat the oven to 400 F.",
       "Cut the peppers in half through the stem and pull out the seeds and white ribs. Stand them cut-side up in a baking dish.",
       "Peel and chop the onion small. Warm the olive oil in a large skillet over medium heat, add the onion, and cook 4 minutes.",
-      "Add the turkey, the Italian seasoning, the garlic powder, and a teaspoon of salt, and cook 7 minutes, breaking the meat into crumbles. Push it into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
+      "Add the turkey, the Italian seasoning, the garlic powder, and [[1|tsp|of salt]], and cook 7 minutes, breaking the meat into crumbles. Push it into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
       "Stir in the cooked rice and the tomatoes with their juice, then spoon the mix into the pepper halves, mounding it up.",
       "Pour the broth into the bottom of the dish, cover it tightly with foil, and bake 35 minutes, until a knife slides through a pepper wall easily.",
       "Uncover, sprinkle cheese on the halves that want it, and bake 5 more minutes.",
@@ -819,7 +819,7 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, garlic powder, and half a teaspoon of salt, and mix with clean hands just until combined.",
+      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, garlic powder, and [[0.5|tsp|of salt]], and mix with clean hands just until combined.",
       "Roll the mix into small balls about the size of a walnut and set them on a plate. Wash your hands after.",
       "Peel the carrots. Cut the carrots and celery into coin-size pieces. Warm the olive oil in your largest pot over medium heat and cook them 5 minutes, stirring now and then.",
       "Pour in all the broth and bring it to a gentle bubble. Lower the meatballs in one at a time and cook 10 minutes, stirring as little as possible so they hold together.",
@@ -895,7 +895,7 @@ const MEALS = [
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring it to a rolling boil over high heat.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
       "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
       "In a bowl, stir the peanut butter, soy sauce, rice vinegar, sesame oil, maple syrup, and ground ginger together, then stir in warm water a spoonful at a time until the sauce is smooth and pourable, about 6 tablespoons for the full recipe.",
       "Cook the spaghetti for the time on the box, dropping the frozen edamame in for the last 3 minutes. Scoop out a coffee mug of the cooking water before draining.",
@@ -923,10 +923,10 @@ const MEALS = [
     ],
     steps: [
       "Heat the oven to 425 F and line two baking sheets with foil.",
-      "Scrub the potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with 2 tablespoons of the olive oil and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway.",
+      "Scrub the potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway.",
       "Open the beans, rinse them in a colander, and shake them very dry. Spread them on the second pan and bake 10 minutes to dry them out. This step is what keeps the burgers from turning to mush.",
-      "Tip the beans into a big bowl and mash them with a fork or potato masher until most are broken but some whole ones remain. Peel and finely chop the onion and stir it in with the oats, cumin, smoked paprika, garlic powder, and a teaspoon of salt.",
-      "Squeeze the mix into palm-size patties, one per bun, packing them tight so they hold. Wipe the bean pan, brush it with the last tablespoon of olive oil, and set the patties on it.",
+      "Tip the beans into a big bowl and mash them with a fork or potato masher until most are broken but some whole ones remain. Peel and finely chop the onion and stir it in with the oats, cumin, smoked paprika, garlic powder, and [[1|tsp|of salt]].",
+      "Squeeze the mix into palm-size patties, one per bun, packing them tight so they hold. Wipe the bean pan, brush it with the rest of the olive oil, and set the patties on it.",
       "Bake 12 minutes, flip carefully with a thin spatula, and bake 12 more, until the outsides are firm and dry to the touch.",
       "Build the burgers on the buns with lettuce, sliced tomato, and ketchup, and serve the fries alongside.",
     ],
@@ -949,7 +949,7 @@ const MEALS = [
       "Cut the peppers in half, pull out the stems, seeds, and white ribs, and slice them into thin strips. Peel and chop the onion small and chop the garlic into tiny bits.",
       "Warm the olive oil in a large skillet over medium heat. Add the peppers and onion and cook 8 minutes, stirring now and then, until they are soft and floppy.",
       "Add the garlic, cumin, and smoked paprika and stir 30 seconds until they smell toasty.",
-      "Pour in the crushed tomatoes with a teaspoon of salt. Let it bubble gently for 10 minutes, stirring often, until it thickens enough that dragging a spoon through leaves a trench for a second.",
+      "Pour in the crushed tomatoes with [[1|tsp|of salt]]. Let it bubble gently for 10 minutes, stirring often, until it thickens enough that dragging a spoon through leaves a trench for a second.",
       "Make a shallow well in the sauce with the back of a spoon for each egg, and crack one into each.",
       "Cover the pan, turn the heat to medium-low, and cook 7 to 10 minutes. The whites should be firm and no longer see-through; the yolks can be as runny or set as you like.",
       "Toast the bread and serve it alongside for scooping.",
@@ -973,9 +973,9 @@ const MEALS = [
     ],
     steps: [
       "Heat the oven to 425 F and line a large rimmed baking sheet with foil.",
-      "Scrub the sweet potatoes (no peeling needed) and cut them into cubes about an inch across. Toss them on the pan with 2 tablespoons of the olive oil, the cumin, chili powder, smoked paprika, and a teaspoon of salt, then spread them into a single layer.",
+      "Scrub the sweet potatoes (no peeling needed) and cut them into cubes about an inch across. Toss them on the pan with [[2|tbsp|of the olive oil]], the cumin, chili powder, smoked paprika, and [[1|tsp|of salt]], then spread them into a single layer.",
       "Roast 30 minutes, turning everything with a spatula halfway through, until the edges are browned and a fork slides into a cube with no resistance.",
-      "Near the end, open the beans, rinse them in a colander, and warm them in a small pot with the last tablespoon of olive oil and a squeeze of lime, about 3 minutes.",
+      "Near the end, open the beans, rinse them in a colander, and warm them in a small pot with the rest of the olive oil and a squeeze of lime, about 3 minutes.",
       "Cut the lettuce into thin ribbons and slice the green onions into rings. Cut around the avocado the long way, twist the halves apart, remove the pit with a spoon, and slice the flesh.",
       "Warm the tortillas 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
       "Build tacos with sweet potato, beans, lettuce, avocado, and green onion, and squeeze the rest of the lime over the top.",
@@ -997,11 +997,11 @@ const MEALS = [
     ],
     steps: [
       "Peel the garlic and chop it into tiny bits.",
-      "Warm 2 tablespoons of the olive oil in your largest pot over medium heat. Add the garlic, rosemary, and oregano and stir for 1 minute, until fragrant but not browned. Browned garlic turns bitter, so keep it moving.",
+      "Warm [[2|tbsp|of the olive oil]] in your largest pot over medium heat. Add the garlic, rosemary, and oregano and stir for 1 minute, until fragrant but not browned. Browned garlic turns bitter, so keep it moving.",
       "Open the chickpeas, rinse them in a colander, and add them to the pot. Mash about a third of them against the side with a wooden spoon; that is what makes the broth creamy without any cream.",
       "Add the crushed tomatoes and all the broth, bring to a gentle bubble, and cook 10 minutes.",
       "Add the pasta shells and cook 10 more minutes, stirring often so they do not stick, until one you fish out and blow on is soft. It should look like a loose stew, so add a splash of water if it tightens too much.",
-      "Turn off the heat, squeeze in half the lemon, drizzle the last tablespoon of olive oil over the top, and salt to taste.",
+      "Turn off the heat, squeeze in half the lemon, drizzle the rest of the olive oil over the top, and salt to taste.",
     ],
   },
   {
@@ -1020,9 +1020,9 @@ const MEALS = [
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add a tablespoon of salt, cover, and bring it to a rolling boil. Cook the spaghetti for the time on the box, then drain it in a colander.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil. Cook the spaghetti for the time on the box, then drain it in a colander.",
       "While the water heats, peel the garlic and chop it into tiny bits, and slice the green onions into thin rings.",
-      "Stir the soy sauce, sesame oil, brown sugar, ground ginger, cornstarch, and 3 tablespoons of water together in a small bowl until no lumps are left.",
+      "Stir the soy sauce, sesame oil, brown sugar, ground ginger, cornstarch, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
       "Heat the vegetable oil in your largest skillet over medium-high until it shimmers. Add the frozen vegetables straight from the bag and cook 5 minutes, stirring often, until they are hot and the water they release has cooked off.",
       "Add the garlic and stir for 30 seconds.",
       "Add the drained spaghetti, stir the sauce again, and pour it in. Toss for 2 minutes until the noodles are coated and no liquid pools in the bottom of the pan. Scatter the green onions over the top.",
@@ -1073,12 +1073,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice following the package directions. Heat the oven to 400 F. Line a baking sheet with foil and brush it with 1 tablespoon of the olive oil.",
+      "Start the rice following the package directions. Heat the oven to 400 F. Line a baking sheet with foil and brush it with [[1|tbsp|of the olive oil]].",
       "Open the chickpeas, rinse them in a colander, and shake them as dry as you can. Peel the onion and cut it into chunks, and peel the garlic.",
-      "Put the chickpeas, onion, garlic, the parsley (leaves and thin stems both), the cumin, a teaspoon of salt, the flour, and the baking powder in a food processor. Pulse until it looks like coarse crumbs that hold together when you squeeze a handful. No food processor? Mash the chickpeas with a fork, chop the onion, garlic, and parsley very fine, and mix it all by hand.",
-      "Scoop the mix into golf-ball-size balls, about three per person, and press each into a patty about half an inch thick on the pan. Brush the tops with another tablespoon of olive oil.",
+      "Put the chickpeas, onion, garlic, the parsley (leaves and thin stems both), the cumin, [[1|tsp|of salt]], the flour, and the baking powder in a food processor. Pulse until it looks like coarse crumbs that hold together when you squeeze a handful. No food processor? Mash the chickpeas with a fork, chop the onion, garlic, and parsley very fine, and mix it all by hand.",
+      "Scoop the mix into golf-ball-size balls, about three per person, and press each into a patty about half an inch thick on the pan. Brush the tops with [[1|tbsp|of the olive oil]].",
       "Bake 25 minutes, flipping halfway with a thin spatula, until both sides are golden and firm to the touch.",
-      "Meanwhile, chop the cucumbers and tomatoes and toss them with the last tablespoon of olive oil, the juice of half the lemon, and a pinch of salt.",
+      "Meanwhile, chop the cucumbers and tomatoes and toss them with the rest of the olive oil, the juice of half the lemon, and a pinch of salt.",
       "Stir the yogurt with the rest of the lemon juice and a pinch of salt. Build bowls: rice, patties, salad, and a spoon of sauce.",
     ],
   },
@@ -1095,7 +1095,7 @@ const MEALS = [
       { n: "dried thyme", q: 1, u: "tsp", c: "pantry" },
     ],
     steps: [
-      "Heat the oven to 425 F. Halve the baby potatoes (quarter any bigger than a golf ball) and toss them on a sheet pan with 2 tablespoons of the olive oil, the thyme, and half a teaspoon of salt. Roast 15 minutes.",
+      "Heat the oven to 425 F. Halve the baby potatoes (quarter any bigger than a golf ball) and toss them on a sheet pan with [[2|tbsp|of the olive oil]], the thyme, and [[0.5|tsp|of salt]]. Roast 15 minutes.",
       "While the potatoes roast, snap the stem ends off the green beans and pat the salmon dry with a paper towel. Wash your hands after handling the raw fish.",
       "Pull the pan out, push the potatoes to one side, and lay the green beans and the salmon (skin-side down) in the cleared space. Drizzle the rest of the oil over them and sprinkle the garlic powder and a pinch of salt over everything.",
       "Slice half of the lemons into thin rounds and lay them on the salmon; save the rest for serving. Roast 12 to 15 minutes more.",
@@ -1191,7 +1191,7 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Heat the oven to 425 F. Scrub the sweet potatoes and cut them into fries about as thick as your finger. Toss them on a sheet pan with 1 tablespoon of the olive oil and a pinch of salt, and get them in the oven; they take about 30 minutes total, flipped halfway.",
+      "Heat the oven to 425 F. Scrub the sweet potatoes and cut them into fries about as thick as your finger. Toss them on a sheet pan with [[1|tbsp|of the olive oil]] and a pinch of salt, and get them in the oven; they take about 30 minutes total, flipped halfway.",
       "Stir the panko with the rest of the olive oil, the smoked paprika, and a pinch of salt on a second sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl.",
       "Cut the cod into sticks about as thick as your finger. Set up two more shallow bowls: the flour in one, the eggs beaten in the other.",
       "Coat each stick: flour, then egg, then press it into the panko all over. Line the sticks up on the second pan with space between them. Wash your hands after handling the raw fish.",
@@ -1306,7 +1306,7 @@ const MEALS = [
       { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Heat the oven to 450 F. Slice the bell peppers and the onion into strips and toss them on a sheet pan with 1 tablespoon of the olive oil and half of the fajita seasoning.",
+      "Heat the oven to 450 F. Slice the bell peppers and the onion into strips and toss them on a sheet pan with [[1|tbsp|of the olive oil]] and half of the fajita seasoning.",
       "Rub the steak all over with the rest of the oil and seasoning and lay it on top of the vegetables. Wash your hands after handling the raw meat.",
       "Roast 12 to 15 minutes. Poke an instant-read thermometer into the thickest part of the steak: 145 F is medium with a blush of pink. Roast 3 more minutes and check again if it reads low.",
       "Move the steak to a cutting board and let it rest 5 minutes so the juices stay in; stir the vegetables and return them to the oven meanwhile.",
@@ -1376,9 +1376,9 @@ const MEALS = [
       { n: "dried rosemary", q: 1, u: "tsp", c: "pantry" },
     ],
     steps: [
-      "Heat the oven to 425 F. Halve the baby potatoes and toss them on a sheet pan with 2 tablespoons of the olive oil, the rosemary, and half a teaspoon of salt. Roast 10 minutes.",
+      "Heat the oven to 425 F. Halve the baby potatoes and toss them on a sheet pan with [[2|tbsp|of the olive oil]], the rosemary, and [[0.5|tsp|of salt]]. Roast 10 minutes.",
       "Check the pork for a shiny, silvery strip along one side (silverskin); if you see one, slide the tip of a knife under it and cut it away, since it turns tough when cooked. Many store tenderloins come with it already removed.",
-      "Stir the mustard, maple syrup, half a teaspoon of salt, and the rest of the oil into a paste and rub it all over the pork. Wash your hands after handling the raw meat.",
+      "Stir the mustard, maple syrup, [[0.5|tsp|of salt]], and the rest of the oil into a paste and rub it all over the pork. Wash your hands after handling the raw meat.",
       "Cut the apples into thick wedges (no need to peel; just cut around the core).",
       "Pull the pan out, push the potatoes to the edges, lay the pork in the middle, and scatter the apple wedges around it. Roast 18 to 22 minutes.",
       "Poke an instant-read thermometer into the thickest part of the pork: it is done at 145 F with a blush of pink inside, which is safe and juicy. Roast 4 more minutes and check again if it reads low.",
@@ -1822,6 +1822,38 @@ function OutsideChip() {
   );
 }
 
+// Step amounts scale with the serving count. An absolute amount in a step is
+// written as a [[q|unit|rest of phrase]] token ("Heat [[2|tbsp|of the olive
+// oil]] in a skillet"); the renderer multiplies by the scale and rounds to a
+// measure that exists in a kitchen (quarter teaspoons and cups, half
+// tablespoons). Relative phrasings ("the rest of the oil", "half of the
+// lemons", "per seasoning packet used") scale by construction and stay prose.
+// dev/render-check.mjs pins the 4-serving rendering to dev/steps-baseline.json,
+// and the validator forbids bare absolute amounts outside tokens.
+const STEP_UNITS = { tsp: "teaspoon", tbsp: "tablespoon", cup: "cup" };
+const STEP_GRAIN = { tsp: 0.25, tbsp: 0.5, cup: 0.25 };
+const STEP_TOKEN = /\[\[([0-9.]+)\|(tsp|tbsp|cup)\|([^\]]+)\]\]/g;
+
+function stepQty(q, unit) {
+  const grain = STEP_GRAIN[unit];
+  const r = Math.max(grain, Math.round(q / grain) * grain);
+  const name = STEP_UNITS[unit];
+  const whole = Math.floor(r + 1e-9);
+  const quarters = Math.round((r - whole) * 4);
+  if (whole === 0) {
+    if (quarters === 1) return `a quarter ${name}`;
+    if (quarters === 2) return `half a ${name}`;
+    return `three-quarters of a ${name}`;
+  }
+  if (quarters === 0) return `${whole} ${name}${whole === 1 ? "" : "s"}`;
+  const fword = ["", "a quarter", "a half", "three-quarters"][quarters];
+  return `${whole} and ${fword} ${name}s`;
+}
+
+function renderStep(text, scale) {
+  return text.replace(STEP_TOKEN, (_, q, unit, tail) => `${stepQty(parseFloat(q) * scale, unit)} ${tail}`);
+}
+
 function RecipeDetails({ meal, scale }) {
   return (
     <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.55 }}>
@@ -1835,18 +1867,11 @@ function RecipeDetails({ meal, scale }) {
           return `${formatQty(scaled.q, scaled.u, scaled.n)} ${scaled.n}`;
         }).join(", ")}
       </div>
-      {scale !== 1 && (
-        <div style={{ fontSize: 12, color: P.inkSoft, marginBottom: 8 }}>
-          Amounts above are scaled to your serving count. Where a step spells out a fixed
-          amount (a teaspoon of salt, a cup of water), that means the full four-serving
-          batch, so trim it to match.
-        </div>
-      )}
       <div style={{ fontWeight: 800, fontSize: 11, letterSpacing: "1px", textTransform: "uppercase", color: P.celery, marginBottom: 4 }}>
         Steps
       </div>
       <ol style={{ margin: 0, paddingLeft: 18, color: P.ink }}>
-        {meal.steps.map((s, si) => <li key={si} style={{ marginBottom: 4 }}>{s}</li>)}
+        {meal.steps.map((s, si) => <li key={si} style={{ marginBottom: 4 }}>{renderStep(s, scale)}</li>)}
       </ol>
       {meal.spice && (
         <div style={{ fontSize: 12, color: P.inkSoft, marginTop: 8 }}>
