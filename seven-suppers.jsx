@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.19.0";
+const APP_VERSION = "0.20.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -84,7 +84,7 @@ const PROFILE_QUOTAS = {
 // Categories: produce, protein, dairy, grains, pantry
 const MEALS = [
   {
-    id: "sheetpan-lemon-chicken", v: "0.1.0", title: "Sheet-Pan Lemon Chicken and Potatoes", time: 40, tags: ["chicken"],
+    id: "sheetpan-lemon-chicken", v: "0.1.0", title: "Sheet-Pan Lemon Chicken and Potatoes", time: 45, tags: ["chicken"],
     spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
@@ -97,12 +97,12 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
-      "Rinse the potatoes and cut each one in half. No peeling needed.",
-      "Put the potatoes and chicken on the pan. Drizzle with the olive oil, sprinkle with the garlic powder, the oregano, [[1|tsp|of salt]], and a little pepper, then mix with your hands until coated. Spread everything in a single layer. Wash your hands after touching raw chicken.",
-      "Roast for 20 minutes. Set a timer.",
-      "While it roasts, cut the broccoli into bite-size pieces and cut the lemon in half.",
-      "Add the broccoli to the pan, stir once, and roast 15 more minutes. Poke an instant-read thermometer into the thickest piece of chicken, not touching the pan: it is done at 165 F. Thighs stay juicy even at 175 F, so give it 5 more minutes if it reads low.",
-      "Squeeze the lemon halves over the whole pan and serve.",
+      "Rinse the potatoes and cut each one in half. No peeling needed. Toss them on the pan with [[2|tbsp|of the olive oil]] and [[0.5|tsp|of salt]], turn them cut-side down, spread them out, and roast 15 minutes. Set a timer.",
+      "While the potatoes roast, cut the broccoli into bite-size pieces. Cut the lemon in half, slice one half into thin rounds, and save the other half for serving.",
+      "Pat the chicken dry with a paper towel, then toss it in a bowl with the rest of the oil, the garlic powder, the oregano, [[0.5|tsp|of salt]], and a little pepper. Wash your hands after touching raw chicken.",
+      "Pull the pan out, push the potatoes to one side, and lay the chicken and the broccoli in the cleared space. Lay the lemon rounds over the chicken. Roast 20 minutes.",
+      "Poke an instant-read thermometer into the thickest piece of chicken, not touching the pan: it is done at 165 F, and thighs are even better at 175 F. Give it 5 more minutes if it reads low. A fork should slide into a potato with no resistance.",
+      "Squeeze the saved lemon half over the whole pan and serve.",
     ],
   },
   {
@@ -218,7 +218,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-noodle-soup", v: "0.1.0", title: "Easy Chicken Noodle Soup", time: 35, tags: ["chicken", "soup"],
+    id: "chicken-noodle-soup", v: "0.1.0", title: "Easy Chicken Noodle Soup", time: 40, tags: ["chicken", "soup"],
     spice: "Add black pepper and a dash of Tabasco.",
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
@@ -323,11 +323,11 @@ const MEALS = [
       { n: "parmesan", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, onion powder, and [[0.5|tsp|of salt]], and mix with clean hands just until combined.",
-      "Roll the mix into balls the size of a golf ball and set them on a plate. Wash your hands after.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
+      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, onion powder, and [[0.5|tsp|of salt]], and mix with clean hands just until combined. Roll the mix into balls the size of a golf ball and set them on a plate. Wash your hands after.",
       "Warm the olive oil in a large skillet over medium heat. Add the meatballs and turn them every 2 minutes with tongs until browned in spots, about 6 minutes. They finish cooking in the sauce.",
       "Pour the marinara over the meatballs, lower the heat to a gentle bubble, cover, and cook 12 minutes. Poke an instant-read thermometer into the middle of the biggest meatball: 165 F means done.",
-      "Meanwhile, boil a large pot of salted water and cook the spaghetti for the time on the box. Drain it in a colander.",
+      "While the meatballs simmer, cook the spaghetti in the boiling water for the time on the box, then drain it in a colander.",
       "Serve the spaghetti topped with meatballs, sauce, and parmesan.",
     ],
   },
@@ -439,7 +439,7 @@ const MEALS = [
     steps: [
       "Start the rice following the package directions. Turn the broiler on high and move an oven rack about 6 inches below it. Line a baking sheet with foil.",
       "Cut the chicken, peppers, zucchini, and onion into chunks of roughly the same size, about an inch. Wash the board, knife, and your hands with soap after the chicken.",
-      "Toss everything with the olive oil, the oregano, the smoked paprika, [[1|tsp|of salt]], and some pepper, then thread onto skewers or just spread it on the pan.",
+      "Toss everything with the olive oil, the oregano, the smoked paprika, [[1|tsp|of salt]], and some pepper, then spread it out on the pan in a single layer.",
       "Broil 6 to 7 minutes, turn everything with tongs, and broil 6 to 7 more, until the edges brown. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
       "Fluff the rice with a fork, squeeze the lemon over the chicken, and serve it all together with the yogurt for dipping.",
     ],
@@ -463,7 +463,7 @@ const MEALS = [
       "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
       "Cut the tofu into bite-size cubes and toss them gently in a bowl with the cornstarch until white all over.",
       "Heat the oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
-      "Turn off the heat, pour in the soy sauce and maple syrup with the garlic powder and ground ginger, and stir for 30 seconds until glossy.",
+      "Turn the heat to low, pour in the soy sauce and maple syrup with the garlic powder and ground ginger, and stir 1 minute, until the sauce thickens and clings to the tofu instead of pooling. Turn off the heat.",
       "Slice the cucumbers into rounds. Serve the tofu over rice with the cucumbers on the side.",
     ],
   },
@@ -533,7 +533,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-shawarma-bowls", v: "0.10.0", title: "Sheet-Pan Chicken Shawarma Bowls", time: 40, tags: ["chicken"],
+    id: "chicken-shawarma-bowls", v: "0.10.0", title: "Sheet-Pan Chicken Shawarma Bowls", time: 35, tags: ["chicken"],
     spice: "Add harissa to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
@@ -551,7 +551,7 @@ const MEALS = [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
       "Peel the red onion and cut it into thin wedges. Open the chickpeas, pour them into a colander, rinse under the tap, and shake them dry.",
       "Put the chicken, onion, and chickpeas on the pan. Add the olive oil, cumin, smoked paprika, garlic powder, [[1|tsp|of salt]], and some pepper, and mix with your hands until everything is coated. Spread it into a single layer. Wash your hands after touching raw chicken.",
-      "Roast 30 minutes without stirring. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and thighs are even better at 175 F.",
+      "Roast 25 minutes without stirring. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and thighs are even better at 175 F. Give it 5 more minutes if it reads low.",
       "While it roasts, stir the yogurt in a small bowl with the juice of half the lemon and a pinch of salt. That is your sauce.",
       "Put the pitas in the oven for the last 2 minutes to warm.",
       "Cut the chicken into strips, squeeze the rest of the lemon over the pan, and build bowls with torn pita, chicken, chickpeas, onion, and a spoon of yogurt sauce.",
@@ -623,11 +623,11 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil. Do not skip the foil here, because barbecue sauce bakes onto a bare pan like glue.",
-      "Rinse the potatoes and cut each one in half. Toss them on the pan with [[1|tbsp|of the olive oil]], the smoked paprika, the garlic powder, and a big pinch of salt, then push them to one side.",
-      "Put the chicken on the empty side, rub it with the rest of the oil and [[1|tsp|of salt]], and wash your hands.",
-      "Roast 20 minutes. Set a timer.",
-      "Snap the stem ends off the green beans. Scatter them over the pan, then brush the chicken generously with barbecue sauce.",
-      "Roast 15 more minutes. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and 175 F makes thighs even more tender.",
+      "Rinse the potatoes and cut each one in half. Toss them on the pan with [[1|tbsp|of the olive oil]], the smoked paprika, the garlic powder, and a big pinch of salt, spread them out, and roast 12 minutes. Set a timer.",
+      "While the potatoes roast, rub the chicken with the rest of the oil and [[1|tsp|of salt]], and snap the stem ends off the green beans. Wash your hands after touching raw chicken.",
+      "Pull the pan out, push the potatoes to one side, lay the chicken in the cleared space, and roast 10 minutes.",
+      "Scatter the green beans over the pan, then brush the chicken generously with barbecue sauce.",
+      "Roast 13 more minutes. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and 175 F makes thighs even more tender. A fork should slide into a potato with no resistance.",
       "Serve with more barbecue sauce on the side.",
     ],
   },
@@ -657,7 +657,7 @@ const MEALS = [
     ],
   },
   {
-    id: "lemon-orzo-chicken-soup", v: "0.10.0", title: "Lemon Orzo Chicken Soup", time: 35, tags: ["chicken", "soup"],
+    id: "lemon-orzo-chicken-soup", v: "0.10.0", title: "Lemon Orzo Chicken Soup", time: 40, tags: ["chicken", "soup"],
     spice: "Add black pepper and red pepper flakes.",
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
@@ -681,7 +681,7 @@ const MEALS = [
     ],
   },
   {
-    id: "honey-mustard-chicken", v: "0.10.0", title: "Honey-Mustard Chicken with Green Beans", time: 40, tags: ["chicken"],
+    id: "honey-mustard-chicken", v: "0.10.0", title: "Honey-Mustard Chicken with Green Beans", time: 45, tags: ["chicken"],
     spice: "Add a pinch of cayenne to the glaze.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
@@ -777,7 +777,7 @@ const MEALS = [
     ],
   },
   {
-    id: "turkey-stuffed-peppers", v: "0.10.0", title: "Turkey and Rice Stuffed Peppers", time: 50, tags: ["turkey"],
+    id: "turkey-stuffed-peppers", v: "0.10.0", title: "Turkey and Rice Stuffed Peppers", time: 65, tags: ["turkey"],
     spice: "Add a dash of Tabasco.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
@@ -923,16 +923,16 @@ const MEALS = [
     ],
     steps: [
       "Heat the oven to 425 F and line two baking sheets with foil.",
-      "Scrub the potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway.",
+      "Scrub the potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway. Set them aside when they are browned; they go back in at the end.",
       "Open the beans, rinse them in a colander, and shake them very dry. Spread them on the second pan and bake 10 minutes to dry them out. This step is what keeps the burgers from turning to mush.",
       "Tip the beans into a big bowl and mash them with a fork or potato masher until most are broken but some whole ones remain. Peel and finely chop the onion and stir it in with the oats, cumin, smoked paprika, garlic powder, and [[1|tsp|of salt]].",
       "Squeeze the mix into palm-size patties, one per bun, packing them tight so they hold. Wipe the bean pan, brush it with the rest of the olive oil, and set the patties on it.",
-      "Bake 12 minutes, flip carefully with a thin spatula, and bake 12 more, until the outsides are firm and dry to the touch.",
+      "Bake 12 minutes, flip carefully with a thin spatula, and bake 12 more, until the outsides are firm and dry to the touch. Slide the fries back in for the last 5 minutes so they are hot again at the table.",
       "Build the burgers on the buns with lettuce, sliced tomato, and ketchup, and serve the fries alongside.",
     ],
   },
   {
-    id: "shakshuka", v: "0.10.0", title: "Skillet Eggs in Spiced Tomato Sauce", time: 30, tags: ["veggie"],
+    id: "shakshuka", v: "0.10.0", title: "Skillet Eggs in Spiced Tomato Sauce", time: 35, tags: ["veggie"],
     spice: "Add harissa or a pinch of cayenne.",
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
@@ -1020,12 +1020,12 @@ const MEALS = [
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil. Cook the spaghetti for the time on the box, then drain it in a colander.",
+      "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
       "While the water heats, peel the garlic and chop it into tiny bits, and slice the green onions into thin rings.",
       "Stir the soy sauce, sesame oil, brown sugar, ground ginger, cornstarch, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
-      "Heat the vegetable oil in your largest skillet over medium-high until it shimmers. Add the frozen vegetables straight from the bag and cook 5 minutes, stirring often, until they are hot and the water they release has cooked off.",
-      "Add the garlic and stir for 30 seconds.",
-      "Add the drained spaghetti, stir the sauce again, and pour it in. Toss for 2 minutes until the noodles are coated and no liquid pools in the bottom of the pan. Scatter the green onions over the top.",
+      "Add the spaghetti to the boiling water and cook it for the time on the box. Before draining, scoop out a coffee mug of the cooking water.",
+      "While the pasta cooks, heat the vegetable oil in your largest skillet over medium-high until it shimmers. Add the frozen vegetables straight from the bag and cook 5 minutes, stirring often, until they are hot and the water they release has cooked off. Add the garlic and stir for 30 seconds.",
+      "Add the drained spaghetti, stir the sauce again, and pour it in. Toss for 2 minutes until the noodles are coated and no liquid pools in the bottom of the pan, loosening with a splash of the saved water if they clump. Scatter the green onions over the top.",
     ],
   },
   {
@@ -1215,10 +1215,10 @@ const MEALS = [
     ],
     steps: [
       "Heat the oven to 425 F. Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
-      "Slice the zucchini into coins, the bell peppers into strips, and halve the cherry tomatoes. Peel and mince the garlic.",
+      "Slice the zucchini into thin coins and the bell peppers into thin strips, and halve the cherry tomatoes. Peel and mince the garlic. Keep the slices thin so the vegetables are tender by the time the fish is done.",
       "Tear one big square of foil per fillet. Lay a tilapia fillet in the middle of each, pile the vegetables on and around it, drizzle the olive oil over, and sprinkle on the oregano, garlic, and a pinch of salt. Wash your hands after handling the raw fish.",
-      "Fold each packet closed and crimp the edges, leaving some puff for steam. Set the packets on a sheet pan and bake 15 minutes.",
-      "Open one packet carefully (the steam is hot) and poke an instant-read thermometer into the fish: it is done at 145 F and flakes with a fork. Re-crimp and bake 4 more minutes if it reads low.",
+      "Fold each packet closed and crimp the edges, leaving some puff for steam. Set the packets on a sheet pan and bake 12 minutes.",
+      "Open one packet carefully (the steam is hot) and poke an instant-read thermometer into the fish: it is done at 145 F and flakes with a fork. Re-crimp and bake 3 more minutes if it reads low.",
       "Serve the packets over the rice, with the lemons cut into wedges for squeezing.",
     ],
   },

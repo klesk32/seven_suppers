@@ -1,6 +1,17 @@
 # Seven Suppers - Specification
 
-Version: 0.19.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.20.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.20.0 (staging and timing pass):
+
+- Sheet-pan staging. Three recipes committed everything to the pan at once and then had to pick one cook time, which the longest-cooking component always won. `sheetpan-lemon-chicken` and `bbq-chicken-sheetpan` gave 1.5 lb of boneless thighs the potatoes' 35 minutes; both now roast the potatoes first (15 and 12 minutes) and add the chicken after, so the chicken gets 20 and 23 and the potatoes still get 35. Oven totals are unchanged. `chicken-shawarma-bowls` had the same shape without a potato forcing it, and dropped from 30 to 25.
+- Doneness checks that can say stop. In the merged-pan versions the only thermometer read sat at the end of the final block, so it could only ever tell you to cook longer. Reads now land where a low number still has somewhere to go, and the two sheet pans gained the fork test on the potatoes that the rest of the catalog's potato recipes already had.
+- Ordering. `turkey-meatballs` was the only one of 13 pasta recipes that did not start its water in step 1, so the pasta landed roughly 10 minutes after the meatballs; the water moved to step 1 and the mix-and-roll steps merged to hold the step count. `veggie-lo-mein` cooked and drained its noodles before any other cooking began, leaving them to clump in the colander; the skillet work now runs while the pasta boils, and it gained the reserved cooking water every other pasta recipe has. `black-bean-burgers` finished its fries 17 minutes before the patties; they now go back in for the last 5.
+- `tofu-nuggets` glazed off the heat, which cannot reduce a sauce and undid the crust the previous step built. Now 1 minute on low, matching `teriyaki-chicken-bowls`.
+- `tilapia-foil-packets` overcooked thin fillets at 15 minutes while the vegetables stayed firm; now 12 minutes with the vegetables sliced thin to match.
+- `chicken-kebab-plates` named skewers that were not in the ingredient list and carried no soak instruction, under a high broiler. The step already offered the pan as an alternative; the skewer mention is gone.
+- Honest clocks. Seven times were short against their critical path: stuffed peppers 50 to 65 (the worst in the catalog: rice, assemble, then 40 minutes of baking), lemon chicken 40 to 45, honey-mustard chicken 40 to 45, chicken noodle soup 35 to 40, lemon orzo soup 35 to 40, shakshuka 30 to 35, and shawarma 40 to 35 after its shorter roast. Fixing the order on the meatballs and the lo mein made their existing times honest instead. No change crosses the 25-minute boundary, so the `fast` count stays at 17.
+- Left alone on purpose, as simplifications that serve a beginner audience: "cook the rice following the package directions" in 12 recipes against the spelled-out method in four, missing pat-dry and cut-side-down instructions, and "spread in a single layer" as an aspiration. Pan counts are static step text and do not scale with servings; that remains a known artifact of the whole sheet-pan family, not addressed here.
 
 0.19.0 (step-aware scaling):
 
