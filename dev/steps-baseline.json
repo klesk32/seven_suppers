@@ -1,6 +1,6 @@
 {
   "_comment": "Approved rendered step text at 4 servings (scale 1). dev/render-check.mjs asserts the live renderer reproduces this exactly. Regenerate only deliberately, reviewing the diff.",
-  "fixtureVersion": "0.4.0",
+  "fixtureVersion": "0.5.0",
   "steps": {
     "sheetpan-lemon-chicken": [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
@@ -124,10 +124,11 @@
       "Ladle into bowls and let everyone add their own toppings."
     ],
     "chicken-kebab-plates": [
+      "Lay the wooden skewers in a dish of water to soak so they do not char under the broiler; they need about 20 minutes, which is the time the rice and the cutting take. Metal skewers need no soaking.",
       "Start the rice following the package directions. Turn the broiler on high and move an oven rack about 6 inches below it. Line a baking sheet with foil.",
       "Cut the chicken, peppers, zucchini, and onion into chunks of roughly the same size, about an inch. Wash the board, knife, and your hands with soap after the chicken.",
-      "Toss everything with the olive oil, the oregano, the smoked paprika, 1 teaspoon of salt, and some pepper, then spread it out on the pan in a single layer.",
-      "Broil 6 to 7 minutes, turn everything with tongs, and broil 6 to 7 more, until the edges brown. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
+      "Toss everything with the olive oil, the oregano, the smoked paprika, 1 teaspoon of salt, and some pepper, then thread the chunks onto the soaked skewers, alternating chicken and vegetables and leaving a little space between pieces so they brown. Lay the skewers on the pan in a single layer. No skewers on hand? Spread everything straight on the pan instead.",
+      "Broil 6 to 7 minutes, turn the skewers with tongs, and broil 6 to 7 more, until the edges brown. If any bare skewer ends start to darken, slide a strip of foil over them. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
       "Fluff the rice with a fork, squeeze the lemon over the chicken, and serve it all together with the yogurt for dipping."
     ],
     "tofu-nuggets": [

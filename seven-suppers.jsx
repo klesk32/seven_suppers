@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.20.0";
+const APP_VERSION = "0.21.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -422,7 +422,7 @@ const MEALS = [
     ],
   },
   {
-    id: "chicken-kebab-plates", v: "0.1.0", title: "Oven Chicken and Veggie Kebab Plates", time: 35, tags: ["chicken"],
+    id: "chicken-kebab-plates", v: "0.1.0", title: "Oven Chicken and Veggie Kebab Plates", time: 40, tags: ["chicken"],
     spice: "Add Aleppo pepper or harissa.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
@@ -435,12 +435,14 @@ const MEALS = [
       { n: "smoked paprika", q: 0.5, u: "tsp", c: "pantry" },
       { n: "lemon", q: 1, u: "", c: "produce" },
       { n: "plain Greek yogurt", q: 1, u: "cup", c: "dairy" },
+      { n: "wooden skewers", q: 8, u: "", c: "pantry" },
     ],
     steps: [
+      "Lay the wooden skewers in a dish of water to soak so they do not char under the broiler; they need about 20 minutes, which is the time the rice and the cutting take. Metal skewers need no soaking.",
       "Start the rice following the package directions. Turn the broiler on high and move an oven rack about 6 inches below it. Line a baking sheet with foil.",
       "Cut the chicken, peppers, zucchini, and onion into chunks of roughly the same size, about an inch. Wash the board, knife, and your hands with soap after the chicken.",
-      "Toss everything with the olive oil, the oregano, the smoked paprika, [[1|tsp|of salt]], and some pepper, then spread it out on the pan in a single layer.",
-      "Broil 6 to 7 minutes, turn everything with tongs, and broil 6 to 7 more, until the edges brown. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
+      "Toss everything with the olive oil, the oregano, the smoked paprika, [[1|tsp|of salt]], and some pepper, then thread the chunks onto the soaked skewers, alternating chicken and vegetables and leaving a little space between pieces so they brown. Lay the skewers on the pan in a single layer. No skewers on hand? Spread everything straight on the pan instead.",
+      "Broil 6 to 7 minutes, turn the skewers with tongs, and broil 6 to 7 more, until the edges brown. If any bare skewer ends start to darken, slide a strip of foil over them. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
       "Fluff the rice with a fork, squeeze the lemon over the chicken, and serve it all together with the yogurt for dipping.",
     ],
   },
@@ -1501,6 +1503,7 @@ const PACKS = {
   "celery": { per: 8, one: "bunch", many: "bunches" },
   "baby potatoes": { per: 1.5, one: "bag (1.5 lb)", many: "bags (1.5 lb)" },
   "cherry tomatoes": { per: 10, one: "container (10 oz)", many: "containers (10 oz)" },
+  "wooden skewers": { per: 100, one: "pack of 100", many: "packs of 100" },
 };
 
 // Units that are whole purchasable things: a scaled-down week can need half a
@@ -1692,7 +1695,7 @@ const ITEM_SINGULARS = {
 // whole ones instead of asking for half an egg
 const INDIVISIBLE = new Set([
   "eggs", "small flour tortillas", "small corn tortillas",
-  "whole wheat burger buns", "pita bread",
+  "whole wheat burger buns", "pita bread", "wooden skewers",
 ]);
 
 // Scaled countable quantities round up to the nearest half so recipe cards can

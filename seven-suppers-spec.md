@@ -1,6 +1,14 @@
 # Seven Suppers - Specification
 
-Version: 0.20.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.21.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.21.0 (skewers restored to the kebab plates):
+
+- `chicken-kebab-plates` gets its skewers back, with the two problems that removed them in 0.20.0 fixed rather than sidestepped. Skewers are now a real ingredient (`wooden skewers`, 8 for four servings, two per person), so a shopper actually ends up holding them; they are `INDIVISIBLE` (no half skewers on a scaled card) and carry a `PACKS` rule, so the grocery line reads "1 pack of 100 wooden skewers (need 8)" rather than pretending you buy them by the piece.
+- A soak step leads the recipe: bare wood 6 inches under a high broiler chars, so the skewers go into water first and the step says why, notes that the 20 minutes it wants is exactly what the rice and the cutting take anyway, and tells anyone with metal skewers to skip it. The broil step gained a foil strip for darkening ends, matching how the catalog handles other "if it looks wrong, here is the fix" moments.
+- Threading is now the end of the toss step, with the "spread it straight on the pan" fallback kept for anyone without skewers, so nobody is blocked by equipment. Step count 5 to 6, still inside the 5-to-7 rule.
+- Time 35 to 40, because threading eight skewers is real work a beginner has to do before anything goes under the broiler. Consistent with the 0.20.0 honest-clock pass rather than an exception to it.
+- `package.json` and `package-lock.json` had drifted to 0.19.0 and 0.17.4 while `APP_VERSION` moved on; both are back in step.
 
 0.20.0 (staging and timing pass):
 
