@@ -3,7 +3,7 @@
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
 // heart-healthy weekly quotas, per-serving spice notes, and feedback links
-const VERSION = "0.11.0";
+const VERSION = "0.12.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -93,8 +93,10 @@ function boot(seed, url = "http://localhost/") {
   [...bdoc.querySelectorAll("button")].find((x) => x.textContent.trim().startsWith("Grocery list")).click();
   await wait(200);
   const text = bdoc.getElementById("root").textContent;
-  check("half jar rounds up with size", text.includes("1 jar (8 oz) basil pesto (need 0.5 jars)"));
-  check("bags show expected size", text.includes("1 bag (16 oz) frozen stir-fry vegetables (need 0.5 bags)"));
+  check("partial jar buys one and states the real need", text.includes("1 jar (8 oz) basil pesto (need 4 oz)"));
+  check("bags show expected size", text.includes("1 bag (16 oz) frozen stir-fry vegetables (need 8 oz)"));
+  check("no package units reach the shopper as a measure", !/need [0-9.]+ (jars?|cans?|bags?|blocks?|bottles?|packets?|loaves|loaf)/.test(text));
+  check("an exact package buy states no redundant need", text.includes("1 can (15 oz) canned black beans") && !text.includes("canned black beans (need"));
   check("bunch line is whole", /1 bunch green onions/.test(text) && !/0\.5 bunch/.test(text));
   check("staples section present", text.includes("From your pantry"));
   check("chili powder merges to one line", (text.match(/chili powder/g) || []).length === 1);
@@ -131,6 +133,19 @@ function boot(seed, url = "http://localhost/") {
   check("no unresolved step tokens leak", !ptext.includes("[["));
   check("the trim-to-match note is gone", !ptext.includes("trim it to match"));
   check("no fractional eggs anywhere", !/half an? egg/i.test(ptext));
+  check("no fractional packages anywhere in print", !/[0-9]*\.[0-9]+ (jars?|cans?|bags?|blocks?|bottles?|packets?|loaves|loaf)\b/.test(ptext));
+
+  // Instance C2: scaled cards state package goods as kitchen measures
+  const c2 = boot({
+    "seven-suppers-week": JSON.stringify(["beef-bean-chili", "omelet-night", null, null, null, null, null]),
+    "seven-suppers-servings": "3",
+  });
+  await wait(600);
+  [...c2.window.document.querySelectorAll("button")].find((x) => x.textContent.trim().startsWith("Print week")).click();
+  await wait(200);
+  const c2text = c2.window.document.getElementById("root").textContent;
+  check("cans scale to ounces on the card", c2text.includes("11.25 oz canned black beans"));
+  check("bread scales to slices on the card", c2text.includes("6 slices whole grain bread"));
 
   // Instance D: vegan chip, catalog gray-out, and drag-to-swap
   const d = boot({

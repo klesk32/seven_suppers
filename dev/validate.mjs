@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.7.0";
+const VERSION = "0.8.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -20,7 +20,6 @@ const MEALS = eval("[" + slice("const MEALS = [", "\n];") + "]");
 const STAPLES = new Set(eval("[" + slice("const STAPLES = new Set([", "\n]);") + "]"));
 const PACKS = eval("({" + slice("const PACKS = {", "\n};") + "})");
 const DISCRETE = new Set(eval("[" + slice("const DISCRETE_UNITS = new Set([", "]);") + "]"));
-const SIZES = eval("({" + slice("const SIZES = {", "\n};") + "})");
 
 let fails = 0;
 const fail = (m) => { console.log("FAIL " + m); fails++; };
@@ -146,7 +145,7 @@ MEALS.forEach((m) => m.steps.forEach((s) => {
 // 7d. step amounts must scale: absolute tsp/tbsp/cup amounts belong in
 // [[q|unit|...]] tokens, never in bare prose. Relative phrasings ("the rest
 // of the oil", "per seasoning packet used") are exempt by construction.
-const PER_PACKET_OK = "of a cup of water per seasoning packet used";
+const PER_PACKET_OK = "of a cup of water for every 2 tablespoons of seasoning";
 MEALS.forEach((m) => m.steps.forEach((s) => {
   const stripped = s.replace(/\[\[[0-9.]+\|(?:tsp|tbsp|cup)\|[^\]]+\]\]/g, "").replace(PER_PACKET_OK, "");
   const bare = stripped.match(/\b(?:\d[\d.\/]*|a|an|another|half a) (?:tablespoons?|teaspoons?|cups?) of\b/);
@@ -181,14 +180,19 @@ MEALS.forEach((m) => m.ing.forEach((i) => {
   fail(`${m.id}: ${i.n} (${i.u}) has no PACKS entry and is not directly shoppable`);
 }));
 
-// 9. packaged goods must declare an expected size, so two shelf sizes are
-// never ambiguous; natural units (head, loaf, bunch, bottle) are exempt
-const SIZED_UNITS = new Set(["jar", "can", "packet", "block", "bag"]);
+// 9. recipe units must be measurable in a kitchen, never a package: you can
+// weigh 7 oz or count 3 slices, but "half a jar" is not an instruction.
+// Packages live only in PACKS buy labels, which must name their shelf size so
+// two sizes of the same product are never ambiguous.
+const PACKAGE_UNITS = new Set(["jar", "can", "packet", "block", "bag", "bottle", "loaf"]);
 MEALS.forEach((m) => m.ing.forEach((i) => {
-  if (SIZED_UNITS.has(i.u) && !SIZES[i.n] && !PACKS[i.n]) {
-    fail(`${m.id}: ${i.n} (${i.u}) has no SIZES entry`);
-  }
+  if (PACKAGE_UNITS.has(i.u)) fail(`${m.id}: ${i.n} is measured in ${i.u}s; use a kitchen measure and a PACKS rule`);
 }));
+const SIZED_PACKAGES = /(jar|can|packet|block|bag|bottle|container|tray|pack|box|canister|carton|brick)\b/;
+Object.entries(PACKS).forEach(([n, p]) => {
+  const stated = /\(.*\)/.test(p.one) || /\bof \d/.test(p.one) || /dozen/.test(p.one);
+  if (SIZED_PACKAGES.test(p.one) && !stated) fail(`PACKS "${n}" buys a ${p.one} without naming its size`);
+});
 
 // 9b. share-link fields: every meal declares the version it was added in,
 // no later than the current APP_VERSION, and every version number fits the
@@ -211,7 +215,6 @@ if (MEALS.length >= 255) fail(`catalog has ${MEALS.length} meals; slug indexes o
 const allNames = new Set([...units.keys()]);
 Object.keys(PACKS).forEach((n) => { if (!allNames.has(n)) console.log(`note: PACKS has unused "${n}"`); });
 [...STAPLES].forEach((n) => { if (!allNames.has(n)) console.log(`note: STAPLES has unused "${n}"`); });
-Object.keys(SIZES).forEach((n) => { if (!allNames.has(n)) console.log(`note: SIZES has unused "${n}"`); });
 
 // summary
 const count = (t) => MEALS.filter((m) => m.tags.includes(t)).length;

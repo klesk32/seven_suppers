@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.21.0";
+const APP_VERSION = "0.22.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -110,7 +110,7 @@ const MEALS = [
     spice: "Add Tapatio or pickled jalapenos.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
-      { n: "taco seasoning", q: 1, u: "packet", c: "pantry" },
+      { n: "taco seasoning", q: 6, u: "tsp", c: "pantry" },
       { n: "lime", q: 1, u: "", c: "produce" },
       { n: "small flour tortillas", q: 8, u: "", c: "grains" },
       { n: "shredded cheddar", q: 1, u: "cup", c: "dairy" },
@@ -122,7 +122,7 @@ const MEALS = [
       "Cut the lettuce into thin ribbons and the tomatoes into small cubes. Put them in bowls on the table with the cheese and yogurt.",
       "Put a large skillet on the stove over medium heat and let it warm up for 2 minutes.",
       "Add the turkey and cook 7 to 8 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle of it: ground turkey is done at 165 F.",
-      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water per seasoning packet used, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
+      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water for every 2 tablespoons of seasoning, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
       "Warm the tortillas: 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
       "Let everyone build their own. The yogurt stands in for sour cream.",
     ],
@@ -135,7 +135,7 @@ const MEALS = [
       { n: "eggs", q: 4, u: "", c: "dairy" },
       { n: "frozen peas and carrots", q: 2, u: "cup", c: "produce" },
       { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
@@ -153,7 +153,7 @@ const MEALS = [
     spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "penne pasta", q: 12, u: "oz", c: "grains" },
-      { n: "marinara sauce", q: 1, u: "jar", c: "pantry" },
+      { n: "marinara sauce", q: 24, u: "oz", c: "pantry" },
       { n: "zucchini", q: 1, u: "", c: "produce" },
       { n: "carrots", q: 2, u: "", c: "produce" },
       { n: "cream cheese", q: 3, u: "oz", c: "dairy" },
@@ -195,9 +195,9 @@ const MEALS = [
     id: "chickpea-curry", v: "0.1.0", title: "Mild Chickpea Coconut Curry", time: 25, tags: ["veggie", "vegan", "fast"],
     spice: "Add a pinch of cayenne.",
     ing: [
-      { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
-      { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned chickpeas", q: 30, u: "oz", c: "pantry" },
+      { n: "light coconut milk", q: 13.5, u: "oz", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
       { n: "mild curry powder", q: 3, u: "tsp", c: "pantry" },
       { n: "garam masala", q: 0.5, u: "tsp", c: "pantry" },
       { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
@@ -245,10 +245,10 @@ const MEALS = [
     spice: "Add Cholula or Valentina.",
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
-      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
+      { n: "canned black beans", q: 15, u: "oz", c: "pantry" },
       { n: "small flour tortillas", q: 8, u: "", c: "grains" },
       { n: "bell pepper", q: 1, u: "", c: "produce" },
-      { n: "salsa", q: 1, u: "jar", c: "pantry" },
+      { n: "salsa", q: 16, u: "oz", c: "pantry" },
       { n: "avocados", q: 2, u: "", c: "produce" },
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "ground cumin", q: 0.5, u: "tsp", c: "pantry" },
@@ -269,7 +269,7 @@ const MEALS = [
     spice: "Add sriracha to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
-      { n: "frozen stir-fry vegetables", q: 1, u: "bag", c: "produce" },
+      { n: "frozen stir-fry vegetables", q: 16, u: "oz", c: "produce" },
       { n: "honey", q: 3, u: "tbsp", c: "pantry" },
       { n: "ground ginger", q: 0.25, u: "tsp", c: "pantry" },
       { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
@@ -314,7 +314,7 @@ const MEALS = [
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
-      { n: "marinara sauce", q: 1, u: "jar", c: "pantry" },
+      { n: "marinara sauce", q: 24, u: "oz", c: "pantry" },
       { n: "breadcrumbs", q: 0.5, u: "cup", c: "pantry" },
       { n: "Italian seasoning", q: 1, u: "tsp", c: "pantry" },
       { n: "onion powder", q: 0.5, u: "tsp", c: "pantry" },
@@ -340,7 +340,7 @@ const MEALS = [
       { n: "spinach", q: 2, u: "cup", c: "produce" },
       { n: "garlic powder", q: 0.25, u: "tsp", c: "pantry" },
       { n: "shredded cheddar", q: 1, u: "cup", c: "dairy" },
-      { n: "whole grain bread", q: 1, u: "loaf", c: "grains" },
+      { n: "whole grain bread", q: 8, u: "slice", c: "grains" },
       { n: "butter", q: 2, u: "tbsp", c: "dairy" },
     ],
     steps: [
@@ -360,7 +360,7 @@ const MEALS = [
       { n: "bell pepper", q: 2, u: "", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
-      { n: "fajita seasoning", q: 1, u: "packet", c: "pantry" },
+      { n: "fajita seasoning", q: 6, u: "tsp", c: "pantry" },
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "garlic powder", q: 0.25, u: "tsp", c: "pantry" },
       { n: "shredded cheddar", q: 1, u: "cup", c: "dairy" },
@@ -379,8 +379,8 @@ const MEALS = [
     id: "veggie-minestrone", v: "0.1.0", title: "Weeknight Vegetable Minestrone", time: 35, tags: ["veggie", "vegan", "soup"],
     spice: "Add red pepper flakes to taste.",
     ing: [
-      { n: "canned cannellini beans", q: 1, u: "can", c: "pantry" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned cannellini beans", q: 15, u: "oz", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
       { n: "carrots", q: 2, u: "", c: "produce" },
       { n: "zucchini", q: 1, u: "", c: "produce" },
       { n: "small pasta shells", q: 1, u: "cup", c: "grains" },
@@ -402,8 +402,8 @@ const MEALS = [
     spice: "Add a pinch of cayenne or minced chipotle in adobo.",
     ing: [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
-      { n: "canned cannellini beans", q: 2, u: "can", c: "pantry" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned cannellini beans", q: 30, u: "oz", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
       { n: "frozen corn", q: 1.5, u: "cup", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "chili powder", q: 4.5, u: "tsp", c: "pantry" },
@@ -450,7 +450,7 @@ const MEALS = [
     id: "tofu-nuggets", v: "0.1.0", title: "Crispy Tofu Nuggets with Rice and Cucumbers", time: 30, tags: ["veggie", "vegan"],
     spice: "Add sriracha to the dipping sauce.",
     ing: [
-      { n: "extra-firm tofu", q: 1, u: "block", c: "protein" },
+      { n: "extra-firm tofu", q: 14, u: "oz", c: "protein" },
       { n: "cornstarch", q: 3, u: "tbsp", c: "pantry" },
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
       { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
@@ -462,7 +462,7 @@ const MEALS = [
     ],
     steps: [
       "Start the rice following the package directions.",
-      "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
+      "Open the tofu over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
       "Cut the tofu into bite-size cubes and toss them gently in a bowl with the cornstarch until white all over.",
       "Heat the oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
       "Turn the heat to low, pour in the soy sauce and maple syrup with the garlic powder and ground ginger, and stir 1 minute, until the sauce thickens and clings to the tofu instead of pooling. Turn off the heat.",
@@ -474,11 +474,11 @@ const MEALS = [
     spice: "Add Cholula or chipotle salsa.",
     ing: [
       { n: "sweet potatoes", q: 4, u: "", c: "produce" },
-      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
+      { n: "canned black beans", q: 15, u: "oz", c: "pantry" },
       { n: "frozen corn", q: 1, u: "cup", c: "produce" },
-      { n: "salsa", q: 1, u: "jar", c: "pantry" },
+      { n: "salsa", q: 16, u: "oz", c: "pantry" },
       { n: "avocados", q: 2, u: "", c: "produce" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "ground cumin", q: 0.5, u: "tsp", c: "pantry" },
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
@@ -495,7 +495,7 @@ const MEALS = [
     spice: "Add red pepper flakes to taste.",
     ing: [
       { n: "rotini pasta", q: 12, u: "oz", c: "grains" },
-      { n: "basil pesto", q: 1, u: "jar", c: "pantry" },
+      { n: "basil pesto", q: 8, u: "oz", c: "pantry" },
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "lemon", q: 1, u: "", c: "produce" },
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
@@ -539,7 +539,7 @@ const MEALS = [
     spice: "Add harissa to taste.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
-      { n: "canned chickpeas", q: 1, u: "can", c: "pantry" },
+      { n: "canned chickpeas", q: 15, u: "oz", c: "pantry" },
       { n: "red onion", q: 1, u: "", c: "produce" },
       { n: "ground cumin", q: 2, u: "tsp", c: "pantry" },
       { n: "smoked paprika", q: 1, u: "tsp", c: "pantry" },
@@ -565,8 +565,8 @@ const MEALS = [
     ing: [
       { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
       { n: "low-sodium chicken broth", q: 6, u: "cup", c: "pantry" },
-      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned black beans", q: 15, u: "oz", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
       { n: "frozen corn", q: 1.5, u: "cup", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "chili powder", q: 3, u: "tsp", c: "pantry" },
@@ -574,7 +574,7 @@ const MEALS = [
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "lime", q: 1, u: "", c: "produce" },
       { n: "avocados", q: 1, u: "", c: "produce" },
-      { n: "tortilla chips", q: 1, u: "bag", c: "grains" },
+      { n: "tortilla chips", q: 10, u: "oz", c: "grains" },
     ],
     steps: [
       "Peel the onion and chop it into small pieces.",
@@ -598,7 +598,7 @@ const MEALS = [
       { n: "cornstarch", q: 1, u: "tbsp", c: "pantry" },
       { n: "ground ginger", q: 0.25, u: "tsp", c: "pantry" },
       { n: "garlic", q: 2, u: "clove", c: "produce" },
-      { n: "frozen broccoli florets", q: 1, u: "bag", c: "produce" },
+      { n: "frozen broccoli florets", q: 12, u: "oz", c: "produce" },
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
@@ -618,7 +618,7 @@ const MEALS = [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
       { n: "green beans", q: 0.75, u: "lb", c: "produce" },
-      { n: "barbecue sauce", q: 1, u: "bottle", c: "pantry" },
+      { n: "barbecue sauce", q: 6, u: "oz", c: "pantry" },
       { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
       { n: "smoked paprika", q: 1, u: "tsp", c: "pantry" },
       { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
@@ -645,7 +645,7 @@ const MEALS = [
       { n: "rice vinegar", q: 1, u: "tbsp", c: "pantry" },
       { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
       { n: "cucumbers", q: 2, u: "", c: "produce" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
@@ -710,8 +710,8 @@ const MEALS = [
     ing: [
       { n: "boneless chicken thighs", q: 1.25, u: "lb", c: "protein" },
       { n: "small corn tortillas", q: 8, u: "", c: "grains" },
-      { n: "enchilada sauce", q: 1, u: "can", c: "pantry" },
-      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
+      { n: "enchilada sauce", q: 15, u: "oz", c: "pantry" },
+      { n: "canned black beans", q: 15, u: "oz", c: "pantry" },
       { n: "frozen corn", q: 1, u: "cup", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "ground cumin", q: 1, u: "tsp", c: "pantry" },
@@ -733,8 +733,8 @@ const MEALS = [
     spice: "Add a pinch of cayenne.",
     ing: [
       { n: "boneless chicken thighs", q: 1.5, u: "lb", c: "protein" },
-      { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
-      { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
+      { n: "canned tomato sauce", q: 15, u: "oz", c: "pantry" },
+      { n: "light coconut milk", q: 13.5, u: "oz", c: "pantry" },
       { n: "garam masala", q: 3, u: "tsp", c: "pantry" },
       { n: "mild curry powder", q: 1, u: "tsp", c: "pantry" },
       { n: "ground ginger", q: 0.5, u: "tsp", c: "pantry" },
@@ -758,7 +758,7 @@ const MEALS = [
     spice: "Add a dash of Frank's RedHot.",
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
-      { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
+      { n: "canned tomato sauce", q: 15, u: "oz", c: "pantry" },
       { n: "ketchup", q: 0.25, u: "cup", c: "pantry" },
       { n: "Dijon mustard", q: 1, u: "tbsp", c: "pantry" },
       { n: "brown sugar", q: 3, u: "tsp", c: "pantry" },
@@ -785,7 +785,7 @@ const MEALS = [
       { n: "ground turkey", q: 1, u: "lb", c: "protein" },
       { n: "bell pepper", q: 4, u: "", c: "produce" },
       { n: "white rice", q: 1, u: "cup", c: "grains" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "Italian seasoning", q: 1, u: "tsp", c: "pantry" },
       { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
@@ -834,13 +834,13 @@ const MEALS = [
     spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "ground turkey", q: 1.25, u: "lb", c: "protein" },
-      { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
+      { n: "coleslaw mix", q: 14, u: "oz", c: "produce" },
       { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
       { n: "toasted sesame oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "rice vinegar", q: 1, u: "tbsp", c: "pantry" },
       { n: "ground ginger", q: 0.5, u: "tsp", c: "pantry" },
       { n: "garlic", q: 3, u: "clove", c: "produce" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
@@ -858,7 +858,7 @@ const MEALS = [
     spice: "Add a pinch of cayenne.",
     ing: [
       { n: "red lentils", q: 1.5, u: "cup", c: "pantry" },
-      { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
+      { n: "light coconut milk", q: 13.5, u: "oz", c: "pantry" },
       { n: "low-sodium vegetable broth", q: 6, u: "cup", c: "pantry" },
       { n: "carrots", q: 3, u: "", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
@@ -883,7 +883,7 @@ const MEALS = [
     spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
-      { n: "extra-firm tofu", q: 1, u: "block", c: "protein" },
+      { n: "extra-firm tofu", q: 14, u: "oz", c: "protein" },
       { n: "creamy peanut butter", q: 0.5, u: "cup", c: "pantry" },
       { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
       { n: "rice vinegar", q: 2, u: "tbsp", c: "pantry" },
@@ -893,12 +893,12 @@ const MEALS = [
       { n: "cornstarch", q: 2, u: "tbsp", c: "pantry" },
       { n: "frozen shelled edamame", q: 1.5, u: "cup", c: "produce" },
       { n: "cucumbers", q: 1, u: "", c: "produce" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
-      "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
+      "Open the tofu over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
       "In a bowl, stir the peanut butter, soy sauce, rice vinegar, sesame oil, maple syrup, and ground ginger together, then stir in warm water a spoonful at a time until the sauce is smooth and pourable, about 6 tablespoons for the full recipe.",
       "Cook the spaghetti for the time on the box, dropping the frozen edamame in for the last 3 minutes. Scoop out a coffee mug of the cooking water before draining.",
       "While the pasta cooks, heat the vegetable oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
@@ -910,7 +910,7 @@ const MEALS = [
     id: "black-bean-burgers", v: "0.10.0", title: "Black Bean Burgers with Oven Fries", time: 50, tags: ["veggie", "vegan"],
     spice: "Add Cholula or sliced jalapenos.",
     ing: [
-      { n: "canned black beans", q: 2, u: "can", c: "pantry" },
+      { n: "canned black beans", q: 30, u: "oz", c: "pantry" },
       { n: "rolled oats", q: 1, u: "cup", c: "grains" },
       { n: "russet potatoes", q: 2, u: "", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
@@ -938,14 +938,14 @@ const MEALS = [
     spice: "Add harissa or a pinch of cayenne.",
     ing: [
       { n: "eggs", q: 8, u: "", c: "dairy" },
-      { n: "canned crushed tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned crushed tomatoes", q: 28, u: "oz", c: "pantry" },
       { n: "bell pepper", q: 2, u: "", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "garlic", q: 3, u: "clove", c: "produce" },
       { n: "ground cumin", q: 1, u: "tsp", c: "pantry" },
       { n: "smoked paprika", q: 1, u: "tsp", c: "pantry" },
       { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
-      { n: "whole grain bread", q: 1, u: "loaf", c: "grains" },
+      { n: "whole grain bread", q: 8, u: "slice", c: "grains" },
     ],
     steps: [
       "Cut the peppers in half, pull out the stems, seeds, and white ribs, and slice them into thin strips. Peel and chop the onion small and chop the garlic into tiny bits.",
@@ -962,7 +962,7 @@ const MEALS = [
     spice: "Add Tapatio or Cholula.",
     ing: [
       { n: "sweet potatoes", q: 3, u: "", c: "produce" },
-      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
+      { n: "canned black beans", q: 15, u: "oz", c: "pantry" },
       { n: "small corn tortillas", q: 8, u: "", c: "grains" },
       { n: "ground cumin", q: 1.5, u: "tsp", c: "pantry" },
       { n: "chili powder", q: 1, u: "tsp", c: "pantry" },
@@ -970,7 +970,7 @@ const MEALS = [
       { n: "olive oil", q: 3, u: "tbsp", c: "pantry" },
       { n: "romaine lettuce", q: 1, u: "head", c: "produce" },
       { n: "avocados", q: 1, u: "", c: "produce" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
     steps: [
@@ -987,9 +987,9 @@ const MEALS = [
     id: "pasta-e-ceci", v: "0.10.0", title: "Chickpea and Tomato Pasta Stew", time: 30, tags: ["veggie", "vegan", "pasta", "soup"],
     spice: "Add red pepper flakes to taste.",
     ing: [
-      { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
+      { n: "canned chickpeas", q: 30, u: "oz", c: "pantry" },
       { n: "small pasta shells", q: 1.5, u: "cup", c: "grains" },
-      { n: "canned crushed tomatoes", q: 1, u: "can", c: "pantry" },
+      { n: "canned crushed tomatoes", q: 28, u: "oz", c: "pantry" },
       { n: "low-sodium vegetable broth", q: 4, u: "cup", c: "pantry" },
       { n: "garlic", q: 4, u: "clove", c: "produce" },
       { n: "dried rosemary", q: 0.5, u: "tsp", c: "pantry" },
@@ -1011,14 +1011,14 @@ const MEALS = [
     spice: "Add sriracha or chili crisp.",
     ing: [
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
-      { n: "frozen stir-fry vegetables", q: 1, u: "bag", c: "produce" },
+      { n: "frozen stir-fry vegetables", q: 16, u: "oz", c: "produce" },
       { n: "low-sodium soy sauce", q: 4, u: "tbsp", c: "pantry" },
       { n: "toasted sesame oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "brown sugar", q: 1, u: "tsp", c: "pantry" },
       { n: "ground ginger", q: 0.25, u: "tsp", c: "pantry" },
       { n: "cornstarch", q: 0.5, u: "tbsp", c: "pantry" },
       { n: "garlic", q: 3, u: "clove", c: "produce" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
     steps: [
@@ -1036,8 +1036,8 @@ const MEALS = [
     ing: [
       { n: "baby potatoes", q: 1.5, u: "lb", c: "produce" },
       { n: "frozen peas", q: 1.5, u: "cup", c: "produce" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
-      { n: "light coconut milk", q: 1, u: "can", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
+      { n: "light coconut milk", q: 13.5, u: "oz", c: "pantry" },
       { n: "mild curry powder", q: 3, u: "tsp", c: "pantry" },
       { n: "garam masala", q: 1, u: "tsp", c: "pantry" },
       { n: "ground cumin", q: 1, u: "tsp", c: "pantry" },
@@ -1060,7 +1060,7 @@ const MEALS = [
     id: "falafel-bowls", v: "0.10.0", title: "Baked Chickpea Patty Bowls", time: 40, tags: ["veggie"],
     spice: "Add harissa to taste.",
     ing: [
-      { n: "canned chickpeas", q: 2, u: "can", c: "pantry" },
+      { n: "canned chickpeas", q: 30, u: "oz", c: "pantry" },
       { n: "fresh parsley", q: 1, u: "bunch", c: "produce" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "garlic", q: 3, u: "clove", c: "produce" },
@@ -1137,7 +1137,7 @@ const MEALS = [
       { n: "panko breadcrumbs", q: 1.5, u: "cup", c: "pantry" },
       { n: "all-purpose flour", q: 4, u: "tbsp", c: "pantry" },
       { n: "eggs", q: 2, u: "", c: "dairy" },
-      { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
+      { n: "coleslaw mix", q: 14, u: "oz", c: "produce" },
       { n: "plain Greek yogurt", q: 0.75, u: "cup", c: "dairy" },
       { n: "lime", q: 2, u: "", c: "produce" },
       { n: "chili powder", q: 1, u: "tsp", c: "pantry" },
@@ -1159,10 +1159,10 @@ const MEALS = [
     id: "tuna-patties", v: "0.16.0", title: "Crispy Tuna Patties with Lemon Yogurt Sauce", time: 25, tags: ["fish", "fast"],
     spice: "Add a dash of Tabasco to the yogurt sauce.",
     ing: [
-      { n: "canned tuna", q: 3, u: "can", c: "protein" },
+      { n: "canned tuna", q: 15, u: "oz", c: "protein" },
       { n: "eggs", q: 2, u: "", c: "dairy" },
       { n: "panko breadcrumbs", q: 1, u: "cup", c: "pantry" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
       { n: "Dijon mustard", q: 1, u: "tbsp", c: "pantry" },
       { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
       { n: "lemon", q: 1, u: "", c: "produce" },
@@ -1229,14 +1229,14 @@ const MEALS = [
     spice: "Add red pepper flakes or Calabrian chile paste.",
     ing: [
       { n: "cod fillets", q: 1.5, u: "lb", c: "protein" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
-      { n: "canned cannellini beans", q: 1, u: "can", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
+      { n: "canned cannellini beans", q: 15, u: "oz", c: "pantry" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "garlic", q: 3, u: "clove", c: "produce" },
       { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
       { n: "dried oregano", q: 1, u: "tsp", c: "pantry" },
       { n: "spinach", q: 3, u: "cup", c: "produce" },
-      { n: "whole grain bread", q: 0.5, u: "loaf", c: "grains" },
+      { n: "whole grain bread", q: 8, u: "slice", c: "grains" },
     ],
     steps: [
       "Chop the onion small and mince the garlic. Heat the olive oil in a large skillet over medium heat and cook the onion 4 minutes until soft, then add the garlic and oregano for 30 seconds.",
@@ -1277,18 +1277,18 @@ const MEALS = [
     ing: [
       { n: "lean ground beef", q: 1.25, u: "lb", c: "protein" },
       { n: "olive oil", q: 0.5, u: "tbsp", c: "pantry" },
-      { n: "taco seasoning", q: 1, u: "packet", c: "pantry" },
+      { n: "taco seasoning", q: 6, u: "tsp", c: "pantry" },
       { n: "small flour tortillas", q: 8, u: "", c: "grains" },
       { n: "romaine lettuce", q: 1, u: "head", c: "produce" },
       { n: "tomatoes", q: 2, u: "", c: "produce" },
       { n: "shredded cheddar", q: 1, u: "cup", c: "dairy" },
-      { n: "salsa", q: 1, u: "jar", c: "pantry" },
+      { n: "salsa", q: 16, u: "oz", c: "pantry" },
       { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
       "Heat the olive oil in a large skillet over medium-high heat (lean beef sticks without it; skip it only if your skillet is nonstick). Add the beef and cook 6 to 8 minutes, breaking it into small crumbles with your spatula. Wash your hands after handling the raw meat.",
       "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low. Tilt the pan and spoon off any pooled fat.",
-      "Stir in the taco seasoning and two-thirds of a cup of water per seasoning packet used. Simmer 3 to 4 minutes until saucy.",
+      "Stir in the taco seasoning and two-thirds of a cup of water for every 2 tablespoons of seasoning. Simmer 3 to 4 minutes until saucy.",
       "While it simmers, chop the lettuce and dice the tomatoes into taco-size pieces.",
       "Wrap the tortillas in a damp paper towel and microwave 30 seconds.",
       "Set everything out build-your-own style: beef, lettuce, tomatoes, salsa, and yogurt instead of sour cream. Cheese is there for whoever wants it and easy to skip.",
@@ -1301,7 +1301,7 @@ const MEALS = [
       { n: "flank steak", q: 1.25, u: "lb", c: "protein" },
       { n: "bell pepper", q: 3, u: "", c: "produce" },
       { n: "red onion", q: 1, u: "", c: "produce" },
-      { n: "fajita seasoning", q: 1, u: "packet", c: "pantry" },
+      { n: "fajita seasoning", q: 6, u: "tsp", c: "pantry" },
       { n: "olive oil", q: 2, u: "tbsp", c: "pantry" },
       { n: "small flour tortillas", q: 8, u: "", c: "grains" },
       { n: "lime", q: 1, u: "", c: "produce" },
@@ -1322,7 +1322,7 @@ const MEALS = [
     ing: [
       { n: "lean ground beef", q: 1, u: "lb", c: "protein" },
       { n: "spaghetti", q: 12, u: "oz", c: "grains" },
-      { n: "marinara sauce", q: 1, u: "jar", c: "pantry" },
+      { n: "marinara sauce", q: 24, u: "oz", c: "pantry" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "garlic", q: 2, u: "clove", c: "produce" },
       { n: "zucchini", q: 1, u: "", c: "produce" },
@@ -1344,16 +1344,16 @@ const MEALS = [
     spice: "Add a pinch of cayenne or minced chipotle in adobo.",
     ing: [
       { n: "lean ground beef", q: 1, u: "lb", c: "protein" },
-      { n: "canned black beans", q: 1, u: "can", c: "pantry" },
-      { n: "canned diced tomatoes", q: 1, u: "can", c: "pantry" },
-      { n: "canned tomato sauce", q: 1, u: "can", c: "pantry" },
+      { n: "canned black beans", q: 15, u: "oz", c: "pantry" },
+      { n: "canned diced tomatoes", q: 14.5, u: "oz", c: "pantry" },
+      { n: "canned tomato sauce", q: 15, u: "oz", c: "pantry" },
       { n: "onion", q: 1, u: "", c: "produce" },
       { n: "bell pepper", q: 1, u: "", c: "produce" },
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "chili powder", q: 3, u: "tsp", c: "pantry" },
       { n: "ground cumin", q: 1, u: "tsp", c: "pantry" },
       { n: "low-sodium chicken broth", q: 0.5, u: "cup", c: "pantry" },
-      { n: "tortilla chips", q: 1, u: "bag", c: "grains" },
+      { n: "tortilla chips", q: 10, u: "oz", c: "grains" },
       { n: "shredded cheddar", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
@@ -1393,14 +1393,14 @@ const MEALS = [
     ing: [
       { n: "ground pork", q: 1, u: "lb", c: "protein" },
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
-      { n: "coleslaw mix", q: 1, u: "bag", c: "produce" },
+      { n: "coleslaw mix", q: 14, u: "oz", c: "produce" },
       { n: "garlic", q: 2, u: "clove", c: "produce" },
       { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
       { n: "rice vinegar", q: 1, u: "tbsp", c: "pantry" },
       { n: "ground ginger", q: 1, u: "tsp", c: "pantry" },
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
       { n: "toasted sesame oil", q: 1, u: "tbsp", c: "pantry" },
-      { n: "green onions", q: 1, u: "bunch", c: "produce" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
     ],
     steps: [
       "Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
@@ -1504,36 +1504,34 @@ const PACKS = {
   "baby potatoes": { per: 1.5, one: "bag (1.5 lb)", many: "bags (1.5 lb)" },
   "cherry tomatoes": { per: 10, one: "container (10 oz)", many: "containers (10 oz)" },
   "wooden skewers": { per: 100, one: "pack of 100", many: "packs of 100" },
+  "basil pesto": { per: 8, one: "jar (8 oz)", many: "jars (8 oz)" },
+  "marinara sauce": { per: 24, one: "jar (24 oz)", many: "jars (24 oz)" },
+  "salsa": { per: 16, one: "jar (16 oz)", many: "jars (16 oz)" },
+  "barbecue sauce": { per: 18, one: "bottle (18 oz)", many: "bottles (18 oz)" },
+  "coleslaw mix": { per: 14, one: "bag (14 oz)", many: "bags (14 oz)" },
+  "tortilla chips": { per: 10, one: "bag (10 oz)", many: "bags (10 oz)" },
+  "frozen broccoli florets": { per: 12, one: "bag (12 oz)", many: "bags (12 oz)" },
+  "frozen stir-fry vegetables": { per: 16, one: "bag (16 oz)", many: "bags (16 oz)" },
+  "extra-firm tofu": { per: 14, one: "block (14 oz)", many: "blocks (14 oz)" },
+  "canned tuna": { per: 5, one: "can (5 oz)", many: "cans (5 oz)" },
+  "canned black beans": { per: 15, one: "can (15 oz)", many: "cans (15 oz)" },
+  "canned cannellini beans": { per: 15, one: "can (15 oz)", many: "cans (15 oz)" },
+  "canned chickpeas": { per: 15, one: "can (15 oz)", many: "cans (15 oz)" },
+  "canned crushed tomatoes": { per: 28, one: "can (28 oz)", many: "cans (28 oz)" },
+  "canned diced tomatoes": { per: 14.5, one: "can (14.5 oz)", many: "cans (14.5 oz)" },
+  "canned tomato sauce": { per: 15, one: "can (15 oz)", many: "cans (15 oz)" },
+  "enchilada sauce": { per: 15, one: "can (15 oz)", many: "cans (15 oz)" },
+  "light coconut milk": { per: 13.5, one: "can (13.5 oz)", many: "cans (13.5 oz)" },
+  "taco seasoning": { per: 6, one: "packet (1 oz)", many: "packets (1 oz)" },
+  "fajita seasoning": { per: 6, one: "packet (1 oz)", many: "packets (1 oz)" },
+  "green onions": { per: 6, one: "bunch", many: "bunches" },
+  "whole grain bread": { per: 20, one: "loaf", many: "loaves" },
 };
 
 // Units that are whole purchasable things: a scaled-down week can need half a
 // jar, but the store only sells whole ones, so the buy line rounds up
-const DISCRETE_UNITS = new Set(["jar", "can", "head", "loaf", "packet", "block", "bag", "bottle", "bunch"]);
+const DISCRETE_UNITS = new Set(["head", "bunch"]);
 
-// The package size each recipe assumes, shown after the unit ("1 jar (24 oz)
-// marinara sauce") so two different shelf sizes are never ambiguous. Heads,
-// bunches, and loaves are natural units and stay size-free.
-const SIZES = {
-  "canned tuna": "5 oz",
-  "marinara sauce": "24 oz",
-  "basil pesto": "8 oz",
-  "salsa": "16 oz",
-  "canned chickpeas": "15 oz",
-  "canned black beans": "15 oz",
-  "canned cannellini beans": "15 oz",
-  "canned diced tomatoes": "14.5 oz",
-  "canned crushed tomatoes": "28 oz",
-  "canned tomato sauce": "15 oz",
-  "light coconut milk": "13.5 oz",
-  "enchilada sauce": "15 oz",
-  "taco seasoning": "1 oz",
-  "fajita seasoning": "1 oz",
-  "extra-firm tofu": "14 oz",
-  "frozen stir-fry vegetables": "16 oz",
-  "coleslaw mix": "14 oz",
-  "frozen broccoli florets": "12 oz",
-  "tortilla chips": "10 oz",
-};
 
 // Stores the grocery list can link into. "None" keeps the list store-free;
 // picking one adds a "Find it" search link per line for building a pickup cart.
@@ -1671,9 +1669,8 @@ function rerollDay(week, dayIndex, avoid = new Set(), pool = MEALS, quotas = nul
 
 // Units are stored in singular canonical form; pluralize for display only
 const UNIT_PLURALS = {
-  cup: "cups", can: "cans", jar: "jars", head: "heads", loaf: "loaves",
-  bunch: "bunches", stalk: "stalks", slice: "slices", clove: "cloves",
-  packet: "packets", block: "blocks", bag: "bags", bottle: "bottles",
+  cup: "cups", head: "heads", bunch: "bunches", stalk: "stalks",
+  slice: "slices", clove: "cloves",
 };
 
 // Countable ingredients carry no unit, so the name itself has to pluralize.
@@ -1726,12 +1723,10 @@ function recipeCount(ing) {
   return `${label} ${countName(ing.n, half)}`;
 }
 
-function formatQty(q, u, name) {
+function formatQty(q, u) {
   // Countable items round up to whole; measured items to the nearest quarter.
-  // Passing a name appends the expected package size ("1 jar (24 oz)").
   const rounded = u === "" ? Math.ceil(q - 1e-9) : Math.round(q * 4) / 4;
-  let unit = rounded !== 1 && UNIT_PLURALS[u] ? UNIT_PLURALS[u] : u;
-  if (unit && name && SIZES[name]) unit += ` (${SIZES[name]})`;
+  const unit = rounded !== 1 && UNIT_PLURALS[u] ? UNIT_PLURALS[u] : u;
   return unit ? `${rounded} ${unit}` : String(rounded);
 }
 
@@ -1768,8 +1763,7 @@ function buyPlan(ing) {
   // No pack info, but you still cannot buy half a jar or half a head
   if (DISCRETE_UNITS.has(ing.u) && ing.q % 1 !== 0) {
     const count = Math.ceil(ing.q);
-    let unit = count !== 1 && UNIT_PLURALS[ing.u] ? UNIT_PLURALS[ing.u] : ing.u;
-    if (SIZES[ing.n]) unit += ` (${SIZES[ing.n]})`;
+    const unit = count !== 1 && UNIT_PLURALS[ing.u] ? UNIT_PLURALS[ing.u] : ing.u;
     return `${count} ${unit}`;
   }
   return null;
@@ -1786,7 +1780,13 @@ function storeSearchUrl(ing, storeObj) {
 function groceryLine(ing, isStaple) {
   if (!isStaple) {
     const buy = buyPlan(ing);
-    if (buy) return { qty: buy, name: ing.n, need: formatQty(ing.q, ing.u) };
+    if (buy) {
+      // The need is only worth stating when it differs from what you buy:
+      // "1 can (15 oz) canned black beans" says everything already
+      const pack = PACKS[ing.n];
+      const exact = pack && Math.abs(ing.q % pack.per) < 1e-9;
+      return { qty: buy, name: ing.n, need: exact ? null : formatQty(ing.q, ing.u) };
+    }
     if (ing.u === "") {
       const c = Math.ceil(ing.q - 1e-9);
       const half = Math.ceil(ing.q * 2 - 1e-9) / 2;
@@ -1794,7 +1794,7 @@ function groceryLine(ing, isStaple) {
       return { qty: String(c), name: countName(ing.n, c), need };
     }
   }
-  return { qty: formatQty(ing.q, ing.u, isStaple ? undefined : ing.n), name: ing.n, need: null };
+  return { qty: formatQty(ing.q, ing.u), name: ing.n, need: null };
 }
 
 function groceryText(ing, isStaple) {
@@ -1867,7 +1867,7 @@ function RecipeDetails({ meal, scale }) {
         {meal.ing.map((ing) => {
           const scaled = { ...ing, q: ing.q * scale };
           if (scaled.u === "") return recipeCount(scaled);
-          return `${formatQty(scaled.q, scaled.u, scaled.n)} ${scaled.n}`;
+          return `${formatQty(scaled.q, scaled.u)} ${scaled.n}`;
         }).join(", ")}
       </div>
       <div style={{ fontWeight: 800, fontSize: 11, letterSpacing: "1px", textTransform: "uppercase", color: P.celery, marginBottom: 4 }}>

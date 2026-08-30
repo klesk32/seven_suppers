@@ -1,6 +1,6 @@
 {
   "_comment": "Approved rendered step text at 4 servings (scale 1). dev/render-check.mjs asserts the live renderer reproduces this exactly. Regenerate only deliberately, reviewing the diff.",
-  "fixtureVersion": "0.5.0",
+  "fixtureVersion": "0.6.0",
   "steps": {
     "sheetpan-lemon-chicken": [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
@@ -15,7 +15,7 @@
       "Cut the lettuce into thin ribbons and the tomatoes into small cubes. Put them in bowls on the table with the cheese and yogurt.",
       "Put a large skillet on the stove over medium heat and let it warm up for 2 minutes.",
       "Add the turkey and cook 7 to 8 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle of it: ground turkey is done at 165 F.",
-      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water per seasoning packet used, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
+      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water for every 2 tablespoons of seasoning, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
       "Warm the tortillas: 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
       "Let everyone build their own. The yogurt stands in for sour cream."
     ],
@@ -133,7 +133,7 @@
     ],
     "tofu-nuggets": [
       "Start the rice following the package directions.",
-      "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
+      "Open the tofu over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
       "Cut the tofu into bite-size cubes and toss them gently in a bowl with the cornstarch until white all over.",
       "Heat the oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
       "Turn the heat to low, pour in the soy sauce and maple syrup with the garlic powder and ground ginger, and stir 1 minute, until the sauce thickens and clings to the tofu instead of pooling. Turn off the heat.",
@@ -282,7 +282,7 @@
     ],
     "peanut-noodles-tofu": [
       "Fill your largest pot two-thirds with water, add 1 tablespoon of salt, cover, and bring it to a rolling boil over high heat.",
-      "Open the tofu over the sink and pour off the water. Wrap the block in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
+      "Open the tofu over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
       "In a bowl, stir the peanut butter, soy sauce, rice vinegar, sesame oil, maple syrup, and ground ginger together, then stir in warm water a spoonful at a time until the sauce is smooth and pourable, about 6 tablespoons for the full recipe.",
       "Cook the spaghetti for the time on the box, dropping the frozen edamame in for the last 3 minutes. Scoop out a coffee mug of the cooking water before draining.",
       "While the pasta cooks, heat the vegetable oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
@@ -417,7 +417,7 @@
     "beef-tacos": [
       "Heat the olive oil in a large skillet over medium-high heat (lean beef sticks without it; skip it only if your skillet is nonstick). Add the beef and cook 6 to 8 minutes, breaking it into small crumbles with your spatula. Wash your hands after handling the raw meat.",
       "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low. Tilt the pan and spoon off any pooled fat.",
-      "Stir in the taco seasoning and two-thirds of a cup of water per seasoning packet used. Simmer 3 to 4 minutes until saucy.",
+      "Stir in the taco seasoning and two-thirds of a cup of water for every 2 tablespoons of seasoning. Simmer 3 to 4 minutes until saucy.",
       "While it simmers, chop the lettuce and dice the tomatoes into taco-size pieces.",
       "Wrap the tortillas in a damp paper towel and microwave 30 seconds.",
       "Set everything out build-your-own style: beef, lettuce, tomatoes, salsa, and yogurt instead of sour cream. Cheese is there for whoever wants it and easy to skip."
