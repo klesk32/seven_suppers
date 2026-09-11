@@ -1,6 +1,16 @@
 # Seven Suppers - Specification
 
-Version: 0.22.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.23.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.23.0 (print title and remembered print settings):
+
+- The print view gains a title line above "This week's dinners". A chip pair picks the mode: "Week of" with a date chooser, or "Custom" with a single line of free text (80 characters). An empty custom line prints no title.
+- "Week of" defaults to the next Sunday strictly after today, because plans are made ahead: a Saturday visit plans tomorrow's week, and a Sunday or mid-week visit plans the following one. Any day picked in the chooser snaps to the Sunday that starts its week, and the title reads "Week of September 13".
+- The date is deliberately not persisted, so a stale week can never print by accident. The mode and the custom text are.
+- The title doubles as the document title while printing, so "Save as PDF" offers "Week of September 13" as the filename instead of "Seven Suppers".
+- In card-per-page mode each card carries the title in small type, so loose cards on the fridge still say which week they belong to.
+- "One recipe per page" now defaults to off and is remembered. Card choice, mode, and custom text persist together as `seven-suppers-print` (JSON `{ cardPerPage, headerMode, headerText }`).
+- Share links are unchanged: the title is presentation, not composition, so it stays out of the slug.
 
 0.22.0 (kitchen measures instead of package fractions):
 
@@ -226,7 +236,8 @@ Invariants enforced by `dev/validate.mjs`:
 
 - Third view-toggle button "Print week", disabled at 0 planned meals.
 - Shows all planned recipes in day order (day, title, time, scaled ingredients, steps) followed by the grocery list, in print-friendly cards.
-- "One recipe per page, like a card deck" checkbox (default on): each recipe prints on its own page, meal-kit style, and the grocery list follows on its own page. Unchecked, recipes pack together and the grocery list forces a fresh page. Session-only setting.
+- "One recipe per page, like a card deck" checkbox (default off since 0.23.0, persisted in `seven-suppers-print`): checked, each recipe prints on its own page, meal-kit style, with the print title in small type, and the grocery list follows on its own page. Unchecked, recipes pack together and the grocery list forces a fresh page.
+- Print title (0.23.0): "Week of" plus a date chooser (default the next Sunday after today; picked days snap to their Sunday; the date is not persisted) or a custom single line. Printed as a heading above the dinners heading, and used as the document title during printing so saved PDFs are named after it.
 - "Print or save as PDF" button: at top level it calls `window.print()`; inside an embedded frame (like the hosted artifact page, where `window.print` is silently blocked) it opens a top-level copy of the page in a new tab and prints that. If pop-ups are also blocked, it falls back to `window.print()` and the helper text points at Ctrl+P. The intended workflow is plan the week, then print or save the combined recipes-plus-groceries sheet.
 - Print CSS: `.no-print` hides app chrome (view toggle, servings stepper, buttons, footer); `.print-card` and list items avoid page breaks (modern and legacy `page-break-*` properties both set); the grocery list starts on a fresh page.
 

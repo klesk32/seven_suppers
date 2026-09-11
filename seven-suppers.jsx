@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.22.0";
+const APP_VERSION = "0.23.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -1891,6 +1891,39 @@ function RecipeDetails({ meal, scale }) {
   );
 }
 
+// Print header dates. "Week of" defaults to the next Sunday strictly after
+// today, because plans are made ahead: a Saturday visit plans tomorrow's week,
+// and a Sunday or mid-week visit plans the following one. Dates are local
+// YYYY-MM-DD strings (the value format of <input type="date">).
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+function isoDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function parseIso(s) {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function nextSunday(from = new Date()) {
+  const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  d.setDate(d.getDate() + (7 - d.getDay()));
+  return isoDate(d);
+}
+
+// Any day picked in the date chooser snaps to the Sunday that starts its week
+function sundayOf(iso) {
+  const d = parseIso(iso);
+  d.setDate(d.getDate() - d.getDay());
+  return isoDate(d);
+}
+
+function weekOfLabel(iso) {
+  const d = parseIso(iso);
+  return `Week of ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+}
+
 export default function SevenSuppers() {
   const [week, setWeek] = useState(Array(7).fill(null));
   const [locks, setLocks] = useState(Array(7).fill(false));
@@ -1898,7 +1931,12 @@ export default function SevenSuppers() {
   const [profile, setProfile] = useState(DEFAULT_PROFILE);
   const [servings, setServings] = useState(DEFAULT_SERVINGS);
   const [store, setStore] = useState("none");
-  const [cardPerPage, setCardPerPage] = useState(true);
+  // Print preferences persist together as seven-suppers-print; the header
+  // date deliberately does not, so a stale week can never print by accident
+  const [cardPerPage, setCardPerPage] = useState(false);
+  const [headerMode, setHeaderMode] = useState("week"); // "week" or "custom"
+  const [headerText, setHeaderText] = useState("");
+  const [weekOf, setWeekOf] = useState(() => nextSunday());
   const [selectedDay, setSelectedDay] = useState(null);
   const [filter, setFilter] = useState("all");
   const [expanded, setExpanded] = useState(null);
@@ -1993,6 +2031,17 @@ export default function SevenSuppers() {
         // No saved store, stay store-free
       }
       try {
+        const result = await window.storage.get("seven-suppers-print");
+        if (result && result.value) {
+          const saved = JSON.parse(result.value);
+          if (typeof saved.cardPerPage === "boolean") setCardPerPage(saved.cardPerPage);
+          if (saved.headerMode === "week" || saved.headerMode === "custom") setHeaderMode(saved.headerMode);
+          if (typeof saved.headerText === "string") setHeaderText(saved.headerText.slice(0, 80));
+        }
+      } catch (e) {
+        // No saved print preferences, use the defaults
+      }
+      try {
         const result = await window.storage.get("seven-suppers-shuffle");
         if (result && result.value) {
           const saved = JSON.parse(result.value);
@@ -2066,6 +2115,17 @@ export default function SevenSuppers() {
     if (!loaded) return;
     (async () => {
       try {
+        await window.storage.set("seven-suppers-print", JSON.stringify({ cardPerPage, headerMode, headerText }));
+      } catch (e) {
+        // Storage unavailable
+      }
+    })();
+  }, [cardPerPage, headerMode, headerText, loaded]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    (async () => {
+      try {
         await window.storage.set("seven-suppers-profile", profile);
       } catch (e) {
         // Storage unavailable
@@ -2095,6 +2155,9 @@ export default function SevenSuppers() {
       // Sandboxed contexts (artifact iframes) may refuse URL edits
     }
   }, [week, servings, loaded]);
+
+  // The printed title; an empty custom line prints no title at all
+  const printTitle = headerMode === "custom" ? headerText.trim() : weekOfLabel(weekOf);
 
   const activeStore = STORES.find((s) => s.id === store && s.searchUrl) || null;
 
@@ -2254,6 +2317,11 @@ export default function SevenSuppers() {
   }
 
   function printWeek() {
+    // Browsers name a saved PDF after the page title, so the print header
+    // becomes the default filename ("Week of September 13.pdf")
+    const prevTitle = document.title;
+    if (printTitle) document.title = printTitle;
+    const restoreTitle = () => { document.title = prevTitle; };
     let framed = true;
     try {
       framed = window.self !== window.top;
@@ -2262,6 +2330,7 @@ export default function SevenSuppers() {
     }
     if (!framed) {
       window.print();
+      restoreTitle();
       return;
     }
     // Embedded frames (like the artifact page) often silently block
@@ -2269,10 +2338,12 @@ export default function SevenSuppers() {
     const w = window.open("", "_blank");
     if (!w) {
       window.print();
+      restoreTitle();
       return;
     }
     w.document.write("<!doctype html>" + document.documentElement.outerHTML);
     w.document.close();
+    restoreTitle(); // the copy already carries the print title
     setTimeout(() => {
       w.focus();
       w.print();
@@ -2696,6 +2767,35 @@ export default function SevenSuppers() {
               style={{ width: 16, height: 16, accentColor: P.cherry }} />
             One recipe per page, like a card deck
           </label>
+          <div className="no-print" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 14, fontSize: 13, color: P.inkSoft }}>
+            <span style={{ fontWeight: 700 }}>Title</span>
+            {[["week", "Week of"], ["custom", "Custom"]].map(([id, label]) => (
+              <button key={id} onClick={() => setHeaderMode(id)} aria-pressed={headerMode === id}
+                style={{ ...btnBase, padding: "5px 11px", fontSize: 12,
+                  background: headerMode === id ? P.ink : P.card,
+                  color: headerMode === id ? "#fff" : P.inkSoft,
+                  border: `1.5px solid ${headerMode === id ? P.ink : P.line}` }}>
+                {label}
+              </button>
+            ))}
+            {headerMode === "week" ? (
+              <input type="date" aria-label="Week starting" value={weekOf}
+                onChange={(e) => { if (e.target.value) setWeekOf(sundayOf(e.target.value)); }}
+                style={{ fontFamily: FONT_BODY, fontSize: 13, padding: "5px 8px", borderRadius: 8,
+                  border: `1.5px solid ${P.line}`, background: P.card, color: P.ink }} />
+            ) : (
+              <input type="text" aria-label="Custom title" value={headerText} maxLength={80}
+                placeholder="Type a title, or leave blank for none"
+                onChange={(e) => setHeaderText(e.target.value)}
+                style={{ fontFamily: FONT_BODY, fontSize: 13, padding: "5px 8px", borderRadius: 8, flex: "1 1 220px", minWidth: 0,
+                  border: `1.5px solid ${P.line}`, background: P.card, color: P.ink }} />
+            )}
+          </div>
+          {printTitle && (
+            <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 28, margin: "0 0 2px", letterSpacing: "-0.5px" }}>
+              {printTitle}
+            </h1>
+          )}
           <h2 style={{ fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 22, margin: "0 0 10px" }}>
             This week's dinners, for {servings} {servings === 1 ? "person" : "people"}
           </h2>
@@ -2705,6 +2805,10 @@ export default function SevenSuppers() {
             return (
               <section key={day} className="print-card recipe-card"
                 style={{ background: P.card, borderRadius: 12, border: `1.5px solid ${P.line}`, padding: "12px 14px", marginBottom: 12 }}>
+                {/* Loose cards on the fridge still say which week they belong to */}
+                {cardPerPage && printTitle && (
+                  <div style={{ fontSize: 10, color: P.inkSoft, marginBottom: 4 }}>{printTitle}</div>
+                )}
                 <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: P.celery }}>
                   {day}
                 </div>

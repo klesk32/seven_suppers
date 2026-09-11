@@ -1,4 +1,4 @@
-<!-- Version: 0.10.0 -->
+<!-- Version: 0.10.1 -->
 
 # Seven Suppers
 
@@ -18,7 +18,7 @@ Live at [dinner.tinkerling.net](https://dinner.tinkerling.net), or open `seven-s
 - **One grocery list.** Ingredients merge across recipes into shoppable lines grouped by aisle, with package sizes ("1 can (28 oz) crushed tomatoes") and honest need notes ("2 onions (need 1 and a half)"). Pantry staples get their own check-before-you-shop section.
 - **Serving scaling.** Recipes are written for 4 and scale from 1 to 12, rounding countable items to the nearest honest half and indivisible ones (eggs, buns, tortillas) up to whole units. The steps scale too: cook for 2 and the card says "1 tablespoon of the olive oil" and "half a teaspoon of salt", not a note telling you to do the math. Every amount is a kitchen measure rather than a package, so a scaled recipe asks for "7.5 oz canned black beans" or "4 slices whole grain bread", never "half a can" or "0.75 loaves".
 - **Share the week as a link.** The address bar always holds a short link for the current plan, and a "Copy week link" button copies it. Open it on another device or send it to whoever you cook with, and it becomes that browser's plan. Links keep working as the catalog grows.
-- **Printable recipe cards.** Each meal has 5 to 7 numbered steps that assume no technique knowledge: every step names the pan and heat level, gives times and plain-language cut sizes, and ends with a doneness check.
+- **Printable recipe cards.** Each meal has 5 to 7 numbered steps that assume no technique knowledge: every step names the pan and heat level, gives times and plain-language cut sizes, and ends with a doneness check. The printout takes a title: "Week of" the upcoming Sunday by default, or any line you type, and a saved PDF is named after it.
 
 ## The recipes
 

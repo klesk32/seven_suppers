@@ -2,8 +2,9 @@
 // rounding, spice merging, thermometer doneness text in the printed recipe,
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
-// heart-healthy weekly quotas, per-serving spice notes, and feedback links
-const VERSION = "0.12.0";
+// heart-healthy weekly quotas, per-serving spice notes, feedback links, and
+// print preferences
+const VERSION = "0.13.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -146,6 +147,63 @@ function boot(seed, url = "http://localhost/") {
   const c2text = c2.window.document.getElementById("root").textContent;
   check("cans scale to ounces on the card", c2text.includes("11.25 oz canned black beans"));
   check("bread scales to slices on the card", c2text.includes("6 slices whole grain bread"));
+
+  // Instance C3: print preferences. Card-per-page starts off, the title
+  // defaults to "Week of" the upcoming Sunday, and the card choice persists
+  const printWeekOf = (doc) => [...doc.querySelectorAll("button")].find((x) => x.textContent.trim().startsWith("Print week"));
+  const cardToggle = (doc) => [...doc.querySelectorAll('input[type="checkbox"]')]
+    .find((x) => x.closest("label") && x.closest("label").textContent.includes("One recipe per page"));
+  const c3 = boot({
+    "seven-suppers-week": JSON.stringify(["omelet-night", "turkey-tacos", null, null, null, null, null]),
+  });
+  await wait(600);
+  const c3doc = c3.window.document;
+  printWeekOf(c3doc).click();
+  await wait(200);
+  check("card-per-page is off by default", !!cardToggle(c3doc) && !cardToggle(c3doc).checked);
+  const MONTH_RE = "(January|February|March|April|May|June|July|August|September|October|November|December)";
+  check("print title defaults to Week of",
+    [...c3doc.querySelectorAll("#root h1")].some((h) => new RegExp(`^Week of ${MONTH_RE} \\d{1,2}$`).test(h.textContent.trim())));
+  const dateInput = c3doc.querySelector('input[type="date"]');
+  const picked = dateInput ? new Date(dateInput.value + "T00:00:00") : null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const daysOut = picked ? Math.round((picked - today) / 86400000) : -1;
+  check("default week is the upcoming Sunday", !!picked && picked.getDay() === 0 && daysOut >= 1 && daysOut <= 7,
+    `(${dateInput && dateInput.value})`);
+  cardToggle(c3doc).click();
+  await wait(150);
+  const printPrefs = JSON.parse(c3.window.localStorage.getItem("seven-suppers-print") || "{}");
+  check("card-per-page choice persists", printPrefs.cardPerPage === true);
+
+  // Instance C4: saved custom title and card mode load, and card mode repeats
+  // the title on every card (1 heading + 2 cards)
+  const c4 = boot({
+    "seven-suppers-week": JSON.stringify(["omelet-night", "turkey-tacos", null, null, null, null, null]),
+    "seven-suppers-print": JSON.stringify({ cardPerPage: true, headerMode: "custom", headerText: "Dinners at the lake" }),
+  });
+  await wait(600);
+  const c4doc = c4.window.document;
+  printWeekOf(c4doc).click();
+  await wait(200);
+  const c4text = c4doc.getElementById("root").textContent;
+  check("custom title prints", [...c4doc.querySelectorAll("#root h1")].some((h) => h.textContent.trim() === "Dinners at the lake"));
+  check("card mode repeats the title on every card", (c4text.match(/Dinners at the lake/g) || []).length === 3);
+  check("saved card-per-page preference loads", !!cardToggle(c4doc) && cardToggle(c4doc).checked);
+
+  // Header date helpers, checked against fixed calendar days
+  const jsx = fs.readFileSync(path.join(ROOT, "seven-suppers.jsx"), "utf8");
+  const grab = (a, b) => { const i = jsx.indexOf(a); return jsx.slice(i, jsx.indexOf(b, i) + b.length); };
+  const dates = new Function([
+    grab("const MONTHS = ", ";"), grab("function isoDate(", "\n}"), grab("function parseIso(", "\n}"),
+    grab("function nextSunday(", "\n}"), grab("function sundayOf(", "\n}"), grab("function weekOfLabel(", "\n}"),
+  ].join("\n") + "\nreturn { nextSunday, sundayOf, weekOfLabel };")();
+  check("Saturday plans tomorrow's week", dates.nextSunday(new Date(2026, 8, 12)) === "2026-09-13");
+  check("Sunday plans the following week", dates.nextSunday(new Date(2026, 8, 13)) === "2026-09-20");
+  check("mid-week plans the following week", dates.nextSunday(new Date(2026, 8, 16)) === "2026-09-20");
+  check("the upcoming Sunday crosses the year", dates.nextSunday(new Date(2026, 11, 30)) === "2027-01-03");
+  check("a picked day snaps to its Sunday", dates.sundayOf("2026-09-17") === "2026-09-13");
+  check("the week label reads naturally", dates.weekOfLabel("2026-09-13") === "Week of September 13");
 
   // Instance D: vegan chip, catalog gray-out, and drag-to-swap
   const d = boot({
