@@ -1,6 +1,6 @@
 {
   "_comment": "Approved rendered step text at 4 servings (scale 1). dev/render-check.mjs asserts the live renderer reproduces this exactly. Regenerate only deliberately, reviewing the diff.",
-  "fixtureVersion": "0.6.0",
+  "fixtureVersion": "0.7.0",
   "steps": {
     "sheetpan-lemon-chicken": [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
@@ -26,6 +26,15 @@
       "Add the rest of the oil to the pan, then the frozen peas and carrots straight from the bag. Sprinkle in the garlic powder and stir for 2 minutes.",
       "Add the rice and cook 3 to 4 minutes, stirring every 30 seconds, until everything is hot.",
       "Turn off the heat. Stir in the soy sauce, the eggs, and the green onions, and serve."
+    ],
+    "chicken-fried-rice": [
+      "Cook the rice following the package directions, then spread it on a plate to cool while you prep. Leftover cold rice from another night works even better and skips this step.",
+      "Cut the chicken into small bite-size pieces, about the size of your thumbnail, and sprinkle them with a pinch of salt. Wash the board, knife, and your hands with soap right after.",
+      "Crack the eggs into a bowl and beat them with a fork until evenly yellow. Slice the green onions into thin rings.",
+      "Heat 1 tablespoon of the oil in your largest skillet over medium heat for 1 minute. Pour in the eggs, wait 20 seconds, then push them around with a spatula until they set into soft clumps, about 1 minute. Slide them onto a plate.",
+      "Turn the heat to medium-high and add 1 tablespoon of the oil. Add the chicken in one layer, leave it 3 minutes to brown, then stir and cook 3 to 4 more. Poke an instant-read thermometer into the biggest piece: 165 F means done. Slide it onto the plate with the eggs.",
+      "Add the rest of the oil to the pan, then the frozen peas and carrots straight from the bag. Sprinkle in the garlic powder and stir for 2 minutes. Add the rice and cook 3 to 4 minutes, stirring every 30 seconds, until everything is hot.",
+      "Turn off the heat. Stir in the soy sauce, the chicken and eggs, and the green onions, and serve."
     ],
     "creamy-tomato-pasta": [
       "Fill your largest pot two-thirds with water, add 1 tablespoon of salt, cover, and bring it to a rolling boil over high heat.",

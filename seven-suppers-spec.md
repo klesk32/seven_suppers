@@ -1,6 +1,12 @@
 # Seven Suppers - Specification
 
-Version: 0.24.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.25.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.25.0 (chicken fried rice):
+
+- New meal `chicken-fried-rice`, Chicken Fried Rice with Eggs (40 minutes, `chicken`), a chicken take on the veggie fried rice for households that want a meat version of a favorite. It keeps the veggie recipe's rice, peas and carrots, green onions, garlic powder, and soy sauce, adds 1 lb boneless chicken thighs (bought as 1 lb 2 oz with the trim margin), and drops to 3 eggs since the chicken now carries the protein.
+- Seven steps: the chicken is cut thumbnail-size and browned in its own step between the eggs and the vegetables, with the usual 165 F thermometer read, then parked on the plate with the eggs so the vegetables and rice get the hot pan to themselves. The oil grows to 3 tablespoons, apportioned 1 for the eggs, 1 for the chicken, and the rest for the vegetables.
+- The veggie version is unchanged and stays in every meat-free pool. The new meal sits right after it in the catalog with `v: "0.25.0"`, so share links made before this version still resolve to the same weeks. The steps baseline gained the new entry (fixture 0.7.0); no existing entry changed.
 
 0.24.0 (pounds and ounces, trim margin, amounts in the steps):
 
@@ -183,7 +189,7 @@ Array of 7 slots (Sunday through Saturday as of 0.11.0), each holding a meal `id
 
 ## Catalog
 
-57 meals as of 0.16.0: 16 chicken, 8 turkey, 4 beef, 3 pork, 8 fish, 18 veggie (12 of them vegan), 9 pasta, 9 soup, 17 fast. Every profile pool can fill a week avoiding last week's seven.
+58 meals as of 0.25.0: 17 chicken, 8 turkey, 4 beef, 3 pork, 8 fish, 18 veggie (12 of them vegan), 9 pasta, 9 soup, 17 fast. Every profile pool can fill a week avoiding last week's seven.
 
 Invariants enforced by `dev/validate.mjs`:
 

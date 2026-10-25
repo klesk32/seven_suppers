@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.24.0";
+const APP_VERSION = "0.25.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -146,6 +146,29 @@ const MEALS = [
       "Add the rest of the oil to the pan, then the {{frozen peas and carrots}} straight from the bag. Sprinkle in the {{garlic powder}} and stir for 2 minutes.",
       "Add the rice and cook 3 to 4 minutes, stirring every 30 seconds, until everything is hot.",
       "Turn off the heat. Stir in the {{soy sauce|low-sodium soy sauce}}, the eggs, and the green onions, and serve.",
+    ],
+  },
+  {
+    id: "chicken-fried-rice", v: "0.25.0", title: "Chicken Fried Rice with Eggs", time: 40, tags: ["chicken"],
+    spice: "Add sriracha or chili crisp.",
+    ing: [
+      { n: "white rice", q: 1.5, u: "cup", c: "grains" },
+      { n: "boneless chicken thighs", q: 1, u: "lb", c: "protein" },
+      { n: "eggs", q: 3, u: "", c: "dairy" },
+      { n: "frozen peas and carrots", q: 2, u: "cup", c: "produce" },
+      { n: "garlic powder", q: 0.5, u: "tsp", c: "pantry" },
+      { n: "green onions", q: 6, u: "", c: "produce" },
+      { n: "low-sodium soy sauce", q: 3, u: "tbsp", c: "pantry" },
+      { n: "vegetable oil", q: 3, u: "tbsp", c: "pantry" },
+    ],
+    steps: [
+      "Cook the {{rice|white rice}} following the package directions, then spread it on a plate to cool while you prep. Leftover cold rice from another night works even better and skips this step.",
+      "Cut the {{chicken|boneless chicken thighs}} into small bite-size pieces, about the size of your thumbnail, and sprinkle them with a pinch of salt. Wash the board, knife, and your hands with soap right after.",
+      "Crack the {{eggs}} into a bowl and beat them with a fork until evenly yellow. Slice the {{green onions}} into thin rings.",
+      "Heat [[1|tbsp|of the oil]] in your largest skillet over medium heat for 1 minute. Pour in the eggs, wait 20 seconds, then push them around with a spatula until they set into soft clumps, about 1 minute. Slide them onto a plate.",
+      "Turn the heat to medium-high and add [[1|tbsp|of the oil]]. Add the chicken in one layer, leave it 3 minutes to brown, then stir and cook 3 to 4 more. Poke an instant-read thermometer into the biggest piece: 165 F means done. Slide it onto the plate with the eggs.",
+      "Add the rest of the oil to the pan, then the {{frozen peas and carrots}} straight from the bag. Sprinkle in the {{garlic powder}} and stir for 2 minutes. Add the rice and cook 3 to 4 minutes, stirring every 30 seconds, until everything is hot.",
+      "Turn off the heat. Stir in the {{soy sauce|low-sodium soy sauce}}, the chicken and eggs, and the green onions, and serve.",
     ],
   },
   {

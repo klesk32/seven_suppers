@@ -1,4 +1,4 @@
-<!-- Version: 0.11.0 -->
+<!-- Version: 0.12.0 -->
 
 # Seven Suppers
 
@@ -12,7 +12,7 @@ Live at [dinner.tinkerling.net](https://dinner.tinkerling.net), or open `seven-s
 
 ## What it does
 
-- **Six eating styles.** Heart healthy (the default), All in, Gout friendly, Pescatarian, Vegetarian, and Vegan. The style scopes the 57-meal catalog and everything the shuffle draws from. Heart healthy also shapes the week toward sensible ratios: fish twice a week, red meat at most once. Hand-picking past a guideline gets a note, never a block.
+- **Six eating styles.** Heart healthy (the default), All in, Gout friendly, Pescatarian, Vegetarian, and Vegan. The style scopes the 58-meal catalog and everything the shuffle draws from. Heart healthy also shapes the week toward sensible ratios: fish twice a week, red meat at most once. Hand-picking past a guideline gets a note, never a block.
 - **Fill a week fast.** Shuffle all seven days, reroll one, or pick by hand. Lock days you like, drag dinners between days, and let variety memory keep this week from repeating last week.
 - **Shuffle filters.** Constrain the draw to 35 minutes or less, veggie or vegan only, or no soups. Filters stack and persist.
 - **One grocery list.** Ingredients merge across recipes into shoppable lines grouped by aisle, with package sizes ("1 can (28 oz) crushed tomatoes") and honest need notes ("2 onions (need 1 and a half)"). Pantry staples get their own check-before-you-shop section.
@@ -22,7 +22,7 @@ Live at [dinner.tinkerling.net](https://dinner.tinkerling.net), or open `seven-s
 
 ## The recipes
 
-All 57 meals share a few commitments:
+All 58 meals share a few commitments:
 
 - **Approachable.** Familiar formats (tacos, pasta, sheet-pan dinners, build-your-own bowls) that work for mixed tables, kids included. Everything is mild by default; each card carries a "Want more heat?" line naming a dish-appropriate additive (Tapatio on the tacos, chili crisp on the noodles, harissa on the shakshuka).
 - **Precise about doneness.** Always an instant-read thermometer per USDA (165 F poultry, 160 F ground beef and pork, 145 F fish and whole cuts), never a color check.
