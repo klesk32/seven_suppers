@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -99,7 +99,9 @@ const ALIASES = {
 
 let notes = 0;
 MEALS.forEach((m) => {
-  const text = m.steps.join(" ").toLowerCase();
+  // Judge the prose a cook reads: a {{mention|ingredient}} reference counts
+  // as its mention, not as the full name it points at
+  const text = m.steps.join(" ").replace(/\{\{([^|}]+)(?:\|[^}]+)?\}\}/g, "$1").toLowerCase();
   m.ing.forEach((i) => {
     const names = [i.n.toLowerCase(), ...(ALIASES[i.n] || [])];
     if (!names.some((n) => text.includes(n.toLowerCase()))) {

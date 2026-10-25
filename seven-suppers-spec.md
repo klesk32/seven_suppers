@@ -1,6 +1,15 @@
 # Seven Suppers - Specification
 
-Version: 0.23.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+Version: 0.24.0 (matches `APP_VERSION` in `seven-suppers.jsx`)
+
+0.24.0 (pounds and ounces, trim margin, amounts in the steps):
+
+- Weights read in pounds and whole ounces everywhere they show: recipe cards, grocery lines, need notes, and the two `PACKS` labels that named a decimal weight ("pack (1 lb 8 oz)" chicken tenderloins, "bag (1 lb 8 oz)" baby potatoes). A 3-serving card used to ask for "1.25 lb boneless chicken thighs"; `formatWeight` rounds up to the next ounce so a scaled or trimmed weight is never short.
+- Whole cuts carry a 12% trim margin (`TRIM_MARGIN`) on the amount to buy, for the fat, sinew, and silver skin that come off on the board: boneless chicken thighs, chicken tenderloins, flank steak, pork tenderloin, and the pork chops (`TRIMMED`). Ground meat and fish fillets come trimmed and get none. One helper, `scaledIng`, applies scale and margin for the card list, the inline amounts, and the grocery list, so all three agree.
+- Steps state each ingredient's amount where it is first used, so a cook following the card never scrolls back to the list: "Rinse the potatoes [1 lb 2 oz] and cut each one in half." Steps mark the spot with a `{{mention|ingredient name}}` reference (`{{mention}}` when the words match the name); the card renders the scaled amount as a small bordered tag that still reads on paper. Countables show a fraction glyph ("the onion [½]") so a bare "half" never reads as prose. Ingredients apportioned by `[[...]]` tokens already state their amounts and carry no reference.
+- 519 references were placed by script at each ingredient's first mention and reviewed by hand. Six ingredients carry none because every possible spot reads as a per-piece amount ("dip a tender", "crack 2 eggs" per omelet, "a tilapia fillet" per packet, two lime squeezes) or as the share rather than the total ("half of the fajita seasoning"); the validator records each exemption and its reason.
+- `dev/render-check.mjs` pins the prose with references stripped to the unchanged baseline, which proves the placement reworded nothing, and renders every reference at every serving count. `dev/validate.mjs` requires every reference to name one of the meal's own ingredients, at most once each, every unapportioned ingredient to be referenced unless exempt, and no measured reference right after "half the". `dev/xcheck.mjs` judges a reference by its words, not the name it points at.
+- Fixed along the way: at 1 serving the card rounded quarter-teaspoon spices to "0 tsp". Measured amounts now floor at a quarter unit.
 
 0.23.0 (print title and remembered print settings):
 
@@ -155,7 +164,7 @@ Rules 2 through 5 apply to every catalog meal. Rule 1 defines the Gout friendly 
 | `tags` | string[] | Subset of: `chicken`, `turkey`, `beef`, `pork`, `fish`, `veggie`, `vegan`, `pasta`, `soup`, `fast` (fast = 25 min or less; vegan = no meat, eggs, dairy, or honey, and always paired with `veggie`; beef/pork/fish must be earned by a matching protein ingredient) |
 | `spice` | string | One-line heat suggestion (0.16.0), shown as "Want more heat? ..." under the steps; names a specific dish-appropriate additive |
 | `ing` | Ingredient[] | See below |
-| `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues. Absolute amounts are `[[q\|unit\|phrase]]` tokens that scale with the serving count (0.19.0); relative phrasings stay prose |
+| `steps` | string[] | 5 to 7 numbered plain-language steps written for a total beginner, with explicit doneness cues. Absolute amounts are `[[q\|unit\|phrase]]` tokens that scale with the serving count (0.19.0); relative phrasings stay prose. Each other ingredient's first mention is a `{{mention\|ingredient name}}` reference that shows its scaled amount inline (0.24.0) |
 
 All recipes are written for `BASE_SERVINGS` (4) servings; there is no per-meal serves field.
 
@@ -186,6 +195,7 @@ Invariants enforced by `dev/validate.mjs`:
 - The vegetarian, vegan, and gout profile pools each hold at least 7 meals, and the fish pool covers the heart-healthy weekly target of 2
 - Every non-staple ingredient is shoppable: sold by count or weight, in a discrete unit, or covered by a `PACKS` rule
 - Share-link fields: every meal has a well-formed added-in version no newer than `APP_VERSION`, and the catalog stays under 255 meals
+- Inline amounts: every `{{reference}}` names one of the meal's own ingredients, at most once each; every ingredient not apportioned by `[[...]]` tokens is referenced unless listed in `REF_EXEMPT` with a reason; no measured reference follows "half the"
 
 ## Features
 
@@ -216,7 +226,8 @@ Invariants enforced by `dev/validate.mjs`:
 
 - "Cooking for N" stepper shown under the view toggle, range 1 to 12, default `DEFAULT_SERVINGS` (3, since the household usually cooks for 2 or 3). Recipes remain written for `BASE_SERVINGS` (4) and scale down automatically.
 - Ingredient quantities in the recipe view and grocery list are multiplied by N / `BASE_SERVINGS`.
-- Rounding at display time only: countable items (empty unit) round up to whole numbers; measured items round to the nearest quarter.
+- Rounding at display time only: countable items (empty unit) round up to whole numbers; measured items round to the nearest quarter, never below one quarter; weights (`lb`) read as pounds and whole ounces, rounded up to the next ounce (0.24.0).
+- Trim margin (0.24.0): whole cuts in `TRIMMED` scale by an extra `TRIM_MARGIN` (12%) on the card and the grocery list, since the recipe weight is what reaches the pan.
 - N persists to artifact storage (key `seven-suppers-servings`).
 
 ### 4. Grocery list
@@ -228,7 +239,7 @@ Invariants enforced by `dev/validate.mjs`:
 - Discrete-unit rounding (0.8.0): even without a `PACKS` entry, fractional quantities of whole purchasable things (`DISCRETE_UNITS`, since 0.22.0 just `head` and `bunch`) round up on the buy line with the true need shown: "1 head of broccoli (need half)". Staples never get buy lines; their section shows plain usage amounts.
 - Expected package sizes (0.13.0, reworked in 0.22.0): the buy line names the package and the size the recipes assume ("1 can (28 oz) canned crushed tomatoes"), so a shopper facing a 14 oz and a 45 oz version knows which one the plan means. The size lives in the `PACKS` label; the `SIZES` map that used to hold it separately is gone, since recipe units are now kitchen measures and never packages.
 - Store links (0.8.0): a "Shop at" picker on the grocery view (None default, Pick 'n Save, Metro Market, Meijer, Walmart; the `STORES` list) persists to `seven-suppers-store`. With a store selected, each aisle line gains a "Find it" link opening that item's search on the store site (leading "canned " stripped from queries) for building a pickup cart. Staples get no links; copy and print output stay store-free.
-- Purchase conversion (0.7.0): the `PACKS` map records how each ingredient is sold at a typical US store (`per` = recipe units per package, plus singular/plural package labels). Aisle lines lead with the shoppable quantity and always append the true recipe total: "3 trays (1 lb) ground turkey (need 2.25 lb)", "2 dozen eggs (need 19)". Package counts round up, minimum 1. The needed amount is shown whenever it differs from what you buy, so a shopper facing different package sizes (a 2 lb turkey tray) can buy correctly; when the recipes use exactly whole packages it is dropped as noise ("1 can (15 oz) canned black beans"). Ingredients not in `PACKS` are already in purchase form (counts, by-weight meat) and print as before; staples never convert. Same format in the on-screen list, copied text, and printout.
+- Purchase conversion (0.7.0): the `PACKS` map records how each ingredient is sold at a typical US store (`per` = recipe units per package, plus singular/plural package labels). Aisle lines lead with the shoppable quantity and always append the true recipe total: "3 trays (1 lb) ground turkey (need 2 lb 4 oz)", "2 dozen eggs (need 19)". Package counts round up, minimum 1. The needed amount is shown whenever it differs from what you buy, so a shopper facing different package sizes (a 2 lb turkey tray) can buy correctly; when the recipes use exactly whole packages it is dropped as noise ("1 can (15 oz) canned black beans"). Ingredients not in `PACKS` are already in purchase form (counts, by-weight meat) and print as before; staples never convert. Same format in the on-screen list, copied text, and printout.
 - Each line has a checkbox (strikethrough when checked). Checkbox state is session-only; checks for items that leave the list after a plan change are pruned automatically.
 - "Copy list" copies a plain-text version grouped by aisle headers with `- qty item` lines. Button confirms with "Copied" for 2 seconds only when the clipboard write succeeds.
 

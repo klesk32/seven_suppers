@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const VERSION = "0.8.0";
+const VERSION = "0.9.0";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const src = readFileSync(join(ROOT, "seven-suppers.jsx"), "utf8");
@@ -169,6 +169,46 @@ MEALS.forEach((m) => {
     if (rests > 1) fail(`${m.id}: ${i.n} has ${rests} "the rest" mentions`);
     if (rests === 1 && sum >= i.q) fail(`${m.id}: ${i.n} tokens use ${sum} of ${i.q} ${i.u} but a step still adds "the rest"`);
     if (rests === 0 && sum !== i.q) fail(`${m.id}: ${i.n} tokens use ${sum} of ${i.q} ${i.u} with no "the rest" step`);
+  });
+});
+
+// 7f. inline amounts: every {{mention|ingredient}} reference names one of the
+// meal's own ingredients, each ingredient is referenced at most once, and
+// every ingredient not already apportioned by [[...]] tokens is referenced,
+// so the cook sees each amount where it is used. The exemptions are steps
+// where any placement would read as a per-piece amount.
+const REF_EXEMPT = new Set([
+  "chicken-tenders:chicken tenderloins", // only ever "a tender", one at a time
+  "omelet-night:eggs", // "crack 2 eggs" per omelet
+  "tilapia-foil-packets:tilapia fillets", // "a tilapia fillet" per packet
+  "fajita-bowls:lime", // "half the lime's juice"
+  "breakfast-burritos:lime", // "squeeze lime juice"
+  "steak-fajitas:fajita seasoning", // "half of the fajita seasoning", see below
+]);
+// A measured amount right after "half the" reads as the half, not the total
+MEALS.forEach((m) => m.steps.forEach((s) => {
+  for (const h of s.matchAll(/half (?:of )?the \{\{([^|}]+)(?:\|([^}]+))?\}\}/g)) {
+    const i = m.ing.find((x) => x.n === (h[2] || h[1]));
+    if (i && i.u !== "") fail(`${m.id}: measured reference after "half the" is ambiguous: ${h[0]}`);
+  }
+}));
+MEALS.forEach((m) => {
+  const text = m.steps.join(" ");
+  const seen = new Map();
+  for (const h of text.matchAll(/\{\{([^|}]+)(?:\|([^}]+))?\}\}/g)) {
+    const n = h[2] || h[1];
+    if (!m.ing.some((i) => i.n === n)) fail(`${m.id}: reference ${h[0]} names no ingredient of this meal`);
+    seen.set(n, (seen.get(n) || 0) + 1);
+  }
+  seen.forEach((c, n) => { if (c > 1) fail(`${m.id}: ${n} referenced ${c} times`); });
+  const tails = text.match(/\[\[[^\]]+\]\]/g) || [];
+  m.ing.forEach((i) => {
+    const short = i.n.split(" ").pop();
+    const split = ["tsp", "tbsp", "cup"].includes(i.u) && tails.some((t) => t.includes(i.n) || t.endsWith(`the ${short}]]`));
+    const key = `${m.id}:${i.n}`;
+    if (split && seen.has(i.n)) fail(`${m.id}: ${i.n} has token amounts and a reference`);
+    if (!split && !seen.has(i.n) && !REF_EXEMPT.has(key)) fail(`${m.id}: ${i.n} has no {{reference}} in the steps`);
+    if (REF_EXEMPT.has(key) && seen.has(i.n)) fail(`${key} is exempt but now referenced; drop the exemption`);
   });
 });
 

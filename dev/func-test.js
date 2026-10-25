@@ -2,9 +2,10 @@
 // rounding, spice merging, thermometer doneness text in the printed recipe,
 // Sunday-first week, shuffle filters, vegan chips, catalog gray-out,
 // drag-to-swap day reordering, share-link slugs, diet profiles, and
-// heart-healthy weekly quotas, per-serving spice notes, feedback links, and
-// print preferences
-const VERSION = "0.13.0";
+// heart-healthy weekly quotas, per-serving spice notes, feedback links,
+// print preferences, pound-and-ounce weights with a trim margin on whole
+// cuts, and inline step amounts
+const VERSION = "0.14.0";
 const fs = require("fs");
 const path = require("path");
 
@@ -105,6 +106,8 @@ function boot(seed, url = "http://localhost/") {
   check("no fractional-unit buy lines", !buyLines.some((l) => /^0?\.\d+ |^\d*\.\d+ (jars?|cans?|bunches|bunch|bags?|heads?|loaves|loaf|bottles?)/.test(l)));
   check("countable buy rounds up with true need", text.includes("1 onion (need half)"));
   check("sweet potatoes show half need", text.includes("2 sweet potatoes (need 1 and a half)"));
+  check("weights read in pounds and ounces with trim on whole cuts", text.includes("1 lb 2 oz boneless chicken thighs"));
+  check("no decimal pounds on the list", !/\d\.\d+ lb/.test(text));
   check("merged whole countables singularize", text.includes("1 avocado") && !text.includes("1 avocados"));
   const links = [...bdoc.getElementById("root").querySelectorAll("a")].filter((x) => x.textContent === "Find it");
   check("store links present", links.length > 0 && links.every((x) => x.href.startsWith("https://www.picknsave.com/search?query=")), `(${links.length} links)`);
@@ -131,7 +134,11 @@ function boot(seed, url = "http://localhost/") {
   check("print view has no pinkness checks", !/no pink/i.test(ptext));
   check("recipe cards show fractional countables", ptext.includes("1 and a half cucumbers"));
   check("step amounts scale with servings", ptext.includes("three-quarters of a teaspoon of salt"));
-  check("no unresolved step tokens leak", !ptext.includes("[["));
+  check("no unresolved step tokens leak", !ptext.includes("[[") && !ptext.includes("{{"));
+  check("whole cuts carry the trim margin on the card", ptext.includes("1 lb 5 oz boneless chicken thighs"));
+  check("ground meat carries no trim margin", ptext.includes("15 oz ground turkey"));
+  check("steps state each ingredient amount inline", ptext.includes("Rinse the potatoes 1 lb 2 oz and cut"));
+  check("inline amounts match the card's list", ptext.includes("Pat the chicken 1 lb 5 oz dry"));
   check("the trim-to-match note is gone", !ptext.includes("trim it to match"));
   check("no fractional eggs anywhere", !/half an? egg/i.test(ptext));
   check("no fractional packages anywhere in print", !/[0-9]*\.[0-9]+ (jars?|cans?|bags?|blocks?|bottles?|packets?|loaves|loaf)\b/.test(ptext));

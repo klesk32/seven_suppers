@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // Seven Suppers: a simple weekly dinner planner with eating-style profiles
-const APP_VERSION = "0.23.0";
+const APP_VERSION = "0.24.0";
 
 // Recipe feedback lands here as GitHub issues (see .github/ISSUE_TEMPLATE)
 const REPO_URL = "https://github.com/klesk32/seven_suppers";
@@ -97,9 +97,9 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
-      "Rinse the potatoes and cut each one in half. No peeling needed. Toss them on the pan with [[2|tbsp|of the olive oil]] and [[0.5|tsp|of salt]], turn them cut-side down, spread them out, and roast 15 minutes. Set a timer.",
-      "While the potatoes roast, cut the broccoli into bite-size pieces. Cut the lemon in half, slice one half into thin rounds, and save the other half for serving.",
-      "Pat the chicken dry with a paper towel, then toss it in a bowl with the rest of the oil, the garlic powder, the oregano, [[0.5|tsp|of salt]], and a little pepper. Wash your hands after touching raw chicken.",
+      "Rinse the {{potatoes|baby potatoes}} and cut each one in half. No peeling needed. Toss them on the pan with [[2|tbsp|of the olive oil]] and [[0.5|tsp|of salt]], turn them cut-side down, spread them out, and roast 15 minutes. Set a timer.",
+      "While the potatoes roast, cut the {{broccoli}} into bite-size pieces. Cut the {{lemon}} in half, slice one half into thin rounds, and save the other half for serving.",
+      "Pat the {{chicken|boneless chicken thighs}} dry with a paper towel, then toss it in a bowl with the rest of the oil, the {{garlic powder}}, the {{oregano|dried oregano}}, [[0.5|tsp|of salt]], and a little pepper. Wash your hands after touching raw chicken.",
       "Pull the pan out, push the potatoes to one side, and lay the chicken and the broccoli in the cleared space. Lay the lemon rounds over the chicken. Roast 20 minutes.",
       "Poke an instant-read thermometer into the thickest piece of chicken, not touching the pan: it is done at 165 F, and thighs are even better at 175 F. Give it 5 more minutes if it reads low. A fork should slide into a potato with no resistance.",
       "Squeeze the saved lemon half over the whole pan and serve.",
@@ -119,11 +119,11 @@ const MEALS = [
       { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Cut the lettuce into thin ribbons and the tomatoes into small cubes. Put them in bowls on the table with the cheese and yogurt.",
+      "Cut the {{lettuce|romaine lettuce}} into thin ribbons and the {{tomatoes}} into small cubes. Put them in bowls on the table with the {{cheese|shredded cheddar}} and {{yogurt|plain Greek yogurt}}.",
       "Put a large skillet on the stove over medium heat and let it warm up for 2 minutes.",
-      "Add the turkey and cook 7 to 8 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle of it: ground turkey is done at 165 F.",
-      "Sprinkle the taco seasoning over the meat, add two-thirds of a cup of water for every 2 tablespoons of seasoning, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the lime in and stir.",
-      "Warm the tortillas: 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
+      "Add the {{turkey|ground turkey}} and cook 7 to 8 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle of it: ground turkey is done at 165 F.",
+      "Sprinkle the {{taco seasoning}} over the meat, add two-thirds of a cup of water for every 2 tablespoons of seasoning, stir, and let it bubble gently 4 to 5 minutes until it thickens into a sauce. Squeeze half the {{lime}} in and stir.",
+      "Warm the {{tortillas|small flour tortillas}}: 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
       "Let everyone build their own. The yogurt stands in for sour cream.",
     ],
   },
@@ -140,12 +140,12 @@ const MEALS = [
       { n: "vegetable oil", q: 2, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Cook the rice following the package directions, then spread it on a plate to cool while you prep. Leftover cold rice from another night works even better and skips this step.",
-      "Crack the eggs into a bowl and beat them with a fork until evenly yellow. Slice the green onions into thin rings.",
+      "Cook the {{rice|white rice}} following the package directions, then spread it on a plate to cool while you prep. Leftover cold rice from another night works even better and skips this step.",
+      "Crack the {{eggs}} into a bowl and beat them with a fork until evenly yellow. Slice the {{green onions}} into thin rings.",
       "Heat [[1|tbsp|of the oil]] in your largest skillet over medium heat for 1 minute. Pour in the eggs, wait 20 seconds, then push them around with a spatula until they set into soft clumps, about 1 minute. Slide them onto a plate.",
-      "Add the rest of the oil to the pan, then the frozen peas and carrots straight from the bag. Sprinkle in the garlic powder and stir for 2 minutes.",
+      "Add the rest of the oil to the pan, then the {{frozen peas and carrots}} straight from the bag. Sprinkle in the {{garlic powder}} and stir for 2 minutes.",
       "Add the rice and cook 3 to 4 minutes, stirring every 30 seconds, until everything is hot.",
-      "Turn off the heat. Stir in the soy sauce, the eggs, and the green onions, and serve.",
+      "Turn off the heat. Stir in the {{soy sauce|low-sodium soy sauce}}, the eggs, and the green onions, and serve.",
     ],
   },
   {
@@ -162,11 +162,11 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
-      "While the water heats, peel the carrots and grate them and the zucchini on the large holes of a box grater. The zucchini skin can stay on.",
-      "Pour the marinara into a second pot over medium-low heat, stir in the grated vegetables and the Italian seasoning, and let it bubble gently for 8 minutes, stirring occasionally.",
-      "When the water boils, add the penne and cook for the time printed on the box. Before draining, scoop out a coffee mug of the cooking water, then drain the pasta in a colander.",
-      "Cut the cream cheese into chunks and stir it into the sauce until it melts smooth.",
-      "Mix the pasta into the sauce, adding splashes of the saved water if it looks too thick. Top with parmesan.",
+      "While the water heats, peel the {{carrots}} and grate them and the {{zucchini}} on the large holes of a box grater. The zucchini skin can stay on.",
+      "Pour the {{marinara|marinara sauce}} into a second pot over medium-low heat, stir in the grated vegetables and the {{Italian seasoning}}, and let it bubble gently for 8 minutes, stirring occasionally.",
+      "When the water boils, add the {{penne|penne pasta}} and cook for the time printed on the box. Before draining, scoop out a coffee mug of the cooking water, then drain the pasta in a colander.",
+      "Cut the {{cream cheese}} into chunks and stir it into the sauce until it melts smooth.",
+      "Mix the pasta into the sauce, adding splashes of the saved water if it looks too thick. Top with {{parmesan}}.",
     ],
   },
   {
@@ -184,11 +184,11 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Get out two baking sheets.",
-      "Scrub the sweet potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan and spread them out flat.",
-      "Crack the eggs into a bowl and beat them with a fork. Pour the panko into a second bowl with the smoked paprika, the garlic powder, [[0.5|tsp|of salt]], and the rest of the olive oil, and stir until the crumbs look slightly damp; this is what lets them turn golden.",
+      "Scrub the {{sweet potatoes}} (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan and spread them out flat.",
+      "Crack the {{eggs}} into a bowl and beat them with a fork. Pour the {{panko|panko breadcrumbs}} into a second bowl with the {{smoked paprika}}, the {{garlic powder}}, [[0.5|tsp|of salt]], and the rest of the olive oil, and stir until the crumbs look slightly damp; this is what lets them turn golden.",
       "One at a time: dip a tender in the egg, let the extra drip off, roll it in panko, press so the crumbs stick, and lay it on the second pan. Wash your hands when done.",
       "Bake both pans 10 minutes, flip everything with tongs, then bake 10 more, until the tenders are golden. Poke an instant-read thermometer lengthwise into the thickest tender: it is done at 165 F.",
-      "Serve with ketchup.",
+      "Serve with {{ketchup}}.",
     ],
   },
   {
@@ -209,12 +209,12 @@ const MEALS = [
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
     ],
     steps: [
-      "Start the rice following the package directions. It takes about 20 minutes, so get it going first.",
-      "Peel the onion and chop it into small pieces, roughly pea-size. Uneven is fine.",
-      "Warm the olive oil in a medium pot over medium heat for 30 seconds. Add the onion and cook 4 minutes, stirring every minute, until it looks glassy instead of white.",
-      "Add the curry powder, garam masala, garlic powder, and ground ginger and stir for 30 seconds until they smell toasty.",
-      "Open the chickpeas, pour them into a colander, and rinse under the tap. Add them to the pot with the diced tomatoes (juice included), the coconut milk, and [[0.5|tsp|of salt]]. Cover and let it bubble gently for 10 minutes.",
-      "Turn off the heat and stir in the spinach a handful at a time until the leaves go dark and soft. Squeeze half the lime in, then taste a cooled spoonful and add salt a pinch at a time until it tastes bright instead of flat. Spoon over the rice.",
+      "Start the {{rice|white rice}} following the package directions. It takes about 20 minutes, so get it going first.",
+      "Peel the {{onion}} and chop it into small pieces, roughly pea-size. Uneven is fine.",
+      "Warm the {{olive oil}} in a medium pot over medium heat for 30 seconds. Add the onion and cook 4 minutes, stirring every minute, until it looks glassy instead of white.",
+      "Add the {{curry powder|mild curry powder}}, {{garam masala}}, {{garlic powder}}, and {{ground ginger}} and stir for 30 seconds until they smell toasty.",
+      "Open the {{chickpeas|canned chickpeas}}, pour them into a colander, and rinse under the tap. Add them to the pot with the diced {{tomatoes|canned diced tomatoes}} (juice included), the {{coconut milk|light coconut milk}}, and [[0.5|tsp|of salt]]. Cover and let it bubble gently for 10 minutes.",
+      "Turn off the heat and stir in the {{spinach}} a handful at a time until the leaves go dark and soft. Squeeze half the {{lime}} in, then taste a cooled spoonful and add salt a pinch at a time until it tastes bright instead of flat. Spoon over the rice.",
     ],
   },
   {
@@ -232,11 +232,11 @@ const MEALS = [
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Peel the carrots and onion. Cut the carrots and celery into coin-size pieces and chop the onion into small bits.",
-      "Warm the olive oil in your largest pot over medium heat for 30 seconds. Add the carrots, celery, and onion and cook 5 minutes, stirring every minute or two.",
-      "Pour in all the broth and add the chicken thighs whole, plus the thyme and the bay leaf. Bring to a gentle bubble and cook 15 minutes.",
+      "Peel the {{carrots}} and {{onion}}. Cut the carrots and {{celery}} into coin-size pieces and chop the onion into small bits.",
+      "Warm the {{olive oil}} in your largest pot over medium heat for 30 seconds. Add the carrots, celery, and onion and cook 5 minutes, stirring every minute or two.",
+      "Pour in all the {{broth|low-sodium chicken broth}} and add the {{chicken thighs|boneless chicken thighs}} whole, plus the {{thyme|dried thyme}} and the {{bay leaf}}. Bring to a gentle bubble and cook 15 minutes.",
       "Poke an instant-read thermometer into the thickest thigh right in the pot: at 165 F it is done. Lift the chicken onto a plate with tongs, pull it into shreds with two forks, and put the shreds back in the pot.",
-      "Add the noodles and cook 8 more minutes, until a noodle you fish out and blow on is soft.",
+      "Add the {{noodles|egg noodles}} and cook 8 more minutes, until a noodle you fish out and blow on is soft.",
       "Fish out the bay leaf. Taste a cooled spoonful and add salt a pinch at a time until it tastes good to you.",
     ],
   },
@@ -255,13 +255,13 @@ const MEALS = [
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Cut the bell pepper in half, pull out the stem, seeds, and white ribs, and chop it into small cubes.",
-      "Crack the eggs into a bowl with the cumin and beat them with a fork until evenly yellow. Open the beans, pour into a colander, and rinse.",
-      "Warm the olive oil in a large nonstick skillet over medium heat. Add the pepper and stir for 3 minutes.",
+      "Cut the {{bell pepper}} in half, pull out the stem, seeds, and white ribs, and chop it into small cubes.",
+      "Crack the {{eggs}} into a bowl with the {{cumin|ground cumin}} and beat them with a fork until evenly yellow. Open the {{beans|canned black beans}}, pour into a colander, and rinse.",
+      "Warm the {{olive oil}} in a large nonstick skillet over medium heat. Add the pepper and stir for 3 minutes.",
       "Pour in the eggs. Wait 20 seconds, then push them slowly around with a spatula until just set and no longer runny, about 2 minutes. Turn off the heat.",
-      "Warm the beans in the microwave for 1 minute and the tortillas for 20 seconds under a damp paper towel.",
-      "Cut around each avocado the long way, twist the halves apart, remove the pit with a spoon, and slice the flesh. Squeeze lime juice over the slices.",
-      "Lay eggs, beans, salsa, and avocado down the middle of each tortilla, fold in the sides, and roll it up from the bottom.",
+      "Warm the beans in the microwave for 1 minute and the {{tortillas|small flour tortillas}} for 20 seconds under a damp paper towel.",
+      "Cut around each {{avocado|avocados}} the long way, twist the halves apart, remove the pit with a spoon, and slice the flesh. Squeeze lime juice over the slices.",
+      "Lay eggs, beans, {{salsa}}, and avocado down the middle of each tortilla, fold in the sides, and roll it up from the bottom.",
     ],
   },
   {
@@ -278,11 +278,11 @@ const MEALS = [
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Cut the chicken into bite-size pieces on a cutting board. Wash the board, the knife, and your hands with soap right after.",
-      "Peel the garlic and chop it into tiny bits. Stir the honey, soy sauce, garlic, and ground ginger together in a small bowl.",
-      "Heat the oil in your largest skillet over medium-high until it shimmers. Add the chicken in one layer and leave it alone for 3 minutes, then stir and cook 3 more minutes.",
-      "Add the frozen vegetables straight from the bag and cook 4 minutes, stirring often.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Cut the {{chicken|boneless chicken thighs}} into bite-size pieces on a cutting board. Wash the board, the knife, and your hands with soap right after.",
+      "Peel the {{garlic}} and chop it into tiny bits. Stir the {{honey}}, {{soy sauce|low-sodium soy sauce}}, garlic, and {{ground ginger}} together in a small bowl.",
+      "Heat the {{oil|vegetable oil}} in your largest skillet over medium-high until it shimmers. Add the chicken in one layer and leave it alone for 3 minutes, then stir and cook 3 more minutes.",
+      "Add the {{frozen vegetables|frozen stir-fry vegetables}} straight from the bag and cook 4 minutes, stirring often.",
       "Pour in the sauce and let it bubble 2 minutes until slightly sticky. Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done. Serve over the rice.",
     ],
   },
@@ -301,11 +301,11 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring to a rolling boil over high heat.",
-      "Cut the zucchini lengthwise into quarters, then across into small wedges. Cut the cherry tomatoes in half. Peel the garlic and chop it into tiny bits.",
-      "Add the penne to the boiling water and cook for the time on the box, dropping the frozen peas in for the last 2 minutes. Before draining, scoop out a coffee mug of the cooking water.",
-      "While the pasta cooks, warm the olive oil in a large skillet over medium heat. Add the zucchini and cook 3 minutes, then add the tomatoes, garlic, and oregano for 2 more.",
+      "Cut the {{zucchini}} lengthwise into quarters, then across into small wedges. Cut the {{cherry tomatoes}} in half. Peel the {{garlic}} and chop it into tiny bits.",
+      "Add the {{penne|whole wheat penne}} to the boiling water and cook for the time on the box, dropping the {{frozen peas}} in for the last 2 minutes. Before draining, scoop out a coffee mug of the cooking water.",
+      "While the pasta cooks, warm the {{olive oil}} in a large skillet over medium heat. Add the zucchini and cook 3 minutes, then add the tomatoes, garlic, and {{oregano|dried oregano}} for 2 more.",
       "Drain the pasta and peas and add them to the skillet. Stir, adding splashes of the saved water so everything glides instead of clumping.",
-      "Turn off the heat, squeeze the lemon over the top, add a pinch of salt, taste, and serve.",
+      "Turn off the heat, squeeze the {{lemon}} over the top, add a pinch of salt, taste, and serve.",
     ],
   },
   {
@@ -324,11 +324,11 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
-      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, onion powder, and [[0.5|tsp|of salt]], and mix with clean hands just until combined. Roll the mix into balls the size of a golf ball and set them on a plate. Wash your hands after.",
-      "Warm the olive oil in a large skillet over medium heat. Add the meatballs and turn them every 2 minutes with tongs until browned in spots, about 6 minutes. They finish cooking in the sauce.",
-      "Pour the marinara over the meatballs, lower the heat to a gentle bubble, cover, and cook 12 minutes. Poke an instant-read thermometer into the middle of the biggest meatball: 165 F means done.",
-      "While the meatballs simmer, cook the spaghetti in the boiling water for the time on the box, then drain it in a colander.",
-      "Serve the spaghetti topped with meatballs, sauce, and parmesan.",
+      "Crack the {{egg|eggs}} into a large bowl. Add the {{turkey|ground turkey}}, {{breadcrumbs}}, {{Italian seasoning}}, {{onion powder}}, and [[0.5|tsp|of salt]], and mix with clean hands just until combined. Roll the mix into balls the size of a golf ball and set them on a plate. Wash your hands after.",
+      "Warm the {{olive oil}} in a large skillet over medium heat. Add the meatballs and turn them every 2 minutes with tongs until browned in spots, about 6 minutes. They finish cooking in the sauce.",
+      "Pour the {{marinara|marinara sauce}} over the meatballs, lower the heat to a gentle bubble, cover, and cook 12 minutes. Poke an instant-read thermometer into the middle of the biggest meatball: 165 F means done.",
+      "While the meatballs simmer, cook the {{spaghetti}} in the boiling water for the time on the box, then drain it in a colander.",
+      "Serve the spaghetti topped with meatballs, sauce, and {{parmesan}}.",
     ],
   },
   {
@@ -344,12 +344,12 @@ const MEALS = [
       { n: "butter", q: 2, u: "tbsp", c: "dairy" },
     ],
     steps: [
-      "Cut the bell pepper into small cubes. Melt a small pat of the butter in a nonstick skillet over medium heat, cook the pepper 2 minutes, then add the spinach until it wilts, about 1 minute. Scrape onto a plate.",
-      "For each omelet, crack 2 eggs into a bowl with a pinch of salt, a small pinch of garlic powder, and a little pepper, and beat with a fork until evenly yellow.",
+      "Cut the {{bell pepper}} into small cubes. Melt a small pat of the {{butter}} in a nonstick skillet over medium heat, cook the pepper 2 minutes, then add the {{spinach}} until it wilts, about 1 minute. Scrape onto a plate.",
+      "For each omelet, crack 2 eggs into a bowl with a pinch of salt, a small pinch of {{garlic powder}}, and a little pepper, and beat with a fork until evenly yellow.",
       "Melt another small pat of butter in the same pan over medium heat and pour in the eggs, tilting the pan so they cover the bottom.",
-      "When the edges look set and the top is damp but no longer liquid, about 1 minute, sprinkle a share of the vegetables and cheese over one half.",
+      "When the edges look set and the top is damp but no longer liquid, about 1 minute, sprinkle a share of the vegetables and {{cheese|shredded cheddar}} over one half.",
       "Slide a spatula under the empty half, fold it over the filling, and slide the omelet onto a plate. Repeat for each person.",
-      "Toast the bread, butter it, and serve alongside.",
+      "Toast the {{bread|whole grain bread}}, butter it, and serve alongside.",
     ],
   },
   {
@@ -367,12 +367,12 @@ const MEALS = [
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Cut the chicken into finger-width strips. Wash the board, knife, and your hands with soap right after. Cut the peppers and onion into strips too.",
-      "Warm the olive oil in your largest skillet over medium-high heat until it shimmers. Add the chicken, sprinkle the fajita seasoning over it, and cook 6 minutes, stirring halfway.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Cut the {{chicken|boneless chicken thighs}} into finger-width strips. Wash the board, knife, and your hands with soap right after. Cut the {{peppers|bell pepper}} and {{onion}} into strips too.",
+      "Warm the {{olive oil}} in your largest skillet over medium-high heat until it shimmers. Add the chicken, sprinkle the {{fajita seasoning}} over it, and cook 6 minutes, stirring halfway.",
       "Add the peppers and onion and cook 6 more minutes, stirring now and then, until the vegetables are soft at the edges.",
       "Poke an instant-read thermometer into the thickest strip of chicken: 165 F means done.",
-      "Stir half the lime's juice and the garlic powder into the cooked rice. Build bowls: rice on the bottom, chicken and vegetables on top, cheese over that, and a squeeze of the remaining lime.",
+      "Stir half the lime's juice and the {{garlic powder}} into the cooked rice. Build bowls: rice on the bottom, chicken and vegetables on top, {{cheese|shredded cheddar}} over that, and a squeeze of the remaining lime.",
     ],
   },
   {
@@ -390,11 +390,11 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Peel the carrots. Cut the carrots and zucchini into coin-size pieces.",
-      "Warm the olive oil in your largest pot over medium heat for 30 seconds. Add the carrots and zucchini and cook 5 minutes, stirring every minute or two.",
-      "Open the beans, rinse them in a colander, and add them with the broth, the oregano, and the tomatoes, juice included. Bring to a gentle bubble and cook 10 minutes.",
-      "Add the pasta shells and cook 9 minutes, until one you fish out and blow on is soft.",
-      "Squeeze half the lemon in. Taste a cooled spoonful, add salt a pinch at a time until it tastes good, and ladle into bowls.",
+      "Peel the {{carrots}}. Cut the carrots and {{zucchini}} into coin-size pieces.",
+      "Warm the {{olive oil}} in your largest pot over medium heat for 30 seconds. Add the carrots and zucchini and cook 5 minutes, stirring every minute or two.",
+      "Open the {{beans|canned cannellini beans}}, rinse them in a colander, and add them with the {{broth|low-sodium vegetable broth}}, the {{oregano|dried oregano}}, and the {{tomatoes|canned diced tomatoes}}, juice included. Bring to a gentle bubble and cook 10 minutes.",
+      "Add the pasta {{shells|small pasta shells}} and cook 9 minutes, until one you fish out and blow on is soft.",
+      "Squeeze half the {{lemon}} in. Taste a cooled spoonful, add salt a pinch at a time until it tastes good, and ladle into bowls.",
     ],
   },
   {
@@ -413,11 +413,11 @@ const MEALS = [
       { n: "low-sodium chicken broth", q: 2, u: "cup", c: "pantry" },
     ],
     steps: [
-      "Peel the onion and chop it into small pieces.",
-      "Warm the olive oil in your largest pot over medium heat. Add the turkey and onion and cook 6 to 8 minutes, breaking the meat into crumbles with a wooden spoon. Push the meat into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
-      "Add the chili powder and cumin and stir for 30 seconds.",
-      "Open the beans, rinse them in a colander, and add them with the tomatoes (juice included), corn, and broth. Bring to a gentle bubble and cook 20 minutes, stirring occasionally.",
-      "Squeeze half the lime in. Taste a cooled spoonful and add salt a pinch at a time until it tastes right.",
+      "Peel the {{onion}} and chop it into small pieces.",
+      "Warm the {{olive oil}} in your largest pot over medium heat. Add the {{turkey|ground turkey}} and onion and cook 6 to 8 minutes, breaking the meat into crumbles with a wooden spoon. Push the meat into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
+      "Add the {{chili powder}} and {{cumin|ground cumin}} and stir for 30 seconds.",
+      "Open the {{beans|canned cannellini beans}}, rinse them in a colander, and add them with the {{tomatoes|canned diced tomatoes}} (juice included), {{corn|frozen corn}}, and {{broth|low-sodium chicken broth}}. Bring to a gentle bubble and cook 20 minutes, stirring occasionally.",
+      "Squeeze half the {{lime}} in. Taste a cooled spoonful and add salt a pinch at a time until it tastes right.",
       "Ladle into bowls and let everyone add their own toppings.",
     ],
   },
@@ -438,12 +438,12 @@ const MEALS = [
       { n: "wooden skewers", q: 8, u: "", c: "pantry" },
     ],
     steps: [
-      "Lay the wooden skewers in a dish of water to soak so they do not char under the broiler; they need about 20 minutes, which is the time the rice and the cutting take. Metal skewers need no soaking.",
+      "Lay the {{wooden skewers}} in a dish of water to soak so they do not char under the broiler; they need about 20 minutes, which is the time the {{rice|white rice}} and the cutting take. Metal skewers need no soaking.",
       "Start the rice following the package directions. Turn the broiler on high and move an oven rack about 6 inches below it. Line a baking sheet with foil.",
-      "Cut the chicken, peppers, zucchini, and onion into chunks of roughly the same size, about an inch. Wash the board, knife, and your hands with soap after the chicken.",
-      "Toss everything with the olive oil, the oregano, the smoked paprika, [[1|tsp|of salt]], and some pepper, then thread the chunks onto the soaked skewers, alternating chicken and vegetables and leaving a little space between pieces so they brown. Lay the skewers on the pan in a single layer. No skewers on hand? Spread everything straight on the pan instead.",
+      "Cut the {{chicken|boneless chicken thighs}}, {{peppers|bell pepper}}, {{zucchini}}, and {{onion|red onion}} into chunks of roughly the same size, about an inch. Wash the board, knife, and your hands with soap after the chicken.",
+      "Toss everything with the {{olive oil}}, the {{oregano|dried oregano}}, the {{smoked paprika}}, [[1|tsp|of salt]], and some pepper, then thread the chunks onto the soaked skewers, alternating chicken and vegetables and leaving a little space between pieces so they brown. Lay the skewers on the pan in a single layer. No skewers on hand? Spread everything straight on the pan instead.",
       "Broil 6 to 7 minutes, turn the skewers with tongs, and broil 6 to 7 more, until the edges brown. If any bare skewer ends start to darken, slide a strip of foil over them. Poke an instant-read thermometer into the middle of a big chicken chunk: 165 F means done.",
-      "Fluff the rice with a fork, squeeze the lemon over the chicken, and serve it all together with the yogurt for dipping.",
+      "Fluff the rice with a fork, squeeze the {{lemon}} over the chicken, and serve it all together with the {{yogurt|plain Greek yogurt}} for dipping.",
     ],
   },
   {
@@ -461,12 +461,12 @@ const MEALS = [
       { n: "cucumbers", q: 2, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Open the tofu over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
-      "Cut the tofu into bite-size cubes and toss them gently in a bowl with the cornstarch until white all over.",
-      "Heat the oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
-      "Turn the heat to low, pour in the soy sauce and maple syrup with the garlic powder and ground ginger, and stir 1 minute, until the sauce thickens and clings to the tofu instead of pooling. Turn off the heat.",
-      "Slice the cucumbers into rounds. Serve the tofu over rice with the cucumbers on the side.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Open the {{tofu|extra-firm tofu}} over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes.",
+      "Cut the tofu into bite-size cubes and toss them gently in a bowl with the {{cornstarch}} until white all over.",
+      "Heat the {{oil|vegetable oil}} in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
+      "Turn the heat to low, pour in the {{soy sauce|low-sodium soy sauce}} and {{maple syrup}} with the {{garlic powder}} and {{ground ginger}}, and stir 1 minute, until the sauce thickens and clings to the tofu instead of pooling. Turn off the heat.",
+      "Slice the {{cucumbers}} into rounds. Serve the tofu over rice with the cucumbers on the side.",
     ],
   },
   {
@@ -483,11 +483,11 @@ const MEALS = [
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Heat the oven to 425 F. Wash the sweet potatoes and stab each one a few times with a fork so steam can escape.",
+      "Heat the oven to 425 F. Wash the {{sweet potatoes}} and stab each one a few times with a fork so steam can escape.",
       "Put them right on the oven rack and bake 40 to 45 minutes, until a knife slides into the middle with no resistance. In a hurry: microwave on a plate 10 to 12 minutes, turning once, until the knife test passes, instead.",
-      "Near the end, open the beans, rinse them in a colander, and warm them with the corn, the cumin, and a big squeeze of lime in a small pot or in the microwave for 2 minutes.",
-      "Cut around each avocado the long way, twist the halves apart, remove the pit with a spoon, and slice. Slice the green onions into thin rings.",
-      "Split the potatoes open, squeeze the ends so the insides fluff up, and let everyone load their own toppings: beans and corn, salsa, avocado, and green onions.",
+      "Near the end, open the {{beans|canned black beans}}, rinse them in a colander, and warm them with the {{corn|frozen corn}}, the {{cumin|ground cumin}}, and a big squeeze of {{lime}} in a small pot or in the microwave for 2 minutes.",
+      "Cut around each {{avocado|avocados}} the long way, twist the halves apart, remove the pit with a spoon, and slice. Slice the {{green onions}} into thin rings.",
+      "Split the potatoes open, squeeze the ends so the insides fluff up, and let everyone load their own toppings: beans and corn, {{salsa}}, avocado, and green onions.",
     ],
   },
   {
@@ -504,11 +504,11 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring to a rolling boil.",
-      "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
-      "Add the rotini to the boiling water and cook for the time on the box, dropping the frozen peas in for the last 2 minutes. Scoop out a coffee mug of the cooking water before draining.",
-      "While the pasta cooks, warm the olive oil in a large skillet over medium-high heat. Add the chicken in one layer, leave it 4 minutes, then stir and cook 4 more. Poke an instant-read thermometer into a big piece: 165 F means done.",
-      "Turn off the heat. Add the drained pasta and peas, the pesto, and a squeeze of half the lemon to the skillet, stirring in splashes of the saved water until everything is coated and glossy.",
-      "Top with parmesan and serve.",
+      "Cut the {{chicken|boneless chicken thighs}} into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
+      "Add the {{rotini|rotini pasta}} to the boiling water and cook for the time on the box, dropping the {{frozen peas}} in for the last 2 minutes. Scoop out a coffee mug of the cooking water before draining.",
+      "While the pasta cooks, warm the {{olive oil}} in a large skillet over medium-high heat. Add the chicken in one layer, leave it 4 minutes, then stir and cook 4 more. Poke an instant-read thermometer into a big piece: 165 F means done.",
+      "Turn off the heat. Add the drained pasta and peas, the {{pesto|basil pesto}}, and a squeeze of half the {{lemon}} to the skillet, stirring in splashes of the saved water until everything is coated and glossy.",
+      "Top with {{parmesan}} and serve.",
     ],
   },
   {
@@ -526,12 +526,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Put the turkey in a bowl with the garlic powder, onion powder, [[1|tsp|of salt]], and some pepper. Mix briefly and shape into patties a little wider than the buns (they shrink), one per bun, pressing a small dimple into the center of each. Wash your hands after.",
-      "Slice the cucumbers and tomatoes, and toss them with [[1|tbsp|of the olive oil]], the juice of the lemon, and a pinch of salt.",
+      "Put the {{turkey|ground turkey}} in a bowl with the {{garlic powder}}, {{onion powder}}, [[1|tsp|of salt]], and some pepper. Mix briefly and shape into patties a little wider than the {{buns|whole wheat burger buns}} (they shrink), one per bun, pressing a small dimple into the center of each. Wash your hands after.",
+      "Slice the {{cucumbers}} and {{tomatoes}}, and toss them with [[1|tbsp|of the olive oil]], the juice of the {{lemon}}, and a pinch of salt.",
       "Heat the rest of the oil in a large skillet over medium heat. Lay in the patties and cook 5 minutes per side without pressing on them.",
       "Poke an instant-read thermometer through the side of a patty into its middle: ground turkey is done at 165 F. Color alone cannot tell you this, so cook another minute per side and check again if it reads low.",
       "Optional: toast the buns cut-side down in the empty pan for 1 minute.",
-      "Build the burgers with lettuce and serve the salad on the side.",
+      "Build the burgers with {{lettuce|romaine lettuce}} and serve the salad on the side.",
     ],
   },
   {
@@ -551,11 +551,11 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
-      "Peel the red onion and cut it into thin wedges. Open the chickpeas, pour them into a colander, rinse under the tap, and shake them dry.",
-      "Put the chicken, onion, and chickpeas on the pan. Add the olive oil, cumin, smoked paprika, garlic powder, [[1|tsp|of salt]], and some pepper, and mix with your hands until everything is coated. Spread it into a single layer. Wash your hands after touching raw chicken.",
+      "Peel the {{red onion}} and cut it into thin wedges. Open the {{chickpeas|canned chickpeas}}, pour them into a colander, rinse under the tap, and shake them dry.",
+      "Put the {{chicken|boneless chicken thighs}}, onion, and chickpeas on the pan. Add the {{olive oil}}, {{cumin|ground cumin}}, {{smoked paprika}}, {{garlic powder}}, [[1|tsp|of salt]], and some pepper, and mix with your hands until everything is coated. Spread it into a single layer. Wash your hands after touching raw chicken.",
       "Roast 25 minutes without stirring. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and thighs are even better at 175 F. Give it 5 more minutes if it reads low.",
-      "While it roasts, stir the yogurt in a small bowl with the juice of half the lemon and a pinch of salt. That is your sauce.",
-      "Put the pitas in the oven for the last 2 minutes to warm.",
+      "While it roasts, stir the {{yogurt|plain Greek yogurt}} in a small bowl with the juice of half the {{lemon}} and a pinch of salt. That is your sauce.",
+      "Put the {{pitas|pita bread}} in the oven for the last 2 minutes to warm.",
       "Cut the chicken into strips, squeeze the rest of the lemon over the pan, and build bowls with torn pita, chicken, chickpeas, onion, and a spoon of yogurt sauce.",
     ],
   },
@@ -577,13 +577,13 @@ const MEALS = [
       { n: "tortilla chips", q: 10, u: "oz", c: "grains" },
     ],
     steps: [
-      "Peel the onion and chop it into small pieces.",
-      "Warm the olive oil in your largest pot over medium heat. Add the onion and cook 4 minutes, stirring now and then, until it looks glassy instead of white.",
-      "Stir in the chili powder and cumin for 30 seconds, then pour in all the broth and add the chicken thighs whole. Bring to a gentle bubble and cook 15 minutes.",
+      "Peel the {{onion}} and chop it into small pieces.",
+      "Warm the {{olive oil}} in your largest pot over medium heat. Add the onion and cook 4 minutes, stirring now and then, until it looks glassy instead of white.",
+      "Stir in the {{chili powder}} and {{cumin|ground cumin}} for 30 seconds, then pour in all the {{broth|low-sodium chicken broth}} and add the {{chicken thighs|boneless chicken thighs}} whole. Bring to a gentle bubble and cook 15 minutes.",
       "Poke an instant-read thermometer into the thickest thigh: at 165 F it is done. Lift it onto a plate, shred it with two forks, and return the shreds to the pot.",
-      "Open the beans, rinse them in a colander, and add them with the tomatoes, juice included, and the corn. Cook 5 more minutes.",
-      "Squeeze half the lime in. Taste a cooled spoonful and add salt a pinch at a time until it tastes good to you.",
-      "Slice the avocado. Ladle the soup into bowls and let everyone crush tortilla chips over the top.",
+      "Open the {{beans|canned black beans}}, rinse them in a colander, and add them with the {{tomatoes|canned diced tomatoes}}, juice included, and the {{corn|frozen corn}}. Cook 5 more minutes.",
+      "Squeeze half the {{lime}} in. Taste a cooled spoonful and add salt a pinch at a time until it tastes good to you.",
+      "Slice the {{avocado|avocados}}. Ladle the soup into bowls and let everyone crush {{tortilla chips}} over the top.",
     ],
   },
   {
@@ -602,11 +602,11 @@ const MEALS = [
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
-      "Peel the garlic and chop it into tiny bits. Stir the soy sauce, honey, rice vinegar, ground ginger, garlic, cornstarch, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
-      "Heat the oil in your largest skillet over medium-high until it shimmers. Add the chicken in one layer, leave it 3 minutes, then stir and cook 3 more.",
-      "Add the frozen broccoli straight from the bag with a splash of water, cover, and cook 4 minutes.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Cut the {{chicken|boneless chicken thighs}} into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
+      "Peel the {{garlic}} and chop it into tiny bits. Stir the {{soy sauce|low-sodium soy sauce}}, {{honey}}, {{rice vinegar}}, {{ground ginger}}, garlic, {{cornstarch}}, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
+      "Heat the {{oil|vegetable oil}} in your largest skillet over medium-high until it shimmers. Add the chicken in one layer, leave it 3 minutes, then stir and cook 3 more.",
+      "Add the frozen {{broccoli|frozen broccoli florets}} straight from the bag with a splash of water, cover, and cook 4 minutes.",
       "Stir the sauce again (the cornstarch settles to the bottom) and pour it in. Let it bubble 1 to 2 minutes until it turns glossy and clings to the chicken. Poke an instant-read thermometer into the biggest piece: 165 F means done.",
       "Spoon everything over the rice.",
     ],
@@ -625,10 +625,10 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil. Do not skip the foil here, because barbecue sauce bakes onto a bare pan like glue.",
-      "Rinse the potatoes and cut each one in half. Toss them on the pan with [[1|tbsp|of the olive oil]], the smoked paprika, the garlic powder, and a big pinch of salt, spread them out, and roast 12 minutes. Set a timer.",
-      "While the potatoes roast, rub the chicken with the rest of the oil and [[1|tsp|of salt]], and snap the stem ends off the green beans. Wash your hands after touching raw chicken.",
+      "Rinse the {{potatoes|baby potatoes}} and cut each one in half. Toss them on the pan with [[1|tbsp|of the olive oil]], the {{smoked paprika}}, the {{garlic powder}}, and a big pinch of salt, spread them out, and roast 12 minutes. Set a timer.",
+      "While the potatoes roast, rub the {{chicken|boneless chicken thighs}} with the rest of the oil and [[1|tsp|of salt]], and snap the stem ends off the {{green beans}}. Wash your hands after touching raw chicken.",
       "Pull the pan out, push the potatoes to one side, lay the chicken in the cleared space, and roast 10 minutes.",
-      "Scatter the green beans over the pan, then brush the chicken generously with barbecue sauce.",
+      "Scatter the green beans over the pan, then brush the chicken generously with {{barbecue sauce}}.",
       "Roast 13 more minutes. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, and 175 F makes thighs even more tender. A fork should slide into a potato with no resistance.",
       "Serve with more barbecue sauce on the side.",
     ],
@@ -650,10 +650,10 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
-      "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
-      "Stir the soy sauce, sesame oil, honey, rice vinegar, and garlic powder together in a small bowl. Slice the cucumbers into thin half-moons and the green onions into rings.",
-      "Add the spaghetti to the boiling water and cook for the time on the box. Before draining, scoop out a coffee mug of the cooking water.",
-      "While the pasta cooks, heat the vegetable oil in a large skillet over medium-high. Add the chicken in one layer, leave it 4 minutes, then stir and cook 4 more. Poke an instant-read thermometer into a big piece: 165 F means done.",
+      "Cut the {{chicken|boneless chicken thighs}} into bite-size pieces. Wash the board, knife, and your hands with soap right after.",
+      "Stir the {{soy sauce|low-sodium soy sauce}}, {{sesame oil|toasted sesame oil}}, {{honey}}, {{rice vinegar}}, and {{garlic powder}} together in a small bowl. Slice the {{cucumbers}} into thin half-moons and the {{green onions}} into rings.",
+      "Add the {{spaghetti}} to the boiling water and cook for the time on the box. Before draining, scoop out a coffee mug of the cooking water.",
+      "While the pasta cooks, heat the {{vegetable oil}} in a large skillet over medium-high. Add the chicken in one layer, leave it 4 minutes, then stir and cook 4 more. Poke an instant-read thermometer into a big piece: 165 F means done.",
       "Turn off the heat. Add the drained spaghetti and the sauce to the skillet and toss, loosening with splashes of the saved water until the noodles are slick instead of sticky.",
       "Pile the cucumbers and green onions on top. This one is good hot or at room temperature.",
     ],
@@ -674,12 +674,12 @@ const MEALS = [
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Peel the carrots and onion. Cut the carrots and celery into coin-size pieces and chop the onion into small bits.",
-      "Warm the olive oil in your largest pot over medium heat for 30 seconds. Add the carrots, celery, and onion and cook 5 minutes, stirring every minute or two.",
-      "Pour in all the broth, add the chicken thighs whole and the oregano, and bring to a gentle bubble. Cook 15 minutes.",
+      "Peel the {{carrots}} and {{onion}}. Cut the carrots and {{celery}} into coin-size pieces and chop the onion into small bits.",
+      "Warm the {{olive oil}} in your largest pot over medium heat for 30 seconds. Add the carrots, celery, and onion and cook 5 minutes, stirring every minute or two.",
+      "Pour in all the {{broth|low-sodium chicken broth}}, add the {{chicken thighs|boneless chicken thighs}} whole and the {{oregano|dried oregano}}, and bring to a gentle bubble. Cook 15 minutes.",
       "Poke an instant-read thermometer into the thickest thigh: at 165 F it is done. Lift it onto a plate, shred it with two forks, and return the shreds to the pot.",
-      "Add the orzo and cook 8 minutes, stirring now and then so it does not stick to the bottom, until one you fish out and blow on is soft.",
-      "Turn off the heat. Stir in the spinach until the leaves go dark, then squeeze in the juice of both lemons. Taste a cooled spoonful and add salt a pinch at a time until it tastes bright.",
+      "Add the {{orzo}} and cook 8 minutes, stirring now and then so it does not stick to the bottom, until one you fish out and blow on is soft.",
+      "Turn off the heat. Stir in the {{spinach}} until the leaves go dark, then squeeze in the juice of both {{lemons|lemon}}. Taste a cooled spoonful and add salt a pinch at a time until it tastes bright.",
     ],
   },
   {
@@ -697,11 +697,11 @@ const MEALS = [
     ],
     steps: [
       "Move an oven rack to the middle and heat the oven to 425 F. Line a large rimmed baking sheet with foil.",
-      "Stir the Dijon, honey, [[1|tbsp|of the olive oil]], the garlic powder, and the thyme together in a small bowl.",
-      "Rinse the potatoes and cut each one in half. Toss them on the pan with the rest of the oil and a big pinch of salt, and spread them out flat. Roast 15 minutes.",
-      "Push the potatoes to one side of the pan. Lay the chicken on the empty side, spoon the honey-mustard over it, and wash your hands after touching raw chicken.",
+      "Stir the {{Dijon|Dijon mustard}}, {{honey}}, [[1|tbsp|of the olive oil]], the {{garlic powder}}, and the {{thyme|dried thyme}} together in a small bowl.",
+      "Rinse the {{potatoes|baby potatoes}} and cut each one in half. Toss them on the pan with the rest of the oil and a big pinch of salt, and spread them out flat. Roast 15 minutes.",
+      "Push the potatoes to one side of the pan. Lay the {{chicken|boneless chicken thighs}} on the empty side, spoon the honey-mustard over it, and wash your hands after touching raw chicken.",
       "Roast 15 minutes.",
-      "Snap the stem ends off the green beans, scatter them around the pan, and roast 8 more minutes. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, 175 F for extra-tender thighs.",
+      "Snap the stem ends off the {{green beans}}, scatter them around the pan, and roast 8 more minutes. Poke an instant-read thermometer into the thickest piece of chicken: 165 F means done, 175 F for extra-tender thighs.",
     ],
   },
   {
@@ -720,12 +720,12 @@ const MEALS = [
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Cut the chicken into bite-size pieces and chop the onion small. Wash the board, knife, and your hands with soap right after the chicken.",
-      "Warm the olive oil in your largest skillet over medium-high heat. Add the chicken and onion and cook 7 minutes, stirring twice.",
-      "Sprinkle in the cumin and stir 30 seconds. Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done.",
-      "Open the beans, rinse them in a colander, and stir them in with the corn and the enchilada sauce. Let it bubble gently 3 minutes.",
-      "Stack the tortillas, cut them into strips about an inch wide, and fold them into the skillet so they soften in the sauce, about 3 minutes.",
-      "Turn off the heat and squeeze in half the lime. Sprinkle cheese over the side of the pan belonging to whoever wants it, and serve straight from the skillet.",
+      "Cut the {{chicken|boneless chicken thighs}} into bite-size pieces and chop the {{onion}} small. Wash the board, knife, and your hands with soap right after the chicken.",
+      "Warm the {{olive oil}} in your largest skillet over medium-high heat. Add the chicken and onion and cook 7 minutes, stirring twice.",
+      "Sprinkle in the {{cumin|ground cumin}} and stir 30 seconds. Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done.",
+      "Open the {{beans|canned black beans}}, rinse them in a colander, and stir them in with the {{corn|frozen corn}} and the {{enchilada sauce}}. Let it bubble gently 3 minutes.",
+      "Stack the {{tortillas|small corn tortillas}}, cut them into strips about an inch wide, and fold them into the skillet so they soften in the sauce, about 3 minutes.",
+      "Turn off the heat and squeeze in half the {{lime}}. Sprinkle {{cheese|shredded cheddar}} over the side of the pan belonging to whoever wants it, and serve straight from the skillet.",
     ],
   },
   {
@@ -745,12 +745,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Cut the chicken into bite-size pieces. Wash the board, knife, and your hands with soap right after. Peel and chop the onion small and chop the garlic into tiny bits.",
-      "Melt the butter in your largest skillet over medium heat. Add the onion and cook 5 minutes until glassy, then add the garlic, garam masala, curry powder, and ground ginger and stir 30 seconds until they smell toasty.",
-      "Add the chicken and stir to coat, then pour in the tomato sauce and the coconut milk. Stir and bring to a gentle bubble.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Cut the {{chicken|boneless chicken thighs}} into bite-size pieces. Wash the board, knife, and your hands with soap right after. Peel and chop the {{onion}} small and chop the {{garlic}} into tiny bits.",
+      "Melt the {{butter}} in your largest skillet over medium heat. Add the onion and cook 5 minutes until glassy, then add the garlic, {{garam masala}}, {{curry powder|mild curry powder}}, and {{ground ginger}} and stir 30 seconds until they smell toasty.",
+      "Add the chicken and stir to coat, then pour in the {{tomato sauce|canned tomato sauce}} and the {{coconut milk|light coconut milk}}. Stir and bring to a gentle bubble.",
       "Cook uncovered 15 minutes, stirring every few minutes, until the sauce darkens and thickens enough to coat the back of a spoon.",
-      "Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done. Squeeze in half the lemon, add salt to taste, and spoon over the rice.",
+      "Poke an instant-read thermometer into the biggest piece of chicken: 165 F means done. Squeeze in half the {{lemon}}, add salt to taste, and spoon over the rice.",
     ],
   },
   {
@@ -770,12 +770,12 @@ const MEALS = [
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Peel the onion and chop it small. Cut the bell pepper in half, pull out the stem, seeds, and white ribs, and chop it small too.",
-      "Warm the olive oil in a large skillet over medium heat. Add the onion and pepper and cook 4 minutes, stirring now and then.",
-      "Add the turkey and cook 7 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
-      "Stir in the chili powder and garlic powder for 30 seconds, then add the tomato sauce, ketchup, Dijon, and brown sugar.",
+      "Peel the {{onion}} and chop it small. Cut the {{bell pepper}} in half, pull out the stem, seeds, and white ribs, and chop it small too.",
+      "Warm the {{olive oil}} in a large skillet over medium heat. Add the onion and pepper and cook 4 minutes, stirring now and then.",
+      "Add the {{turkey|ground turkey}} and cook 7 minutes, breaking it into small crumbles with a wooden spoon. Push the meat into a mound at one side of the pan and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
+      "Stir in the {{chili powder}} and {{garlic powder}} for 30 seconds, then add the {{tomato sauce|canned tomato sauce}}, {{ketchup}}, {{Dijon|Dijon mustard}}, and {{brown sugar}}.",
       "Let it bubble gently 8 minutes, stirring now and then, until it thickens enough to sit on a spoon instead of running off. Taste and add salt a pinch at a time.",
-      "Toast the buns cut-side down in a dry pan for a minute, then spoon the filling in.",
+      "Toast the {{buns|whole wheat burger buns}} cut-side down in a dry pan for a minute, then spoon the filling in.",
     ],
   },
   {
@@ -794,13 +794,13 @@ const MEALS = [
       { n: "shredded cheddar", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Start the rice following the package directions. Heat the oven to 400 F.",
-      "Cut the peppers in half through the stem and pull out the seeds and white ribs. Stand them cut-side up in a baking dish.",
-      "Peel and chop the onion small. Warm the olive oil in a large skillet over medium heat, add the onion, and cook 4 minutes.",
-      "Add the turkey, the Italian seasoning, the garlic powder, and [[1|tsp|of salt]], and cook 7 minutes, breaking the meat into crumbles. Push it into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
-      "Stir in the cooked rice and the tomatoes with their juice, then spoon the mix into the pepper halves, mounding it up.",
-      "Pour the broth into the bottom of the dish, cover it tightly with foil, and bake 35 minutes, until a knife slides through a pepper wall easily.",
-      "Uncover, sprinkle cheese on the halves that want it, and bake 5 more minutes.",
+      "Start the {{rice|white rice}} following the package directions. Heat the oven to 400 F.",
+      "Cut the {{peppers|bell pepper}} in half through the stem and pull out the seeds and white ribs. Stand them cut-side up in a baking dish.",
+      "Peel and chop the {{onion}} small. Warm the {{olive oil}} in a large skillet over medium heat, add the onion, and cook 4 minutes.",
+      "Add the {{turkey|ground turkey}}, the {{Italian seasoning}}, the {{garlic powder}}, and [[1|tsp|of salt]], and cook 7 minutes, breaking the meat into crumbles. Push it into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
+      "Stir in the cooked rice and the {{tomatoes|canned diced tomatoes}} with their juice, then spoon the mix into the pepper halves, mounding it up.",
+      "Pour the {{broth|low-sodium chicken broth}} into the bottom of the dish, cover it tightly with foil, and bake 35 minutes, until a knife slides through a pepper wall easily.",
+      "Uncover, sprinkle {{cheese|shredded cheddar}} on the halves that want it, and bake 5 more minutes.",
     ],
   },
   {
@@ -821,12 +821,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Crack the egg into a large bowl. Add the turkey, breadcrumbs, Italian seasoning, garlic powder, and [[0.5|tsp|of salt]], and mix with clean hands just until combined.",
+      "Crack the {{egg|eggs}} into a large bowl. Add the {{turkey|ground turkey}}, {{breadcrumbs}}, {{Italian seasoning}}, {{garlic powder}}, and [[0.5|tsp|of salt]], and mix with clean hands just until combined.",
       "Roll the mix into small balls about the size of a walnut and set them on a plate. Wash your hands after.",
-      "Peel the carrots. Cut the carrots and celery into coin-size pieces. Warm the olive oil in your largest pot over medium heat and cook them 5 minutes, stirring now and then.",
-      "Pour in all the broth and bring it to a gentle bubble. Lower the meatballs in one at a time and cook 10 minutes, stirring as little as possible so they hold together.",
-      "Add the orzo and cook 8 more minutes. Poke an instant-read thermometer into the middle of the biggest meatball: 165 F means done.",
-      "Turn off the heat, stir in the spinach until the leaves go dark, and squeeze in half the lemon. Taste a cooled spoonful and add salt a pinch at a time.",
+      "Peel the {{carrots}}. Cut the carrots and {{celery}} into coin-size pieces. Warm the {{olive oil}} in your largest pot over medium heat and cook them 5 minutes, stirring now and then.",
+      "Pour in all the {{broth|low-sodium chicken broth}} and bring it to a gentle bubble. Lower the meatballs in one at a time and cook 10 minutes, stirring as little as possible so they hold together.",
+      "Add the {{orzo}} and cook 8 more minutes. Poke an instant-read thermometer into the middle of the biggest meatball: 165 F means done.",
+      "Turn off the heat, stir in the {{spinach}} until the leaves go dark, and squeeze in half the {{lemon}}. Taste a cooled spoonful and add salt a pinch at a time.",
     ],
   },
   {
@@ -845,11 +845,11 @@ const MEALS = [
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Peel the garlic and chop it into tiny bits. Slice the green onions into thin rings. Stir the soy sauce, sesame oil, rice vinegar, and ground ginger together in a small bowl.",
-      "Heat the vegetable oil in your largest skillet over medium-high. Add the turkey and cook 8 minutes, breaking it into crumbles with a wooden spoon. Push the meat into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Peel the {{garlic}} and chop it into tiny bits. Slice the {{green onions}} into thin rings. Stir the {{soy sauce|low-sodium soy sauce}}, {{sesame oil|toasted sesame oil}}, {{rice vinegar}}, and {{ground ginger}} together in a small bowl.",
+      "Heat the {{vegetable oil}} in your largest skillet over medium-high. Add the {{turkey|ground turkey}} and cook 8 minutes, breaking it into crumbles with a wooden spoon. Push the meat into a mound and poke an instant-read thermometer into the middle: ground turkey is done at 165 F.",
       "Add the garlic and stir for 30 seconds.",
-      "Dump in the coleslaw mix and cook 5 minutes, stirring often, until the cabbage wilts down but still has a little crunch.",
+      "Dump in the {{coleslaw mix}} and cook 5 minutes, stirring often, until the cabbage wilts down but still has a little crunch.",
       "Pour in the sauce, stir 1 minute, and turn off the heat. Serve over the rice with the green onions scattered on top.",
     ],
   },
@@ -870,12 +870,12 @@ const MEALS = [
       { n: "olive oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Peel the carrots and onion. Chop the onion small and cut the carrots into coin-size pieces. Peel the garlic and chop it into tiny bits.",
-      "Warm the olive oil in your largest pot over medium heat. Add the onion and carrots and cook 5 minutes, stirring now and then.",
-      "Add the garlic, curry powder, and cumin and stir 30 seconds until they smell toasty.",
-      "Pour the lentils into a colander and rinse them under the tap. Add them to the pot with all the broth and the coconut milk.",
+      "Peel the {{carrots}} and {{onion}}. Chop the onion small and cut the carrots into coin-size pieces. Peel the {{garlic}} and chop it into tiny bits.",
+      "Warm the {{olive oil}} in your largest pot over medium heat. Add the onion and carrots and cook 5 minutes, stirring now and then.",
+      "Add the garlic, {{curry powder|mild curry powder}}, and {{cumin|ground cumin}} and stir 30 seconds until they smell toasty.",
+      "Pour the {{lentils|red lentils}} into a colander and rinse them under the tap. Add them to the pot with all the {{broth|low-sodium vegetable broth}} and the {{coconut milk|light coconut milk}}.",
       "Bring to a gentle bubble and cook 20 minutes, stirring every few minutes so nothing sticks to the bottom, until the lentils have fallen apart and the soup is thick.",
-      "Turn off the heat, stir in the spinach until the leaves go dark, and squeeze in half the lime. Taste a cooled spoonful and add salt a pinch at a time.",
+      "Turn off the heat, stir in the {{spinach}} until the leaves go dark, and squeeze in half the {{lime}}. Taste a cooled spoonful and add salt a pinch at a time.",
     ],
   },
   {
@@ -898,12 +898,12 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
-      "Open the tofu over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the cornstarch until white all over.",
-      "In a bowl, stir the peanut butter, soy sauce, rice vinegar, sesame oil, maple syrup, and ground ginger together, then stir in warm water a spoonful at a time until the sauce is smooth and pourable, about 6 tablespoons for the full recipe.",
-      "Cook the spaghetti for the time on the box, dropping the frozen edamame in for the last 3 minutes. Scoop out a coffee mug of the cooking water before draining.",
-      "While the pasta cooks, heat the vegetable oil in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
+      "Open the {{tofu|extra-firm tofu}} over the sink and pour off the water. Wrap the tofu in a clean kitchen towel and press it under a heavy plate for 5 minutes, then cut it into bite-size cubes and toss them gently with the {{cornstarch}} until white all over.",
+      "In a bowl, stir the {{peanut butter|creamy peanut butter}}, {{soy sauce|low-sodium soy sauce}}, {{rice vinegar}}, {{sesame oil|toasted sesame oil}}, {{maple syrup}}, and {{ground ginger}} together, then stir in warm water a spoonful at a time until the sauce is smooth and pourable, about 6 tablespoons for the full recipe.",
+      "Cook the {{spaghetti}} for the time on the box, dropping the frozen {{edamame|frozen shelled edamame}} in for the last 3 minutes. Scoop out a coffee mug of the cooking water before draining.",
+      "While the pasta cooks, heat the {{vegetable oil}} in a nonstick skillet over medium-high until it shimmers. Add the tofu and turn the pieces every 2 minutes until golden on most sides, about 8 minutes total.",
       "Toss the drained noodles and edamame with the peanut sauce back in the big pot, loosening with splashes of the saved water until everything is evenly coated.",
-      "Slice the cucumber into thin half-moons and the green onions into rings, and scatter both over the top along with the tofu.",
+      "Slice the {{cucumber|cucumbers}} into thin half-moons and the {{green onions}} into rings, and scatter both over the top along with the tofu.",
     ],
   },
   {
@@ -925,12 +925,12 @@ const MEALS = [
     ],
     steps: [
       "Heat the oven to 425 F and line two baking sheets with foil.",
-      "Scrub the potatoes (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway. Set them aside when they are browned; they go back in at the end.",
-      "Open the beans, rinse them in a colander, and shake them very dry. Spread them on the second pan and bake 10 minutes to dry them out. This step is what keeps the burgers from turning to mush.",
-      "Tip the beans into a big bowl and mash them with a fork or potato masher until most are broken but some whole ones remain. Peel and finely chop the onion and stir it in with the oats, cumin, smoked paprika, garlic powder, and [[1|tsp|of salt]].",
+      "Scrub the {{potatoes|russet potatoes}} (no peeling needed) and cut them into fries about as thick as your finger. Toss with [[2|tbsp|of the olive oil]] and a big pinch of salt on one pan, spread them flat, and roast 30 minutes, flipping once with a spatula halfway. Set them aside when they are browned; they go back in at the end.",
+      "Open the {{beans|canned black beans}}, rinse them in a colander, and shake them very dry. Spread them on the second pan and bake 10 minutes to dry them out. This step is what keeps the burgers from turning to mush.",
+      "Tip the beans into a big bowl and mash them with a fork or potato masher until most are broken but some whole ones remain. Peel and finely chop the {{onion}} and stir it in with the {{oats|rolled oats}}, {{cumin|ground cumin}}, {{smoked paprika}}, {{garlic powder}}, and [[1|tsp|of salt]].",
       "Squeeze the mix into palm-size patties, one per bun, packing them tight so they hold. Wipe the bean pan, brush it with the rest of the olive oil, and set the patties on it.",
       "Bake 12 minutes, flip carefully with a thin spatula, and bake 12 more, until the outsides are firm and dry to the touch. Slide the fries back in for the last 5 minutes so they are hot again at the table.",
-      "Build the burgers on the buns with lettuce, sliced tomato, and ketchup, and serve the fries alongside.",
+      "Build the burgers on the {{buns|whole wheat burger buns}} with {{lettuce|romaine lettuce}}, sliced {{tomato|tomatoes}}, and {{ketchup}}, and serve the fries alongside.",
     ],
   },
   {
@@ -948,13 +948,13 @@ const MEALS = [
       { n: "whole grain bread", q: 8, u: "slice", c: "grains" },
     ],
     steps: [
-      "Cut the peppers in half, pull out the stems, seeds, and white ribs, and slice them into thin strips. Peel and chop the onion small and chop the garlic into tiny bits.",
-      "Warm the olive oil in a large skillet over medium heat. Add the peppers and onion and cook 8 minutes, stirring now and then, until they are soft and floppy.",
-      "Add the garlic, cumin, and smoked paprika and stir 30 seconds until they smell toasty.",
-      "Pour in the crushed tomatoes with [[1|tsp|of salt]]. Let it bubble gently for 10 minutes, stirring often, until it thickens enough that dragging a spoon through leaves a trench for a second.",
-      "Make a shallow well in the sauce with the back of a spoon for each egg, and crack one into each.",
+      "Cut the {{peppers|bell pepper}} in half, pull out the stems, seeds, and white ribs, and slice them into thin strips. Peel and chop the {{onion}} small and chop the {{garlic}} into tiny bits.",
+      "Warm the {{olive oil}} in a large skillet over medium heat. Add the peppers and onion and cook 8 minutes, stirring now and then, until they are soft and floppy.",
+      "Add the garlic, {{cumin|ground cumin}}, and {{smoked paprika}} and stir 30 seconds until they smell toasty.",
+      "Pour in the {{crushed tomatoes|canned crushed tomatoes}} with [[1|tsp|of salt]]. Let it bubble gently for 10 minutes, stirring often, until it thickens enough that dragging a spoon through leaves a trench for a second.",
+      "Make a shallow well in the sauce with the back of a spoon for each {{egg|eggs}}, and crack one into each.",
       "Cover the pan, turn the heat to medium-low, and cook 7 to 10 minutes. The whites should be firm and no longer see-through; the yolks can be as runny or set as you like.",
-      "Toast the bread and serve it alongside for scooping.",
+      "Toast the {{bread|whole grain bread}} and serve it alongside for scooping.",
     ],
   },
   {
@@ -975,11 +975,11 @@ const MEALS = [
     ],
     steps: [
       "Heat the oven to 425 F and line a large rimmed baking sheet with foil.",
-      "Scrub the sweet potatoes (no peeling needed) and cut them into cubes about an inch across. Toss them on the pan with [[2|tbsp|of the olive oil]], the cumin, chili powder, smoked paprika, and [[1|tsp|of salt]], then spread them into a single layer.",
+      "Scrub the {{sweet potatoes}} (no peeling needed) and cut them into cubes about an inch across. Toss them on the pan with [[2|tbsp|of the olive oil]], the {{cumin|ground cumin}}, {{chili powder}}, {{smoked paprika}}, and [[1|tsp|of salt]], then spread them into a single layer.",
       "Roast 30 minutes, turning everything with a spatula halfway through, until the edges are browned and a fork slides into a cube with no resistance.",
-      "Near the end, open the beans, rinse them in a colander, and warm them in a small pot with the rest of the olive oil and a squeeze of lime, about 3 minutes.",
-      "Cut the lettuce into thin ribbons and slice the green onions into rings. Cut around the avocado the long way, twist the halves apart, remove the pit with a spoon, and slice the flesh.",
-      "Warm the tortillas 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
+      "Near the end, open the {{beans|canned black beans}}, rinse them in a colander, and warm them in a small pot with the rest of the olive oil and a squeeze of {{lime}}, about 3 minutes.",
+      "Cut the {{lettuce|romaine lettuce}} into thin ribbons and slice the {{green onions}} into rings. Cut around the {{avocado|avocados}} the long way, twist the halves apart, remove the pit with a spoon, and slice the flesh.",
+      "Warm the {{tortillas|small corn tortillas}} 20 seconds in the microwave under a damp paper towel, or 30 seconds per side in a dry pan.",
       "Build tacos with sweet potato, beans, lettuce, avocado, and green onion, and squeeze the rest of the lime over the top.",
     ],
   },
@@ -998,12 +998,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Peel the garlic and chop it into tiny bits.",
-      "Warm [[2|tbsp|of the olive oil]] in your largest pot over medium heat. Add the garlic, rosemary, and oregano and stir for 1 minute, until fragrant but not browned. Browned garlic turns bitter, so keep it moving.",
-      "Open the chickpeas, rinse them in a colander, and add them to the pot. Mash about a third of them against the side with a wooden spoon; that is what makes the broth creamy without any cream.",
-      "Add the crushed tomatoes and all the broth, bring to a gentle bubble, and cook 10 minutes.",
-      "Add the pasta shells and cook 10 more minutes, stirring often so they do not stick, until one you fish out and blow on is soft. It should look like a loose stew, so add a splash of water if it tightens too much.",
-      "Turn off the heat, squeeze in half the lemon, drizzle the rest of the olive oil over the top, and salt to taste.",
+      "Peel the {{garlic}} and chop it into tiny bits.",
+      "Warm [[2|tbsp|of the olive oil]] in your largest pot over medium heat. Add the garlic, {{rosemary|dried rosemary}}, and {{oregano|dried oregano}} and stir for 1 minute, until fragrant but not browned. Browned garlic turns bitter, so keep it moving.",
+      "Open the {{chickpeas|canned chickpeas}}, rinse them in a colander, and add them to the pot. Mash about a third of them against the side with a wooden spoon; that is what makes the {{broth|low-sodium vegetable broth}} creamy without any cream.",
+      "Add the {{crushed tomatoes|canned crushed tomatoes}} and all the broth, bring to a gentle bubble, and cook 10 minutes.",
+      "Add the pasta {{shells|small pasta shells}} and cook 10 more minutes, stirring often so they do not stick, until one you fish out and blow on is soft. It should look like a loose stew, so add a splash of water if it tightens too much.",
+      "Turn off the heat, squeeze in half the {{lemon}}, drizzle the rest of the olive oil over the top, and salt to taste.",
     ],
   },
   {
@@ -1023,10 +1023,10 @@ const MEALS = [
     ],
     steps: [
       "Fill your largest pot two-thirds with water, add [[1|tbsp|of salt]], cover, and bring it to a rolling boil over high heat.",
-      "While the water heats, peel the garlic and chop it into tiny bits, and slice the green onions into thin rings.",
-      "Stir the soy sauce, sesame oil, brown sugar, ground ginger, cornstarch, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
-      "Add the spaghetti to the boiling water and cook it for the time on the box. Before draining, scoop out a coffee mug of the cooking water.",
-      "While the pasta cooks, heat the vegetable oil in your largest skillet over medium-high until it shimmers. Add the frozen vegetables straight from the bag and cook 5 minutes, stirring often, until they are hot and the water they release has cooked off. Add the garlic and stir for 30 seconds.",
+      "While the water heats, peel the {{garlic}} and chop it into tiny bits, and slice the {{green onions}} into thin rings.",
+      "Stir the {{soy sauce|low-sodium soy sauce}}, {{sesame oil|toasted sesame oil}}, {{brown sugar}}, {{ground ginger}}, {{cornstarch}}, and [[3|tbsp|of water]] together in a small bowl until no lumps are left.",
+      "Add the {{spaghetti}} to the boiling water and cook it for the time on the box. Before draining, scoop out a coffee mug of the cooking water.",
+      "While the pasta cooks, heat the {{vegetable oil}} in your largest skillet over medium-high until it shimmers. Add the {{frozen vegetables|frozen stir-fry vegetables}} straight from the bag and cook 5 minutes, stirring often, until they are hot and the water they release has cooked off. Add the garlic and stir for 30 seconds.",
       "Add the drained spaghetti, stir the sauce again, and pour it in. Toss for 2 minutes until the noodles are coated and no liquid pools in the bottom of the pan, loosening with a splash of the saved water if they clump. Scatter the green onions over the top.",
     ],
   },
@@ -1048,12 +1048,12 @@ const MEALS = [
       { n: "lime", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice following the package directions.",
-      "Rinse the potatoes and cut them into quarters so every piece is roughly bite-size. Peel and chop the onion small and chop the garlic into tiny bits.",
-      "Warm the olive oil in a large pot over medium heat. Add the onion and cook 4 minutes until glassy, then add the garlic, curry powder, garam masala, and cumin and stir 30 seconds until they smell toasty.",
-      "Add the potatoes, the tomatoes with their juice, and the coconut milk. Stir and bring to a gentle bubble.",
+      "Start the {{rice|white rice}} following the package directions.",
+      "Rinse the {{potatoes|baby potatoes}} and cut them into quarters so every piece is roughly bite-size. Peel and chop the {{onion}} small and chop the {{garlic}} into tiny bits.",
+      "Warm the {{olive oil}} in a large pot over medium heat. Add the onion and cook 4 minutes until glassy, then add the garlic, {{curry powder|mild curry powder}}, {{garam masala}}, and {{cumin|ground cumin}} and stir 30 seconds until they smell toasty.",
+      "Add the potatoes, the {{tomatoes|canned diced tomatoes}} with their juice, and the {{coconut milk|light coconut milk}}. Stir and bring to a gentle bubble.",
       "Cover and cook 18 to 20 minutes, stirring now and then, until a fork slides into a potato piece with no resistance.",
-      "Stir in the frozen peas and cook 3 more minutes. Squeeze in half the lime, add salt to taste, and spoon over the rice.",
+      "Stir in the {{frozen peas}} and cook 3 more minutes. Squeeze in half the {{lime}}, add salt to taste, and spoon over the rice.",
     ],
   },
   {
@@ -1075,13 +1075,13 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice following the package directions. Heat the oven to 400 F. Line a baking sheet with foil and brush it with [[1|tbsp|of the olive oil]].",
-      "Open the chickpeas, rinse them in a colander, and shake them as dry as you can. Peel the onion and cut it into chunks, and peel the garlic.",
-      "Put the chickpeas, onion, garlic, the parsley (leaves and thin stems both), the cumin, [[1|tsp|of salt]], the flour, and the baking powder in a food processor. Pulse until it looks like coarse crumbs that hold together when you squeeze a handful. No food processor? Mash the chickpeas with a fork, chop the onion, garlic, and parsley very fine, and mix it all by hand.",
+      "Start the {{rice|white rice}} following the package directions. Heat the oven to 400 F. Line a baking sheet with foil and brush it with [[1|tbsp|of the olive oil]].",
+      "Open the {{chickpeas|canned chickpeas}}, rinse them in a colander, and shake them as dry as you can. Peel the {{onion}} and cut it into chunks, and peel the {{garlic}}.",
+      "Put the chickpeas, onion, garlic, the {{parsley|fresh parsley}} (leaves and thin stems both), the {{cumin|ground cumin}}, [[1|tsp|of salt]], the {{flour|all-purpose flour}}, and the {{baking powder}} in a food processor. Pulse until it looks like coarse crumbs that hold together when you squeeze a handful. No food processor? Mash the chickpeas with a fork, chop the onion, garlic, and parsley very fine, and mix it all by hand.",
       "Scoop the mix into golf-ball-size balls, about three per person, and press each into a patty about half an inch thick on the pan. Brush the tops with [[1|tbsp|of the olive oil]].",
       "Bake 25 minutes, flipping halfway with a thin spatula, until both sides are golden and firm to the touch.",
-      "Meanwhile, chop the cucumbers and tomatoes and toss them with the rest of the olive oil, the juice of half the lemon, and a pinch of salt.",
-      "Stir the yogurt with the rest of the lemon juice and a pinch of salt. Build bowls: rice, patties, salad, and a spoon of sauce.",
+      "Meanwhile, chop the {{cucumbers}} and {{tomatoes}} and toss them with the rest of the olive oil, the juice of half the {{lemon}}, and a pinch of salt.",
+      "Stir the {{yogurt|plain Greek yogurt}} with the rest of the lemon juice and a pinch of salt. Build bowls: rice, patties, salad, and a spoon of sauce.",
     ],
   },
   {
@@ -1097,10 +1097,10 @@ const MEALS = [
       { n: "dried thyme", q: 1, u: "tsp", c: "pantry" },
     ],
     steps: [
-      "Heat the oven to 425 F. Halve the baby potatoes (quarter any bigger than a golf ball) and toss them on a sheet pan with [[2|tbsp|of the olive oil]], the thyme, and [[0.5|tsp|of salt]]. Roast 15 minutes.",
-      "While the potatoes roast, snap the stem ends off the green beans and pat the salmon dry with a paper towel. Wash your hands after handling the raw fish.",
-      "Pull the pan out, push the potatoes to one side, and lay the green beans and the salmon (skin-side down) in the cleared space. Drizzle the rest of the oil over them and sprinkle the garlic powder and a pinch of salt over everything.",
-      "Slice half of the lemons into thin rounds and lay them on the salmon; save the rest for serving. Roast 12 to 15 minutes more.",
+      "Heat the oven to 425 F. Halve the {{baby potatoes}} (quarter any bigger than a golf ball) and toss them on a sheet pan with [[2|tbsp|of the olive oil]], the {{thyme|dried thyme}}, and [[0.5|tsp|of salt]]. Roast 15 minutes.",
+      "While the potatoes roast, snap the stem ends off the {{green beans}} and pat the {{salmon|salmon fillets}} dry with a paper towel. Wash your hands after handling the raw fish.",
+      "Pull the pan out, push the potatoes to one side, and lay the green beans and the salmon (skin-side down) in the cleared space. Drizzle the rest of the oil over them and sprinkle the {{garlic powder}} and a pinch of salt over everything.",
+      "Slice half of the {{lemons|lemon}} into thin rounds and lay them on the salmon; save the rest for serving. Roast 12 to 15 minutes more.",
       "Poke an instant-read thermometer into the thickest part of the salmon: fish is done at 145 F, and it should flake when you drag a fork across it. Roast 3 more minutes and check again if it reads low.",
       "Cut the saved lemons into wedges, squeeze them over everything, and serve straight from the pan.",
     ],
@@ -1120,12 +1120,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice: rinse it in a strainer, then put it in a small pot with double its volume of water and a pinch of salt. Bring to a boil, cover, and turn the heat to low for 15 minutes. No peeking.",
-      "Cut the broccoli into bite-size florets. Cut the salmon into pieces about the size of a deck of cards, pat them dry, and sprinkle with a pinch of salt. Wash your hands after handling the raw fish.",
-      "Peel and mince the garlic, then stir it in a cup with the soy sauce, honey, and ground ginger.",
-      "Heat the oil in a large skillet over medium-high heat. Lay the salmon in skin-side up and cook 3 minutes without moving it, then flip and cook 3 minutes more. Meanwhile, microwave the broccoli in a covered bowl with a splash of water for 3 to 4 minutes until bright green and just tender.",
+      "Start the {{rice|white rice}}: rinse it in a strainer, then put it in a small pot with double its volume of water and a pinch of salt. Bring to a boil, cover, and turn the heat to low for 15 minutes. No peeking.",
+      "Cut the {{broccoli}} into bite-size florets. Cut the {{salmon|salmon fillets}} into pieces about the size of a deck of cards, pat them dry, and sprinkle with a pinch of salt. Wash your hands after handling the raw fish.",
+      "Peel and mince the {{garlic}}, then stir it in a cup with the {{soy sauce|low-sodium soy sauce}}, {{honey}}, and {{ground ginger}}.",
+      "Heat the {{oil|vegetable oil}} in a large skillet over medium-high heat. Lay the salmon in skin-side up and cook 3 minutes without moving it, then flip and cook 3 minutes more. Meanwhile, microwave the broccoli in a covered bowl with a splash of water for 3 to 4 minutes until bright green and just tender.",
       "Add the broccoli to the skillet, pour the sauce over everything, turn the heat to medium-low, and let it bubble 2 minutes, spooning sauce over the salmon as it thickens.",
-      "Poke an instant-read thermometer into the thickest piece: fish is done at 145 F and flakes with a fork. Serve over the rice, with the lemon cut into wedges for squeezing.",
+      "Poke an instant-read thermometer into the thickest piece: fish is done at 145 F and flakes with a fork. Serve over the rice, with the {{lemon}} cut into wedges for squeezing.",
     ],
   },
   {
@@ -1146,12 +1146,12 @@ const MEALS = [
       { n: "avocados", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Heat the oven to 425 F. Stir the panko with the olive oil and a pinch of salt on a sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl. Stir the chili powder and cumin into it.",
-      "Cut the cod into strips about as wide as two fingers. Set up two more shallow bowls: the flour in one, the eggs beaten in the other.",
+      "Heat the oven to 425 F. Stir the {{panko|panko breadcrumbs}} with the {{olive oil}} and a pinch of salt on a sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl. Stir the {{chili powder}} and {{cumin|ground cumin}} into it.",
+      "Cut the {{cod|cod fillets}} into strips about as wide as two fingers. Set up two more shallow bowls: the {{flour|all-purpose flour}} in one, the {{eggs}} beaten in the other.",
       "Coat each strip: roll it in flour, dip it in egg, then press it into the panko on all sides. Line the strips up on the sheet pan with space between them. Wash your hands after handling the raw fish.",
       "Bake 12 to 15 minutes until golden. Poke an instant-read thermometer into the thickest strip: fish is done at 145 F and flakes with a fork.",
-      "While the fish bakes, stir the yogurt with the juice of half the limes and a pinch of salt. Toss half of that dressing with the coleslaw mix; the rest is drizzle.",
-      "Wrap the tortillas in a damp paper towel and microwave 30 seconds. Slice the avocados.",
+      "While the fish bakes, stir the {{yogurt|plain Greek yogurt}} with the juice of half the {{limes|lime}} and a pinch of salt. Toss half of that dressing with the {{coleslaw mix}}; the rest is drizzle.",
+      "Wrap the {{tortillas|small corn tortillas}} in a damp paper towel and microwave 30 seconds. Slice the {{avocados}}.",
       "Build the tacos: slaw, fish, a couple of avocado slices each, a drizzle of dressing, and the rest of the limes in wedges.",
     ],
   },
@@ -1170,11 +1170,11 @@ const MEALS = [
       { n: "frozen peas", q: 2, u: "cup", c: "produce" },
     ],
     steps: [
-      "Drain the tuna well, pressing out the liquid, and flake it into a bowl.",
-      "Slice the green onions thin and add them to the bowl with the eggs, the panko, the mustard, the zest of the lemon (grate just the yellow skin), and a pinch of salt and pepper. Mix, then shape into patties about the size of your palm, about two per person. Wash your hands after.",
-      "Heat the olive oil in a large skillet over medium heat. Lay the patties in and cook 3 to 4 minutes per side until deeply golden. Canned tuna is already cooked, so golden and hot through is the goal here.",
-      "Microwave the peas with a splash of water for 2 to 3 minutes and season with a pinch of salt.",
-      "Stir the yogurt with the juice of the lemon and a spoonful of water until it drizzles off the spoon.",
+      "Drain the {{tuna|canned tuna}} well, pressing out the liquid, and flake it into a bowl.",
+      "Slice the {{green onions}} thin and add them to the bowl with the {{eggs}}, the {{panko|panko breadcrumbs}}, the {{mustard|Dijon mustard}}, the zest of the {{lemon}} (grate just the yellow skin), and a pinch of salt and pepper. Mix, then shape into patties about the size of your palm, about two per person. Wash your hands after.",
+      "Heat the {{olive oil}} in a large skillet over medium heat. Lay the patties in and cook 3 to 4 minutes per side until deeply golden. Canned tuna is already cooked, so golden and hot through is the goal here.",
+      "Microwave the {{peas|frozen peas}} with a splash of water for 2 to 3 minutes and season with a pinch of salt.",
+      "Stir the {{yogurt|plain Greek yogurt}} with the juice of the lemon and a spoonful of water until it drizzles off the spoon.",
       "Serve the patties over the peas with the sauce spooned on top.",
     ],
   },
@@ -1193,12 +1193,12 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Heat the oven to 425 F. Scrub the sweet potatoes and cut them into fries about as thick as your finger. Toss them on a sheet pan with [[1|tbsp|of the olive oil]] and a pinch of salt, and get them in the oven; they take about 30 minutes total, flipped halfway.",
-      "Stir the panko with the rest of the olive oil, the smoked paprika, and a pinch of salt on a second sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl.",
-      "Cut the cod into sticks about as thick as your finger. Set up two more shallow bowls: the flour in one, the eggs beaten in the other.",
+      "Heat the oven to 425 F. Scrub the {{sweet potatoes}} and cut them into fries about as thick as your finger. Toss them on a sheet pan with [[1|tbsp|of the olive oil]] and a pinch of salt, and get them in the oven; they take about 30 minutes total, flipped halfway.",
+      "Stir the {{panko|panko breadcrumbs}} with the rest of the olive oil, the {{smoked paprika}}, and a pinch of salt on a second sheet pan, toast it in the oven for 3 minutes until barely golden, and pour it into a shallow bowl.",
+      "Cut the {{cod|cod fillets}} into sticks about as thick as your finger. Set up two more shallow bowls: the {{flour|all-purpose flour}} in one, the {{eggs}} beaten in the other.",
       "Coat each stick: flour, then egg, then press it into the panko all over. Line the sticks up on the second pan with space between them. Wash your hands after handling the raw fish.",
       "Bake the fish 12 to 15 minutes until golden. Poke an instant-read thermometer into the thickest stick: fish is done at 145 F and flakes with a fork.",
-      "Serve with the fries, the ketchup for dunking, and the lemon in wedges for the grown-ups.",
+      "Serve with the fries, the {{ketchup}} for dunking, and the {{lemon}} in wedges for the grown-ups.",
     ],
   },
   {
@@ -1216,12 +1216,12 @@ const MEALS = [
       { n: "white rice", q: 1.5, u: "cup", c: "grains" },
     ],
     steps: [
-      "Heat the oven to 425 F. Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
-      "Slice the zucchini into thin coins and the bell peppers into thin strips, and halve the cherry tomatoes. Peel and mince the garlic. Keep the slices thin so the vegetables are tender by the time the fish is done.",
-      "Tear one big square of foil per fillet. Lay a tilapia fillet in the middle of each, pile the vegetables on and around it, drizzle the olive oil over, and sprinkle on the oregano, garlic, and a pinch of salt. Wash your hands after handling the raw fish.",
+      "Heat the oven to 425 F. Start the {{rice|white rice}}: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
+      "Slice the {{zucchini}} into thin coins and the {{bell peppers|bell pepper}} into thin strips, and halve the {{cherry tomatoes}}. Peel and mince the {{garlic}}. Keep the slices thin so the vegetables are tender by the time the fish is done.",
+      "Tear one big square of foil per fillet. Lay a tilapia fillet in the middle of each, pile the vegetables on and around it, drizzle the {{olive oil}} over, and sprinkle on the {{oregano|dried oregano}}, garlic, and a pinch of salt. Wash your hands after handling the raw fish.",
       "Fold each packet closed and crimp the edges, leaving some puff for steam. Set the packets on a sheet pan and bake 12 minutes.",
       "Open one packet carefully (the steam is hot) and poke an instant-read thermometer into the fish: it is done at 145 F and flakes with a fork. Re-crimp and bake 3 more minutes if it reads low.",
-      "Serve the packets over the rice, with the lemons cut into wedges for squeezing.",
+      "Serve the packets over the rice, with the {{lemons|lemon}} cut into wedges for squeezing.",
     ],
   },
   {
@@ -1239,12 +1239,12 @@ const MEALS = [
       { n: "whole grain bread", q: 8, u: "slice", c: "grains" },
     ],
     steps: [
-      "Chop the onion small and mince the garlic. Heat the olive oil in a large skillet over medium heat and cook the onion 4 minutes until soft, then add the garlic and oregano for 30 seconds.",
-      "Pour in the tomatoes with their juice and the beans (rinsed in a strainer first). Add a splash of water and a pinch of salt and let it simmer 5 minutes.",
-      "Cut the cod into chunks about the size of a deck of cards and season with a pinch of salt. Wash your hands after handling the raw fish.",
+      "Chop the {{onion}} small and mince the {{garlic}}. Heat the {{olive oil}} in a large skillet over medium heat and cook the onion 4 minutes until soft, then add the garlic and {{oregano|dried oregano}} for 30 seconds.",
+      "Pour in the {{tomatoes|canned diced tomatoes}} with their juice and the {{beans|canned cannellini beans}} (rinsed in a strainer first). Add a splash of water and a pinch of salt and let it simmer 5 minutes.",
+      "Cut the {{cod|cod fillets}} into chunks about the size of a deck of cards and season with a pinch of salt. Wash your hands after handling the raw fish.",
       "Nestle the cod down into the sauce, cover the pan, and cook 6 to 8 minutes on medium-low.",
-      "Poke an instant-read thermometer into the thickest piece: fish is done at 145 F and flakes with a fork. Stir the spinach in around the fish until it wilts, about 1 minute.",
-      "Toast thick slices of the bread and serve them alongside for mopping up the sauce.",
+      "Poke an instant-read thermometer into the thickest piece: fish is done at 145 F and flakes with a fork. Stir the {{spinach}} in around the fish until it wilts, about 1 minute.",
+      "Toast thick slices of the {{bread|whole grain bread}} and serve them alongside for mopping up the sauce.",
     ],
   },
   {
@@ -1263,12 +1263,12 @@ const MEALS = [
       { n: "vegetable oil", q: 1, u: "tbsp", c: "pantry" },
     ],
     steps: [
-      "Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
-      "Stir the soy sauce, honey, rice vinegar, and ground ginger together in a cup. Cut the salmon into big bite-size cubes and pat them dry. Wash your hands after handling the raw fish.",
-      "Heat the oil in a large skillet over medium-high heat. Add the salmon cubes and cook about 2 minutes per side until browned.",
+      "Start the {{rice|white rice}}: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
+      "Stir the {{soy sauce|low-sodium soy sauce}}, {{honey}}, {{rice vinegar}}, and {{ground ginger}} together in a cup. Cut the {{salmon|salmon fillets}} into big bite-size cubes and pat them dry. Wash your hands after handling the raw fish.",
+      "Heat the {{oil|vegetable oil}} in a large skillet over medium-high heat. Add the salmon cubes and cook about 2 minutes per side until browned.",
       "Pour the sauce in, turn the heat to medium-low, and let it bubble 2 minutes, turning the cubes gently so they glaze all over.",
-      "Poke an instant-read thermometer into a thick cube: fish is done at 145 F and flakes with a fork. Microwave the edamame with a splash of water for 2 minutes.",
-      "Peel the carrots into ribbons with the peeler and slice the cucumber thin. Build bowls: rice, salmon, edamame, and the crunchy vegetables.",
+      "Poke an instant-read thermometer into a thick cube: fish is done at 145 F and flakes with a fork. Microwave the {{edamame|frozen shelled edamame}} with a splash of water for 2 minutes.",
+      "Peel the {{carrots}} into ribbons with the peeler and slice the {{cucumber|cucumbers}} thin. Build bowls: rice, salmon, edamame, and the crunchy vegetables.",
     ],
   },
   {
@@ -1286,12 +1286,12 @@ const MEALS = [
       { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Heat the olive oil in a large skillet over medium-high heat (lean beef sticks without it; skip it only if your skillet is nonstick). Add the beef and cook 6 to 8 minutes, breaking it into small crumbles with your spatula. Wash your hands after handling the raw meat.",
+      "Heat the {{olive oil}} in a large skillet over medium-high heat (lean beef sticks without it; skip it only if your skillet is nonstick). Add the {{beef|lean ground beef}} and cook 6 to 8 minutes, breaking it into small crumbles with your spatula. Wash your hands after handling the raw meat.",
       "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low. Tilt the pan and spoon off any pooled fat.",
-      "Stir in the taco seasoning and two-thirds of a cup of water for every 2 tablespoons of seasoning. Simmer 3 to 4 minutes until saucy.",
-      "While it simmers, chop the lettuce and dice the tomatoes into taco-size pieces.",
-      "Wrap the tortillas in a damp paper towel and microwave 30 seconds.",
-      "Set everything out build-your-own style: beef, lettuce, tomatoes, salsa, and yogurt instead of sour cream. Cheese is there for whoever wants it and easy to skip.",
+      "Stir in the {{taco seasoning}} and two-thirds of a cup of water for every 2 tablespoons of seasoning. Simmer 3 to 4 minutes until saucy.",
+      "While it simmers, chop the {{lettuce|romaine lettuce}} and dice the {{tomatoes}} into taco-size pieces.",
+      "Wrap the {{tortillas|small flour tortillas}} in a damp paper towel and microwave 30 seconds.",
+      "Set everything out build-your-own style: beef, lettuce, tomatoes, {{salsa}}, and {{yogurt|plain Greek yogurt}} instead of sour cream. {{Cheese|shredded cheddar}} is there for whoever wants it and easy to skip.",
     ],
   },
   {
@@ -1308,12 +1308,12 @@ const MEALS = [
       { n: "plain Greek yogurt", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Heat the oven to 450 F. Slice the bell peppers and the onion into strips and toss them on a sheet pan with [[1|tbsp|of the olive oil]] and half of the fajita seasoning.",
-      "Rub the steak all over with the rest of the oil and seasoning and lay it on top of the vegetables. Wash your hands after handling the raw meat.",
+      "Heat the oven to 450 F. Slice the {{bell peppers|bell pepper}} and the {{onion|red onion}} into strips and toss them on a sheet pan with [[1|tbsp|of the olive oil]] and half of the fajita seasoning.",
+      "Rub the {{steak|flank steak}} all over with the rest of the oil and seasoning and lay it on top of the vegetables. Wash your hands after handling the raw meat.",
       "Roast 12 to 15 minutes. Poke an instant-read thermometer into the thickest part of the steak: 145 F is medium with a blush of pink. Roast 3 more minutes and check again if it reads low.",
       "Move the steak to a cutting board and let it rest 5 minutes so the juices stay in; stir the vegetables and return them to the oven meanwhile.",
       "Look for the lines running along the steak and slice it thin across them (across the grain); this is what makes flank steak tender.",
-      "Wrap the tortillas in a damp paper towel and microwave 30 seconds. Build fajitas with steak, vegetables, a squeeze of the lime, and a spoon of yogurt.",
+      "Wrap the {{tortillas|small flour tortillas}} in a damp paper towel and microwave 30 seconds. Build fajitas with steak, vegetables, a squeeze of the {{lime}}, and a spoon of {{yogurt|plain Greek yogurt}}.",
     ],
   },
   {
@@ -1331,12 +1331,12 @@ const MEALS = [
       { n: "parmesan", q: 0.25, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Put a big pot of water on to boil with a small handful of salt. Chop the onion small, mince the garlic, and grate the zucchini on the big holes of a box grater.",
-      "Heat the olive oil in a large skillet over medium-high heat. Add the beef and onion and cook 6 to 8 minutes, breaking the meat into crumbles. Wash your hands after handling the raw meat.",
+      "Put a big pot of water on to boil with a small handful of salt. Chop the {{onion}} small, mince the {{garlic}}, and grate the {{zucchini}} on the big holes of a box grater.",
+      "Heat the {{olive oil}} in a large skillet over medium-high heat. Add the {{beef|lean ground beef}} and onion and cook 6 to 8 minutes, breaking the meat into crumbles. Wash your hands after handling the raw meat.",
       "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low.",
-      "Add the garlic, the grated zucchini, and the Italian seasoning and stir 1 minute; the zucchini melts into the sauce where kids never find it. Pour in the marinara, rinse the jar with a splash of water into the pan, and simmer on low 10 minutes.",
-      "Meanwhile cook the spaghetti in the boiling water per the package time, then drain it.",
-      "Serve the sauce over the spaghetti. Parmesan on top is optional and easy to skip.",
+      "Add the garlic, the grated zucchini, and the {{Italian seasoning}} and stir 1 minute; the zucchini melts into the sauce where kids never find it. Pour in the {{marinara|marinara sauce}}, rinse the jar with a splash of water into the pan, and simmer on low 10 minutes.",
+      "Meanwhile cook the {{spaghetti}} in the boiling water per the package time, then drain it.",
+      "Serve the sauce over the spaghetti. {{Parmesan|parmesan}} on top is optional and easy to skip.",
     ],
   },
   {
@@ -1357,12 +1357,12 @@ const MEALS = [
       { n: "shredded cheddar", q: 0.5, u: "cup", c: "dairy" },
     ],
     steps: [
-      "Chop the onion and bell pepper small. Heat the olive oil in a big soup pot over medium-high heat and cook them 4 minutes until soft.",
-      "Add the beef and cook 6 to 8 minutes, breaking it into crumbles. Wash your hands after handling the raw meat.",
+      "Chop the {{onion}} and {{bell pepper}} small. Heat the {{olive oil}} in a big soup pot over medium-high heat and cook them 4 minutes until soft.",
+      "Add the {{beef|lean ground beef}} and cook 6 to 8 minutes, breaking it into crumbles. Wash your hands after handling the raw meat.",
       "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground beef is done at 160 F. Cook 2 more minutes and check again if it reads low.",
-      "Stir in the chili powder and cumin for 30 seconds, then add the tomatoes with their juice, the tomato sauce, the beans (rinsed in a strainer), and the broth.",
+      "Stir in the {{chili powder}} and {{cumin|ground cumin}} for 30 seconds, then add the {{tomatoes|canned diced tomatoes}} with their juice, the {{tomato sauce|canned tomato sauce}}, the {{beans|canned black beans}} (rinsed in a strainer), and the {{broth|low-sodium chicken broth}}.",
       "Simmer uncovered on medium-low for 15 minutes, stirring now and then, until it thickens to a scoopable chili. Taste and add salt a pinch at a time.",
-      "Serve in bowls with the chips for scooping. Cheese on top is optional and easy to skip.",
+      "Serve in bowls with the {{chips|tortilla chips}} for scooping. {{Cheese|shredded cheddar}} on top is optional and easy to skip.",
     ],
   },
   {
@@ -1378,10 +1378,10 @@ const MEALS = [
       { n: "dried rosemary", q: 1, u: "tsp", c: "pantry" },
     ],
     steps: [
-      "Heat the oven to 425 F. Halve the baby potatoes and toss them on a sheet pan with [[2|tbsp|of the olive oil]], the rosemary, and [[0.5|tsp|of salt]]. Roast 10 minutes.",
-      "Check the pork for a shiny, silvery strip along one side (silverskin); if you see one, slide the tip of a knife under it and cut it away, since it turns tough when cooked. Many store tenderloins come with it already removed.",
-      "Stir the mustard, maple syrup, [[0.5|tsp|of salt]], and the rest of the oil into a paste and rub it all over the pork. Wash your hands after handling the raw meat.",
-      "Cut the apples into thick wedges (no need to peel; just cut around the core).",
+      "Heat the oven to 425 F. Halve the {{baby potatoes}} and toss them on a sheet pan with [[2|tbsp|of the olive oil]], the {{rosemary|dried rosemary}}, and [[0.5|tsp|of salt]]. Roast 10 minutes.",
+      "Check the {{pork|pork tenderloin}} for a shiny, silvery strip along one side (silverskin); if you see one, slide the tip of a knife under it and cut it away, since it turns tough when cooked. Many store tenderloins come with it already removed.",
+      "Stir the {{mustard|Dijon mustard}}, {{maple syrup}}, [[0.5|tsp|of salt]], and the rest of the oil into a paste and rub it all over the pork. Wash your hands after handling the raw meat.",
+      "Cut the {{apples}} into thick wedges (no need to peel; just cut around the core).",
       "Pull the pan out, push the potatoes to the edges, lay the pork in the middle, and scatter the apple wedges around it. Roast 18 to 22 minutes.",
       "Poke an instant-read thermometer into the thickest part of the pork: it is done at 145 F with a blush of pink inside, which is safe and juicy. Roast 4 more minutes and check again if it reads low.",
       "Move the pork to a cutting board and let it rest 5 minutes so the juices stay in, leaving the pan in the turned-off oven. Slice the pork into thick coins and serve with the potatoes and apples.",
@@ -1403,12 +1403,12 @@ const MEALS = [
       { n: "green onions", q: 6, u: "", c: "produce" },
     ],
     steps: [
-      "Start the rice: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
-      "Heat the vegetable oil in a large skillet over medium-high heat. Add the pork and cook 6 to 8 minutes, breaking it into small crumbles. Wash your hands after handling the raw meat.",
+      "Start the {{rice|white rice}}: rinse it, put it in a small pot with double its volume of water and a pinch of salt, bring to a boil, then cover on low heat for 15 minutes.",
+      "Heat the {{vegetable oil}} in a large skillet over medium-high heat. Add the {{pork|ground pork}} and cook 6 to 8 minutes, breaking it into small crumbles. Wash your hands after handling the raw meat.",
       "Push the crumbles into a mound and poke an instant-read thermometer into the middle: ground pork is done at 160 F. Cook 2 more minutes and check again if it reads low.",
-      "Peel and mince the garlic and add it with the ground ginger, soy sauce, and rice vinegar; stir 30 seconds.",
-      "Add the coleslaw mix and toss 2 minutes, just until it wilts but still has crunch. Turn off the heat and stir in the sesame oil.",
-      "Slice the green onions thin. Serve the pork over the rice with the green onions on top.",
+      "Peel and mince the {{garlic}} and add it with the {{ground ginger}}, {{soy sauce|low-sodium soy sauce}}, and {{rice vinegar}}; stir 30 seconds.",
+      "Add the {{coleslaw mix}} and toss 2 minutes, just until it wilts but still has crunch. Turn off the heat and stir in the {{sesame oil|toasted sesame oil}}.",
+      "Slice the {{green onions}} thin. Serve the pork over the rice with the green onions on top.",
     ],
   },
   {
@@ -1425,13 +1425,13 @@ const MEALS = [
       { n: "lemon", q: 1, u: "", c: "produce" },
     ],
     steps: [
-      "Put the baby potatoes in a pot, cover with water and a big pinch of salt, and boil 12 to 15 minutes until a fork slides in with no resistance.",
-      "Pat the pork chops dry and sprinkle each side with the garlic powder, smoked paprika, and a pinch of salt. Wash your hands after handling the raw meat.",
-      "Heat the olive oil in a large skillet over medium-high heat. Lay the chops in and cook 4 to 5 minutes per side without moving them, so they brown. These times fit chops about an inch thick; thin half-inch chops need only 2 to 3 minutes per side.",
+      "Put the {{baby potatoes}} in a pot, cover with water and a big pinch of salt, and boil 12 to 15 minutes until a fork slides in with no resistance.",
+      "Pat the pork {{chops|thick-cut boneless pork chops}} dry and sprinkle each side with the {{garlic powder}}, {{smoked paprika}}, and a pinch of salt. Wash your hands after handling the raw meat.",
+      "Heat the {{olive oil}} in a large skillet over medium-high heat. Lay the chops in and cook 4 to 5 minutes per side without moving them, so they brown. These times fit chops about an inch thick; thin half-inch chops need only 2 to 3 minutes per side.",
       "Poke an instant-read thermometer through the side of the thickest chop into its middle: pork is done at 145 F with a blush of pink, which is safe and juicy. Cook 2 more minutes per side and check again if it reads low.",
       "Move the chops to a plate and let them rest 5 minutes so the juices stay in.",
-      "Drain the potatoes, add the butter and a pinch of salt, and smash them roughly with a fork. Microwave the peas with a splash of water, covered, for 3 to 4 minutes, stirring halfway.",
-      "Serve the chops with the potatoes and peas, with the lemon in wedges for squeezing over.",
+      "Drain the potatoes, add the {{butter}} and a pinch of salt, and smash them roughly with a fork. Microwave the {{peas|frozen peas}} with a splash of water, covered, for 3 to 4 minutes, stirring halfway.",
+      "Serve the chops with the potatoes and peas, with the {{lemon}} in wedges for squeezing over.",
     ],
   },
 ];
@@ -1469,7 +1469,7 @@ const PACKS = {
   "ground turkey": { per: 1, one: "tray (1 lb)", many: "trays (1 lb)" },
   "lean ground beef": { per: 1, one: "tray (1 lb)", many: "trays (1 lb)" },
   "ground pork": { per: 1, one: "tray (1 lb)", many: "trays (1 lb)" },
-  "chicken tenderloins": { per: 1.5, one: "pack (1.5 lb)", many: "packs (1.5 lb)" },
+  "chicken tenderloins": { per: 1.5, one: "pack (1 lb 8 oz)", many: "packs (1 lb 8 oz)" },
   "eggs": { per: 12, one: "dozen", many: "dozen" },
   "shredded cheddar": { per: 2, one: "bag (8 oz)", many: "bags (8 oz)" },
   "plain Greek yogurt": { per: 4, one: "tub (32 oz)", many: "tubs (32 oz)" },
@@ -1501,7 +1501,7 @@ const PACKS = {
   "frozen shelled edamame": { per: 2.5, one: "bag (12 oz)", many: "bags (12 oz)" },
   "garlic": { per: 10, one: "head of", many: "heads of" },
   "celery": { per: 8, one: "bunch", many: "bunches" },
-  "baby potatoes": { per: 1.5, one: "bag (1.5 lb)", many: "bags (1.5 lb)" },
+  "baby potatoes": { per: 1.5, one: "bag (1 lb 8 oz)", many: "bags (1 lb 8 oz)" },
   "cherry tomatoes": { per: 10, one: "container (10 oz)", many: "containers (10 oz)" },
   "wooden skewers": { per: 100, one: "pack of 100", many: "packs of 100" },
   "basil pesto": { per: 8, one: "jar (8 oz)", many: "jars (8 oz)" },
@@ -1723,9 +1723,36 @@ function recipeCount(ing) {
   return `${label} ${countName(ing.n, half)}`;
 }
 
+// Whole cuts lose fat, sinew, and silver skin to the knife, so the amount to
+// buy carries a margin over the cooked weight the recipe was written around.
+// Ground meat and fish fillets come trimmed and get none.
+const TRIM_MARGIN = 0.12;
+const TRIMMED = new Set([
+  "boneless chicken thighs", "chicken tenderloins", "flank steak",
+  "pork tenderloin", "thick-cut boneless pork chops",
+]);
+
+// An ingredient at the serving scale, as bought: the recipe card, the step
+// amounts, and the grocery list all read from this so they always agree
+function scaledIng(ing, scale) {
+  return { ...ing, q: ing.q * scale * (TRIMMED.has(ing.n) ? 1 + TRIM_MARGIN : 1) };
+}
+
+// Weights read the way a meat label does, pounds and whole ounces, rounded
+// up to the next ounce so a trimmed or scaled amount is never short
+function formatWeight(lb) {
+  const oz = Math.ceil(lb * 16 - 1e-9);
+  const whole = Math.floor(oz / 16);
+  const rest = oz % 16;
+  if (whole === 0) return `${rest} oz`;
+  return rest ? `${whole} lb ${rest} oz` : `${whole} lb`;
+}
+
 function formatQty(q, u) {
-  // Countable items round up to whole; measured items to the nearest quarter.
-  const rounded = u === "" ? Math.ceil(q - 1e-9) : Math.round(q * 4) / 4;
+  if (u === "lb") return formatWeight(q);
+  // Countable items round up to whole; measured items to the nearest quarter,
+  // never down to nothing (a quarter of a quarter teaspoon is still a pinch)
+  const rounded = u === "" ? Math.ceil(q - 1e-9) : Math.max(0.25, Math.round(q * 4) / 4);
   const unit = rounded !== 1 && UNIT_PLURALS[u] ? UNIT_PLURALS[u] : u;
   return unit ? `${rounded} ${unit}` : String(rounded);
 }
@@ -1740,10 +1767,11 @@ function buildGroceries(week, servings) {
     if (!meal) return;
     meal.ing.forEach((ing) => {
       const key = `${ing.n}|${ing.u}`;
+      const q = scaledIng(ing, scale).q;
       if (map.has(key)) {
-        map.get(key).q += ing.q * scale;
+        map.get(key).q += q;
       } else {
-        map.set(key, { ...ing, q: ing.q * scale });
+        map.set(key, { ...ing, q });
       }
     });
   });
@@ -1853,8 +1881,42 @@ function stepQty(q, unit) {
   return `${whole} and ${fword} ${name}s`;
 }
 
-function renderStep(text, scale) {
-  return text.replace(STEP_TOKEN, (_, q, unit, tail) => `${stepQty(parseFloat(q) * scale, unit)} ${tail}`);
+// Ingredient references: {{mention}} or {{mention|ingredient name}} marks the
+// step where an ingredient first comes into play, and the card shows its
+// scaled amount right there ("Rinse the potatoes [1 lb 8 oz]"), so nobody has
+// to scroll back up to the list mid-recipe. Ingredients apportioned by
+// [[...]] tokens already state their amounts and carry no reference.
+// render-check pins the text with references stripped to the same baseline,
+// so adding one can never reword a step.
+const ING_TOKEN = /\{\{([^|}]+)(?:\|([^}]+))?\}\}/g;
+
+// Countables use a fraction glyph, since a bare "half" beside the name reads
+// as prose ("the lime half") rather than an amount
+function ingAmount(ing, scale) {
+  const s = scaledIng(ing, scale);
+  if (s.u !== "") return formatQty(s.q, s.u);
+  if (INDIVISIBLE.has(s.n)) return String(Math.ceil(s.q - 1e-9));
+  return countLabel(s.q).replace(/^half$/, "½").replace(/ and a half$/, "½");
+}
+
+// A step split into prose strings and { amount } parts. Without a meal the
+// references render as bare prose.
+function stepParts(text, scale, meal) {
+  const prose = text.replace(STEP_TOKEN, (_, q, unit, tail) => `${stepQty(parseFloat(q) * scale, unit)} ${tail}`);
+  const parts = [];
+  let last = 0;
+  for (const h of prose.matchAll(ING_TOKEN)) {
+    parts.push(prose.slice(last, h.index) + h[1]);
+    const ing = meal && meal.ing.find((i) => i.n === (h[2] || h[1]));
+    if (ing) parts.push({ amount: ingAmount(ing, scale) });
+    last = h.index + h[0].length;
+  }
+  parts.push(prose.slice(last));
+  return parts;
+}
+
+function renderStep(text, scale, meal) {
+  return stepParts(text, scale, meal).map((p) => (typeof p === "string" ? p : ` (${p.amount})`)).join("");
 }
 
 function RecipeDetails({ meal, scale }) {
@@ -1865,7 +1927,7 @@ function RecipeDetails({ meal, scale }) {
       </div>
       <div style={{ color: P.inkSoft, marginBottom: 8 }}>
         {meal.ing.map((ing) => {
-          const scaled = { ...ing, q: ing.q * scale };
+          const scaled = scaledIng(ing, scale);
           if (scaled.u === "") return recipeCount(scaled);
           return `${formatQty(scaled.q, scaled.u)} ${scaled.n}`;
         }).join(", ")}
@@ -1874,7 +1936,15 @@ function RecipeDetails({ meal, scale }) {
         Steps
       </div>
       <ol style={{ margin: 0, paddingLeft: 18, color: P.ink }}>
-        {meal.steps.map((s, si) => <li key={si} style={{ marginBottom: 4 }}>{renderStep(s, scale)}</li>)}
+        {meal.steps.map((s, si) => (
+          <li key={si} style={{ marginBottom: 4 }}>
+            {stepParts(s, scale, meal).map((p, pi) => (typeof p === "string" ? p : (
+              // Bordered rather than shaded so the amount still stands apart on paper
+              <span key={pi}>{" "}<span style={{ fontSize: 12, fontWeight: 700, whiteSpace: "nowrap",
+                background: P.celerySoft, border: `1px solid ${P.line}`, borderRadius: 6, padding: "0 5px" }}>{p.amount}</span></span>
+            )))}
+          </li>
+        ))}
       </ol>
       {meal.spice && (
         <div style={{ fontSize: 12, color: P.inkSoft, marginTop: 8 }}>
